@@ -1,18 +1,16 @@
 # README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
-
 ### What is this repository for? ###
 
-* This repository should provide an inside perspective of how far the application is
+* This repository should provide an inside perspective of the current development status
 * Version 1.0
 
 ### How do I get set up? ###
 
-* Summary of set up
 * Eclipse Luna, JDK 8 (version 8u25),
-* not yet set up as Maven project (there seem to be missing parameters in my current set-up)
+* Maven: not yet set up as maven project (there seem to be missing parameters in my current set-up)
 * DB MySQL (not yet integrated, details will follow)
+* REST: see repository JCT2015_RestAPI
 
 ### Contribution guidelines ###
 
