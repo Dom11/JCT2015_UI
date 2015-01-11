@@ -1,12 +1,13 @@
 package com.bluesky.jct;
 
-import com.bluesky.jct.model.*;
-import com.bluesky.jct.view.ProfileEditDialogController;
-import com.bluesky.jct.view.ProfileOverviewController;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -16,17 +17,35 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import com.bluesky.jct.model.Profile;
+import com.bluesky.jct.model.FXProfile;
+import com.bluesky.jct.rest.RestClient;
+import com.bluesky.jct.util.FXBeanMapper;
+import com.bluesky.jct.view.RootLayoutController;
+import com.bluesky.jct.view.ProfileOverviewController;
+import com.bluesky.jct.view.ProfileEditDialogController;
+
 
 public class MainApp extends Application {
 	
 	private Stage primaryStage;
 	private BorderPane rootLayout;
 	
+	/**
+	 * The data as an observable list of Deployments.
+	 */
+	private ObservableList<FXProfile> profileData = FXCollections.observableArrayList();
+	
 	
 	/**
 	 * Constructor
 	 */
 	public MainApp() {
+	}
+	
+	
+	public static void main(String[] args) {
+		launch(args);
 	}
 	
 	
@@ -39,13 +58,31 @@ public class MainApp extends Application {
 		alert.setTitle("Welcome information");
 		alert.setHeaderText("JCT 2015 (Prototype)");
 		alert.setContentText("Welcome " + getUserName() + ", the tool is about to load.");
-
 		alert.showAndWait();
 		
+		List<Profile> profiles = RestClient.findAll();
+		List<FXProfile> beanProfiles = new ArrayList<FXProfile>();
+
+		try {
+			for (Profile profile : profiles) {
+				FXProfile beanProfile = new FXProfile();
+				FXBeanMapper.copyProperties(beanProfile, profile);
+				beanProfiles.add(beanProfile);
+
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		profileData.clear();
+		profileData.addAll(beanProfiles);
+
 		initRootLayout();
-		
+
 		showProfileOverview();
 	}
+
 
 	
    /**
@@ -61,6 +98,11 @@ public class MainApp extends Application {
 			// Show the scene containing the root layout.
 			Scene scene = new Scene(rootLayout);
 			primaryStage.setScene(scene);
+			
+			// Give the controller access to the main app.
+			RootLayoutController controller = loader.getController();
+			controller.setMainApp(this);
+			
 			primaryStage.show();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -98,7 +140,7 @@ public class MainApp extends Application {
 	 * @param profile the profile object to be displayed/edited
 	 * @return true if the user clicked OK, false otherwise
 	 */
-	public boolean showProfileEditDialog(Profile profile, int selectedIndex, ProfileOverviewController profileOverviewController) {
+	public boolean showProfileEditDialog(FXProfile profile, int selectedIndex, ProfileOverviewController profileOverviewController) {
 		try {
 			// Load the fxml file and create a new stage for the pop-up dialog.
 			FXMLLoader loader = new FXMLLoader();
@@ -139,12 +181,20 @@ public class MainApp extends Application {
 	}
 	
 	
+	/**
+	 * Returns the user name.
+	 * @return
+	 */
     private String getUserName() {
         return System.getProperty("user.name");
     }
-
-	
-	public static void main(String[] args) {
-		launch(args);
+    
+    
+	/**
+	 * Returns the data as an observable list of JCT profiles.
+	 * @return
+	 */
+	public ObservableList<FXProfile> getProfileData() {
+		return profileData;
 	}
 }
