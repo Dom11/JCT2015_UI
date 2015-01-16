@@ -1,111 +1,90 @@
 package com.bluesky.jct.model;
 
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import java.io.Serializable;
 
-public class Profile {
-	
-	private final StringProperty profileDescription;
-	private final StringProperty profileHostName;
-	private final StringProperty profileInstance;
-	private final StringProperty profileEnvironment;
-	private final StringProperty profileDomain;
-	private final StringProperty profileJBarName;
+public class Profile implements Serializable {
 
-	
-	/**
-	 * Default constructor.
-	 */
-	public Profile() {
-		this(null, null);
-	}
-	
+	private static final long serialVersionUID = 1L;
+
+	private int id;
+	private String description;
+	private String hostName;
+	private String instance;
+	private String environment;
+	private String domain;
+	private String jBarName;
+
 	/**
 	 * Constructor with some default data.
 	 * 
-	 * @param profileId
-	 * @param profileDescription
+	 * @param description
+	 * @param envirnoment
 	 */
-	public Profile(String profileDescription, String profileEnvironment) {
-		this.profileDescription = new SimpleStringProperty(profileDescription);
-		this.profileEnvironment = new SimpleStringProperty(profileEnvironment);		
-		
+	public Profile(int id, String description, String environment) {
+		this.id = id;
+		this.description = description;
+		this.environment = environment;
+
 		// Some initial dummy data, just for testing purposes.
-		this.profileHostName = new SimpleStringProperty("srp0433lx");
-		this.profileInstance = new SimpleStringProperty("JB1");
-		this.profileDomain = new SimpleStringProperty("ZH");
-		this.profileJBarName = new SimpleStringProperty("ESD");
-	}
-	
-	public String getProfileDescription() {
-		return profileDescription.get();
-	}	
-	
-	public void setProfileDescription(String profileDescription) {
-		this.profileDescription.set(profileDescription);
+		this.hostName = "srp0433lx";
+		this.instance = "JB1";
+		this.domain = "ZH";
+		this.jBarName = "ESD";
 	}
 
-	public StringProperty profileDescriptionProperty() {
-		return profileDescription;
-	}
-	
-	public String getProfileHostName() {
-		return profileHostName.get();
-	}
-	
-	public void setProfileHostName(String profileHostName) {
-		this.profileHostName.set(profileHostName);
-	}
-	
-	public StringProperty profileHostNameProperty() {
-		return profileHostName;
+	public int getId() {
+		return id;
 	}
 
-	public String getProfileInstance() {
-		return profileInstance.get();
-	}
-	
-	public void setProfileInstance(String profileInstance) {
-		this.profileInstance.set(profileInstance);
-	}
-	
-	public StringProperty profileInstanceProperty() {
-		return profileInstance;
+	public void setId(int id) {
+		this.id = id;
 	}
 
-	public String getProfileEnvironment() {
-		return profileEnvironment.get();
-	}
-	
-	public void setProfileEnvironment(String profileEnvironment) {
-		this.profileEnvironment.set(profileEnvironment);
-	}
-	
-	public StringProperty profileEnvironmentProperty() {
-		return profileEnvironment;
+	public String getDescription() {
+		return description;
 	}
 
-	public String getProfileDomain() {
-		return profileDomain.get();
-	}
-	
-	public void setProfileDomain(String profileDomain) {
-		this.profileDomain.set(profileDomain);
-	}
-	
-	public StringProperty profileDomainProperty() {
-		return profileDomain;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
-	public String getProfileJBarName() {
-		return profileJBarName.get();
+	public String getHostName() {
+		return hostName;
 	}
-	
-	public void setProfileJBarName(String profileJBarName) {
-		this.profileJBarName.set(profileJBarName);
+
+	public void setHostName(String hostName) {
+		this.hostName = hostName;
 	}
-	
-	public StringProperty profileJBarNameProperty() {
-		return profileJBarName;
+
+	public String getInstance() {
+		return instance;
+	}
+
+	public void setInstance(String instance) {
+		this.instance = instance;
+	}
+
+	public String getEnvironment() {
+		return environment;
+	}
+
+	public void setEnvironment(String environment) {
+		this.environment = environment;
+	}
+
+	public String getDomain() {
+		return domain;
+	}
+
+	public void setDomain(String domain) {
+		this.domain = domain;
+	}
+
+	public String getjBarName() {
+		return jBarName;
+	}
+
+	public void setjBarName(String jBarName) {
+		this.jBarName = jBarName;
 	}
 }

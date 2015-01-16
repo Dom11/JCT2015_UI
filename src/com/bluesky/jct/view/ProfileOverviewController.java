@@ -1,8 +1,7 @@
 package com.bluesky.jct.view;
 
-import com.bluesky.jct.MainApp;
-import com.bluesky.jct.model.Profile;
-import com.bluesky.jct.rest.RestClient;
+import java.util.ArrayList;
+import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,26 +18,34 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.util.StringConverter;
 
+import com.bluesky.jct.MainApp;
+import com.bluesky.jct.model.FXProfile;
+import com.bluesky.jct.model.Profile;
+import com.bluesky.jct.rest.RestClient;
+import com.bluesky.jct.util.FXBeanMapper;
+
 
 public class ProfileOverviewController {
 	@FXML
 	private TextField searchField;
 	@FXML
-	private TableView<Profile> profileTable;
+	private TableView<FXProfile> profileTable;
+//	@FXML
+//	private TableView<Profile> profileTable;
 	@FXML
-	private TableColumn<Profile, String> profileDescriptionColumn;
+	private TableColumn<FXProfile, String> profileDescriptionColumn;
 	@FXML
-	private TableColumn<Profile, String> profileHosteNameColumn;
+	private TableColumn<FXProfile, String> profileHosteNameColumn;
 	@FXML
-	private TableColumn<Profile, String> profileInstanceColumn;
+	private TableColumn<FXProfile, String> profileInstanceColumn;
 	@FXML
-	private ComboBox<Profile> environmentComboBox;
+	private ComboBox<FXProfile> environmentComboBox;
 	@FXML
-	private ComboBox<Profile> jBarComboBox;
+	private ComboBox<FXProfile> jBarComboBox;
 
-	private ObservableList<Profile> profileData = FXCollections.observableArrayList();
+	private ObservableList<FXProfile> profileData = FXCollections.observableArrayList();
 
-	private Profile tempProfile;
+	private FXProfile tempProfile;
 	private int selectedIndex;
 	private ProfileOverviewController profileOverviewController;
 
@@ -53,12 +60,33 @@ public class ProfileOverviewController {
 	public ProfileOverviewController() {
 		// sets variable to reference to this class
 		setProfileOverviewController(this);
+		
 		// some sample profile data
-		profileData.add(new Profile("UCM DEV environment_1", "DEV"));
-		profileData.add(new Profile("UCM UAT environment_2", "UAT"));
-		profileData.add(new Profile("UCM PRO environment_3", "PRO"));
-		profileData.add(new Profile("CCM DEV environment_4", "DEV"));
+		List<Profile> profiles = RestClient.findAll();
+		List<FXProfile> beanProfiles = new ArrayList<FXProfile>();
+
+		try {
+			for (Profile profile : profiles) {
+				FXProfile beanProfile = new FXProfile();
+				FXBeanMapper.copyProperties(beanProfile, profile);
+				beanProfiles.add(beanProfile);
+
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		profileData.clear();
+		profileData.addAll(beanProfiles);
 	}
+		
+		
+//		profileData.add(new Profile(1, "UCM DEV environment_1", "DEV"));
+//		profileData.add(new Profile(2, "UCM UAT environment_2", "UAT"));
+//		profileData.add(new Profile(3, "UCM PRO environment_3", "PRO"));
+//		profileData.add(new Profile(4, "CCM DEV environment_4", "DEV"));
+//	}
 
 	/**
 	 * Initializes the controller class. This method is automatically called
@@ -67,9 +95,9 @@ public class ProfileOverviewController {
 	@FXML
 	private void initialize() {
 		// Initialize the profile table with the three columns.
-		profileDescriptionColumn.setCellValueFactory(cellData -> cellData.getValue().profileDescriptionProperty());
-		profileHosteNameColumn.setCellValueFactory(cellData -> cellData.getValue().profileHostNameProperty());
-		profileInstanceColumn.setCellValueFactory(cellData -> cellData.getValue().profileInstanceProperty());
+		profileDescriptionColumn.setCellValueFactory(cellData -> cellData.getValue().descriptionProperty());
+		profileHosteNameColumn.setCellValueFactory(cellData -> cellData.getValue().hostNameProperty());
+		profileInstanceColumn.setCellValueFactory(cellData -> cellData.getValue().instanceProperty());
 		
 		Tooltip t = new Tooltip("double click for more details");
 		Tooltip.install(profileTable, t);
@@ -80,7 +108,7 @@ public class ProfileOverviewController {
 		 * @author Marco Jakob
 		 */
 		// 1. Wrap the ObservableList in a FilteredList (initially display all data).
-		FilteredList<Profile> filteredData = new FilteredList<>(profileData, p -> true);
+		FilteredList<FXProfile> filteredData = new FilteredList<>(profileData, p -> true);
 		
 		// 2. Set the filter Predicate whenever the filter changes.
 		searchField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -93,9 +121,9 @@ public class ProfileOverviewController {
 				// Compare first name and last name of every profile with filter text.
 				String lowerCaseFilter = newValue.toLowerCase();
 				
-				if (profile.getProfileDescription().toLowerCase().indexOf(lowerCaseFilter) != -1) {
+				if (profile.getDescription().toLowerCase().indexOf(lowerCaseFilter) != -1) {
 					return true; // Filter matches first name.
-				} else if (profile.getProfileEnvironment().toLowerCase().indexOf(lowerCaseFilter) != -1) {
+				} else if (profile.getEnvironment().toLowerCase().indexOf(lowerCaseFilter) != -1) {
 					return true; // Filter matches last name.
 				}
 				return false; // Does not match.
@@ -103,7 +131,7 @@ public class ProfileOverviewController {
 		});
 		
 		// 3. Wrap the FilteredList in a SortedList. 
-		SortedList<Profile> sortedData = new SortedList<>(filteredData);
+		SortedList<FXProfile> sortedData = new SortedList<>(filteredData);
 		
 		// 4. Bind the SortedList comparator to the TableView comparator.
 		// 	  Otherwise, sorting the TableView would have no effect.
@@ -118,41 +146,41 @@ public class ProfileOverviewController {
 		 */
 		// Define rendering of the list of values in ComboBox drop down.
 		environmentComboBox.setCellFactory((comboBox) -> {
-			return new ListCell<Profile>() {
+			return new ListCell<FXProfile>() {
 				@Override
-				protected void updateItem(Profile item, boolean empty) {
+				protected void updateItem(FXProfile item, boolean empty) {
 					super.updateItem(item, empty);
 
 					if (item == null || empty) {
 						setText(null);
 					} else {
-						setText(item.getProfileEnvironment());
+						setText(item.getEnvironment());
 					}
 				}
 			};
 		});
 
 		// Define rendering of selected value shown in ComboBox.
-		environmentComboBox.setConverter(new StringConverter<Profile>() {
+		environmentComboBox.setConverter(new StringConverter<FXProfile>() {
 			@Override
-			public String toString(Profile profile) {
+			public String toString(FXProfile profile) {
 				if (profile == null) {
 					return null;
 				} else {
-					return profile.getProfileEnvironment();
+					return profile.getEnvironment();
 				}
 			}
 
 			@Override
-			public Profile fromString(String profileString) {
+			public FXProfile fromString(String profileString) {
 				return null; // No conversion fromString needed.
 			}
 		});
 
 		// Handle ComboBox event.
 		environmentComboBox.setOnAction((event) -> {
-			Profile selectedProfile = environmentComboBox.getSelectionModel().getSelectedItem();
-			System.out.println("ComboBox Action (selected: " + selectedProfile.getProfileEnvironment().toString() + ")");
+			FXProfile selectedProfile = environmentComboBox.getSelectionModel().getSelectedItem();
+			System.out.println("ComboBox Action (selected: " + selectedProfile.getEnvironment().toString() + ")");
 			});
 		
 		
@@ -161,33 +189,33 @@ public class ProfileOverviewController {
 		 */
 		// Define rendering of the list of values in ComboBox drop down.
 		jBarComboBox.setCellFactory((comboBox) -> {
-			return new ListCell<Profile>() {
+			return new ListCell<FXProfile>() {
 				@Override
-				protected void updateItem(Profile item, boolean empty) {
+				protected void updateItem(FXProfile item, boolean empty) {
 					super.updateItem(item, empty);
 
 					if (item == null || empty) {
 						setText(null);
 					} else {
-						setText(item.getProfileJBarName());
+						setText(item.getJBarName());
 					}
 				}
 			};
 		});
 
 		// Define rendering of selected value shown in ComboBox.
-		jBarComboBox.setConverter(new StringConverter<Profile>() {
+		jBarComboBox.setConverter(new StringConverter<FXProfile>() {
 			@Override
-			public String toString(Profile profile) {
+			public String toString(FXProfile profile) {
 				if (profile == null) {
 					return null;
 				} else {
-					return profile.getProfileJBarName();
+					return profile.getJBarName();
 				}
 			}
 
 			@Override
-			public Profile fromString(String profileJBarNameString) {
+			public FXProfile fromString(String profileJBarNameString) {
 				return null; // No conversion fromString needed.
 			}
 		});
@@ -216,7 +244,6 @@ public class ProfileOverviewController {
 	@FXML
 	private void handleNewProfile() {
 		System.out.println("start Wizard");
-		RestClient.getAll();
 	}
 
 	
@@ -228,7 +255,7 @@ public class ProfileOverviewController {
 	 * Returns the data as an observable list of Profiles.
 	 * @return
 	 */
-	public ObservableList<Profile> getProfileData() {
+	public ObservableList<FXProfile> getProfileData() {
 		return profileData;
 	}
 	

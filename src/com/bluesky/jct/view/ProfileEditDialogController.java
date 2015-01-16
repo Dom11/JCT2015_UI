@@ -2,17 +2,16 @@ package com.bluesky.jct.view;
 
 import java.util.Optional;
 
-import com.bluesky.jct.model.Profile;
-import com.bluesky.jct.view.ProfileOverviewController;
-
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+
+import com.bluesky.jct.model.FXProfile;
 
 
 /**
@@ -45,7 +44,7 @@ public class ProfileEditDialogController {
 
 	private int selectedIndex;
 	private Stage dialogStage;
-	private Profile profile;
+	private FXProfile profile;
 	private boolean saveClicked = false;
 	
 	// Reference to the ProfileOverviewController Class
@@ -89,19 +88,19 @@ public class ProfileEditDialogController {
 	 * 
 	 * @param profile
 	 */
-	public void setProfile(Profile profile, int selectedIndex) {
+	public void setProfile(FXProfile profile, int selectedIndex) {
 		this.profile = profile;
 		this.selectedIndex = selectedIndex;
 		
 		// Shows all the profile information
 		profileIdField.setText(Integer.toString(selectedIndex));
-		profileJBarNameField.setText(profile.getProfileJBarName());
-		profileDescriptionField.setText(profile.getProfileDescription());
-		profileEnvironmentField.setText(profile.getProfileEnvironment());
+		profileJBarNameField.setText(profile.getJBarName());
+		profileDescriptionField.setText(profile.getDescription());
+		profileEnvironmentField.setText(profile.getEnvironment());
 		//profileBuildField.setText(profile.get);
-		profileDomainField.setText(profile.getProfileDomain());
-		profileInstanceField.setText(profile.getProfileInstance());
-		profileServerField.setText(profile.getProfileHostName());
+		profileDomainField.setText(profile.getDomain());
+		profileInstanceField.setText(profile.getInstance());
+		profileServerField.setText(profile.getHostName());
 		
 		// sets the text fields as inactive
 		profileIdField.setDisable(true);	
@@ -152,13 +151,13 @@ public class ProfileEditDialogController {
     @FXML
     private void handleSave() {
         if (isInputValid()) {
-            profile.setProfileJBarName(profileJBarNameField.getText());
-            profile.setProfileDescription(profileDescriptionField.getText());
-            profile.setProfileEnvironment(profileEnvironmentField.getText());         
+            profile.setJBarName(profileJBarNameField.getText());
+            profile.setDescription(profileDescriptionField.getText());
+            profile.setEnvironment(profileEnvironmentField.getText());         
 //            profile.setProfileBuild(profileBuildField.getText());       
-            profile.setProfileDomain(profileDomainField.getText());       
-            profile.setProfileInstance(profileInstanceField.getText());       
-            profile.setProfileHostName(profileServerField.getText());       
+            profile.setDomain(profileDomainField.getText());       
+            profile.setInstance(profileInstanceField.getText());       
+            profile.setHostName(profileServerField.getText());       
     
             saveClicked = true;
             dialogStage.close();
@@ -237,7 +236,7 @@ public class ProfileEditDialogController {
 		alert.setContentText("Profile Index: "
 								+ selectedIndex 
 								+ "\n" 
-								+ profile.getProfileDescription());
+								+ profile.getDescription());
 		
 		Optional<ButtonType> result = alert.showAndWait();
 		if (result.get() == ButtonType.OK){
