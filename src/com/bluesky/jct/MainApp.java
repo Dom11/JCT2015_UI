@@ -2,12 +2,8 @@ package com.bluesky.jct;
 
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -17,10 +13,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import com.bluesky.jct.model.Profile;
 import com.bluesky.jct.model.FXProfile;
-import com.bluesky.jct.rest.RestClient;
-import com.bluesky.jct.util.FXBeanMapper;
 import com.bluesky.jct.view.RootLayoutController;
 import com.bluesky.jct.view.ProfileOverviewController;
 import com.bluesky.jct.view.ProfileEditDialogController;
@@ -30,11 +23,6 @@ public class MainApp extends Application {
 	
 	private Stage primaryStage;
 	private BorderPane rootLayout;
-	
-	/**
-	 * The data as an observable list of Deployments.
-	 */
-	private ObservableList<FXProfile> profileData = FXCollections.observableArrayList();
 	
 	
 	/**
@@ -59,24 +47,6 @@ public class MainApp extends Application {
 		alert.setHeaderText("JCT 2015 (Prototype)");
 		alert.setContentText("Welcome " + getUserName() + ", the tool is about to load.");
 		alert.showAndWait();
-		
-		List<Profile> profiles = RestClient.findAll();
-		List<FXProfile> beanProfiles = new ArrayList<FXProfile>();
-
-		try {
-			for (Profile profile : profiles) {
-				FXProfile beanProfile = new FXProfile();
-				FXBeanMapper.copyProperties(beanProfile, profile);
-				beanProfiles.add(beanProfile);
-
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		profileData.clear();
-		profileData.addAll(beanProfiles);
 
 		initRootLayout();
 
@@ -188,13 +158,4 @@ public class MainApp extends Application {
     private String getUserName() {
         return System.getProperty("user.name");
     }
-    
-    
-	/**
-	 * Returns the data as an observable list of JCT profiles.
-	 * @return
-	 */
-	public ObservableList<FXProfile> getProfileData() {
-		return profileData;
-	}
 }

@@ -7,6 +7,14 @@ import javafx.beans.property.StringProperty;
 
 public class FXProfile {
 
+	private IntegerProperty id = new SimpleIntegerProperty();
+	private StringProperty description = new SimpleStringProperty();
+	private StringProperty hostName = new SimpleStringProperty();
+	private StringProperty instance = new SimpleStringProperty();
+	private StringProperty environment = new SimpleStringProperty();
+	private StringProperty domain = new SimpleStringProperty();
+	private StringProperty jBarName = new SimpleStringProperty();
+
 	/**
 	 * Default constructor.
 	 */
@@ -20,15 +28,6 @@ public class FXProfile {
 		this.environment = new SimpleStringProperty(environment);
 	}
 
-	private IntegerProperty id = new SimpleIntegerProperty();
-	private StringProperty description = new SimpleStringProperty();
-	private StringProperty hostName = new SimpleStringProperty();
-	private StringProperty instance = new SimpleStringProperty();
-	private StringProperty environment = new SimpleStringProperty();
-	private StringProperty domain = new SimpleStringProperty();
-	private StringProperty jBarName = new SimpleStringProperty();
-	
-	
 	public int getId() {
 		return id.get();
 	}
@@ -52,7 +51,7 @@ public class FXProfile {
 	public StringProperty descriptionProperty() {
 		return description;
 	}
-	
+
 	public String getHostName() {
 		return hostName.get();
 	}
@@ -64,7 +63,7 @@ public class FXProfile {
 	public StringProperty hostNameProperty() {
 		return hostName;
 	}
-	
+
 	public String getInstance() {
 		return instance.get();
 	}
@@ -76,7 +75,7 @@ public class FXProfile {
 	public StringProperty instanceProperty() {
 		return instance;
 	}
-	
+
 	public String getEnvironment() {
 		return environment.get();
 	}
@@ -88,7 +87,7 @@ public class FXProfile {
 	public StringProperty environmentProperty() {
 		return environment;
 	}
-	
+
 	public String getDomain() {
 		return domain.get();
 	}
@@ -100,7 +99,7 @@ public class FXProfile {
 	public StringProperty domainProperty() {
 		return domain;
 	}
-	
+
 	public String getJBarName() {
 		return jBarName.get();
 	}

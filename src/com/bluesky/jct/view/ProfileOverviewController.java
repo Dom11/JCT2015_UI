@@ -76,15 +76,11 @@ public class ProfileOverviewController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-/**	
-		List<Profile> profiles = RestClient.findAll();
 		
-		for(Profile profile:profiles) {
-			profileData.add(profile);
-		}
-*/			
-			
+		profileData.clear();
+		profileData.addAll(beanProfiles);
+	}
+		
 		
 //		profileData.add(new Profile(1, "UCM DEV environment_1", "DEV"));
 //		profileData.add(new Profile(2, "UCM UAT environment_2", "UAT"));

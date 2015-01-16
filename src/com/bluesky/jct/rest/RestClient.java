@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -25,6 +26,7 @@ public class RestClient {
 	}
 	
 	
+	//@SuppressWarnings("unchecked")
 	public static List<Profile> findAll() {
 
 		Response response = client.target(REST_SERVICE_URL).path("/list").request(MediaType.APPLICATION_JSON).get();
@@ -32,7 +34,10 @@ public class RestClient {
 		if (response.getStatus() == Status.INTERNAL_SERVER_ERROR.getStatusCode()) {
 			throw new IllegalStateException();
 		} else {
-			return (List<Profile>) response.getEntity();
+		
+			List<Profile> list = response.readEntity(new GenericType<List<Profile>>() {});
+			
+			return list;
 		}
 	}
 

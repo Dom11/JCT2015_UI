@@ -10,6 +10,7 @@ import javafx.scene.control.Alert.AlertType;
 public class RootLayoutController {
 	
 	// Reference to the main application
+	@SuppressWarnings("unused")
 	private MainApp mainApp;
 
 	/**

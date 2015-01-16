@@ -2,18 +2,16 @@ package com.bluesky.jct.view;
 
 import java.util.Optional;
 
-import com.bluesky.jct.model.FXProfile;
-import com.bluesky.jct.model.Profile;
-import com.bluesky.jct.view.ProfileOverviewController;
-
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+
+import com.bluesky.jct.model.FXProfile;
 
 
 /**
