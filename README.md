@@ -10,7 +10,7 @@
 * IDE: Eclipse Luna
 * Java: JDK 8 (version 8u25)
 * Maven: version 3.2.3
-* REST Service: see repository JCT2015_RestAPI
+* REST Service: see repository [jct2015_rest](https://bitbucket.org/bachelorproject_jct/jct2015_rest)
 * DB MySQL
 
 ### Contribution guidelines ###
