@@ -6,8 +6,8 @@ public class Profile implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private int id;
-	private String description;
+	private int profileId;
+	private String profileDescription;
 	private String hostName;
 	private String instance;
 	private String environment;
@@ -20,9 +20,9 @@ public class Profile implements Serializable {
 	 * @param description
 	 * @param envirnoment
 	 */
-	public Profile(int id, String description, String environment) {
-		this.id = id;
-		this.description = description;
+	public Profile(int profileId, String profileDescription, String environment) {
+		this.profileId = profileId;
+		this.profileDescription = profileDescription;
 		this.environment = environment;
 
 		// Some initial dummy data, just for testing purposes.
@@ -33,19 +33,19 @@ public class Profile implements Serializable {
 	}
 
 	public int getId() {
-		return id;
+		return profileId;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setId(int profileId) {
+		this.profileId = profileId;
 	}
 
 	public String getDescription() {
-		return description;
+		return profileDescription;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
+	public void setDescription(String profileDescription) {
+		this.profileDescription = profileDescription;
 	}
 
 	public String getHostName() {
