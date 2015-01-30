@@ -38,7 +38,7 @@
                               <Insets top="10.0" />
                            </VBox.margin>
                         </Text>
-                        <ComboBox fx:id="jBarComboBox" prefWidth="150.0" promptText="please select" />
+                        <ComboBox fx:id="jbarComboBox" prefWidth="150.0" promptText="please select" />
                      </children>
                      <opaqueInsets>
                         <Insets />
@@ -52,7 +52,7 @@
                     <columns>
                       <TableColumn fx:id="profileDescriptionColumn" prefWidth="75.0" text="Profile Description" />
                       <TableColumn fx:id="profileHosteNameColumn" prefWidth="75.0" text="Host Name" />
-                        <TableColumn fx:id="profileInstanceColumn" prefWidth="75.0" text="Instance" />
+                        <TableColumn fx:id="profileDnsNameColumn" prefWidth="75.0" text="DNS Name" />
                     </columns>
                      <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

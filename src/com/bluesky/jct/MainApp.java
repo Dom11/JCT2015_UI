@@ -1,6 +1,5 @@
 package com.bluesky.jct;
 
-
 import java.io.IOException;
 
 import javafx.application.Application;
@@ -13,10 +12,11 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import com.bluesky.jct.model.FXProfile;
-import com.bluesky.jct.view.RootLayoutController;
-import com.bluesky.jct.view.ProfileOverviewController;
+import com.bluesky.jct.model.Profile;
+import com.bluesky.jct.rest.RestClient;
 import com.bluesky.jct.view.ProfileEditDialogController;
+import com.bluesky.jct.view.ProfileOverviewController;
+import com.bluesky.jct.view.RootLayoutController;
 
 
 public class MainApp extends Application {
@@ -78,6 +78,7 @@ public class MainApp extends Application {
 			e.printStackTrace();
 		}
 	}
+	
 
 	/**
 	 * Shows the profile overview inside the root layout.
@@ -110,7 +111,7 @@ public class MainApp extends Application {
 	 * @param profile the profile object to be displayed/edited
 	 * @return true if the user clicked OK, false otherwise
 	 */
-	public boolean showProfileEditDialog(FXProfile profile, int selectedIndex, ProfileOverviewController profileOverviewController) {
+	public boolean showProfileEditDialog(int selectedIndex, ProfileOverviewController profileOverviewController) {
 		try {
 			// Load the fxml file and create a new stage for the pop-up dialog.
 			FXMLLoader loader = new FXMLLoader();
@@ -126,6 +127,8 @@ public class MainApp extends Application {
 			dialogStage.setScene(scene);
 			
 			// Set the profile into the controller.
+			Profile profile = RestClient.findProfile(selectedIndex);
+			
 			ProfileEditDialogController controller = loader.getController();
 			controller.setDialogStage(dialogStage);
 			controller.setProfile(profile, selectedIndex);
