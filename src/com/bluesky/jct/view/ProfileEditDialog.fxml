@@ -30,16 +30,16 @@
             <Label text="Environment" GridPane.rowIndex="3" />
             <Label text="Build" GridPane.rowIndex="4" />
             <Label text="Domain" GridPane.rowIndex="5" />
-            <Label text="Instance" GridPane.rowIndex="6" />
+            <Label text="DNS Name" GridPane.rowIndex="6" />
             <Label text="Server" GridPane.rowIndex="7" />
             <TextField fx:id="profileIdField" GridPane.columnIndex="1" />
-            <TextField fx:id="profileJBarNameField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="profileJbarField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <TextField fx:id="profileDescriptionField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <TextField fx:id="profileEnvironmentField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <TextField fx:id="profileBuildField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <TextField GridPane.columnIndex="1" GridPane.rowIndex="4" />
             <TextField fx:id="profileDomainField" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-            <TextField fx:id="profileInstanceField" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-            <TextField fx:id="profileServerField" maxWidth="90.0" prefHeight="25.0" prefWidth="80.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+            <TextField fx:id="profileDnsNameField" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <TextField fx:id="profileHostField" maxWidth="90.0" prefHeight="25.0" prefWidth="80.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
             <Button fx:id="startServer" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefWidth="60.0" text="Start/Stop" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="7">
                <opaqueInsets>
                   <Insets />
@@ -78,5 +78,8 @@
           </Menu>
         </menus>
       </MenuBar>
+      <TextField fx:id="profileComponentField" layoutX="111.0" layoutY="290.0" />
+      <TextField fx:id="profileJiraField" layoutX="111.0" layoutY="322.0" />
+      <TextField fx:id="profilePrefixField" layoutX="111.0" layoutY="353.0" />
    </children>
 </AnchorPane>

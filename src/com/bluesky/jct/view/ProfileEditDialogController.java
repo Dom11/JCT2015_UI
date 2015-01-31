@@ -11,7 +11,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
-import com.bluesky.jct.model.FXProfile;
+import com.bluesky.jct.model.Profile;
+import com.bluesky.jct.rest.RestClient;
 
 
 /**
@@ -23,19 +24,25 @@ public class ProfileEditDialogController {
 	@FXML
 	private TextField profileIdField;
 	@FXML
-	private TextField profileJBarNameField;
+	private TextField profileEnvironmentField;	
+	@FXML
+	private TextField profileHostField;	
+	@FXML
+	private TextField profileJbarField;
+	@FXML
+	private TextField profileJiraField;
+	@FXML
+	private TextField profilePrefixField;
+	@FXML
+	private TextField profileComponentField;
 	@FXML
 	private TextField profileDescriptionField;
 	@FXML
-	private TextField profileEnvironmentField;
-	@FXML
-	private TextField profileBuildField;
+	private TextField profileDnsNameField;
 	@FXML
 	private TextField profileDomainField;
-	@FXML
-	private TextField profileInstanceField;
-	@FXML
-	private TextField profileServerField;
+
+
 	@FXML
 	private Button startServer;
 	@FXML
@@ -44,10 +51,11 @@ public class ProfileEditDialogController {
 
 	private int selectedIndex;
 	private Stage dialogStage;
-	private FXProfile profile;
+	private Profile profile;
 	private boolean saveClicked = false;
 	
 	// Reference to the ProfileOverviewController Class
+	@SuppressWarnings("unused")
 	private ProfileOverviewController profileOverviewController;
 	
 	
@@ -88,29 +96,32 @@ public class ProfileEditDialogController {
 	 * 
 	 * @param profile
 	 */
-	public void setProfile(FXProfile profile, int selectedIndex) {
+	public void setProfile(Profile profile) {
 		this.profile = profile;
-		this.selectedIndex = selectedIndex;
 		
 		// Shows all the profile information
-		profileIdField.setText(Integer.toString(selectedIndex));
-		profileJBarNameField.setText(profile.getJBarName());
-		profileDescriptionField.setText(profile.getDescription());
-		profileEnvironmentField.setText(profile.getEnvironment());
-		//profileBuildField.setText(profile.get);
-		profileDomainField.setText(profile.getDomain());
-		profileInstanceField.setText(profile.getInstance());
-		profileServerField.setText(profile.getHostName());
+		profileIdField.setText(Integer.toString(profile.getProfileId()));
+		profileEnvironmentField.setText(Integer.toString(profile.getEnvironmentId()));	
+		profileHostField.setText(Integer.toString(profile.getHostId()));		
+		profileJbarField.setText(Integer.toString(profile.getJbarId()));
+		profileJiraField.setText(Integer.toString(profile.getJiraId()));
+		profilePrefixField.setText(Integer.toString(profile.getPrefixId()));
+//		profileComponentField.setText(profile.getProfileComponent());		
+		profileDescriptionField.setText(profile.getProfileDescription());
+		profileDnsNameField.setText(profile.getProfileDnsName());
+//		profileDomainField.setText(profile.getDomain());
 		
 		// sets the text fields as inactive
 		profileIdField.setDisable(true);	
-		profileJBarNameField.setDisable(true);
-		profileDescriptionField.setDisable(true);
 		profileEnvironmentField.setDisable(true);
-		profileBuildField.setDisable(true);
-		profileDomainField.setDisable(true);
-		profileInstanceField.setDisable(true);
-		profileServerField.setDisable(true);
+		profileHostField.setDisable(true);		
+		profileJbarField.setDisable(true);
+		profileJiraField.setDisable(true);		
+		profilePrefixField.setDisable(true);
+		profileComponentField.setDisable(true);		
+		profileDescriptionField.setDisable(true);
+		profileDnsNameField.setDisable(true);
+//		profileDomainField.setDisable(true);
 	}
 	
 	
@@ -131,13 +142,15 @@ public class ProfileEditDialogController {
 	@FXML
 	private void handleEditProfile() {
 		// sets the text fields as active
-		profileJBarNameField.setDisable(false);
-		profileDescriptionField.setDisable(false);
+		profileIdField.setDisable(true);	
 		profileEnvironmentField.setDisable(false);
-		profileBuildField.setDisable(false);
-		profileDomainField.setDisable(false);
-		profileInstanceField.setDisable(false);
-		profileServerField.setDisable(false);
+		profileHostField.setDisable(false);		
+		profileJbarField.setDisable(false);
+		profileJiraField.setDisable(false);		
+		profilePrefixField.setDisable(false);
+		profileComponentField.setDisable(false);		
+		profileDescriptionField.setDisable(false);
+		profileDnsNameField.setDisable(false);
 		
 		// show save/cancel button and hide start/stop button
 		hbox.setVisible(true);
@@ -151,13 +164,9 @@ public class ProfileEditDialogController {
     @FXML
     private void handleSave() {
         if (isInputValid()) {
-            profile.setJBarName(profileJBarNameField.getText());
-            profile.setDescription(profileDescriptionField.getText());
-            profile.setEnvironment(profileEnvironmentField.getText());         
-//            profile.setProfileBuild(profileBuildField.getText());       
-            profile.setDomain(profileDomainField.getText());       
-            profile.setInstance(profileInstanceField.getText());       
-            profile.setHostName(profileServerField.getText());       
+            profile.setProfileComponent(profileComponentField.getText());
+            profile.setProfileDescription(profileDescriptionField.getText());
+            profile.setProfileDnsName(profileDnsNameField.getText());
     
             saveClicked = true;
             dialogStage.close();
@@ -186,10 +195,12 @@ public class ProfileEditDialogController {
                 errorMessage += "No valid ID (must be an integer)!\n"; 
             }
         }   
- 
+
+        /**
         if (profileJBarNameField.getText() == null || profileJBarNameField.getText().length() == 0) {
             errorMessage += "No valid JBar Name!\n"; 
         }
+        */
 
         if (errorMessage.length() == 0) {
             return true;
@@ -205,6 +216,7 @@ public class ProfileEditDialogController {
     		
             return false;
         }
+        
     }
 	
 	
@@ -229,21 +241,29 @@ public class ProfileEditDialogController {
 	 */
 	@FXML
 	private void handleDelete() {
-		
+		// show dialog and get confirmation from user
        	Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.setTitle("Confirmation");
 		alert.setHeaderText("Are you sure you want to delete the follwoing Profile?");
 		alert.setContentText("Profile Index: "
 								+ selectedIndex 
 								+ "\n" 
-								+ profile.getDescription());
+								+ profile.getProfileDescription());
 		
 		Optional<ButtonType> result = alert.showAndWait();
+		
 		if (result.get() == ButtonType.OK){
-		    // ... user clicks OK
+			// ... user clicks OK
+			RestClient.deleteProfile(selectedIndex);
 			alert.close();
 	        dialogStage.close();
-			profileOverviewController.deleteProfile(selectedIndex);
+	        //TODO fix listener on for tableView and remove line below once fixed.
+//			profileOverviewController.deleteProfile(selectedIndex);
+//			profileOverviewController.refreshProfileData();
+
+			
+			
+			
 		} else {
 		    // ... user clicks CANCEL or closed the dialog
 			alert.close();
