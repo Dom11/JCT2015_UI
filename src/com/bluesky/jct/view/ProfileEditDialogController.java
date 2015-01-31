@@ -96,18 +96,17 @@ public class ProfileEditDialogController {
 	 * 
 	 * @param profile
 	 */
-	public void setProfile(Profile profile, int selectedIndex) {
+	public void setProfile(Profile profile) {
 		this.profile = profile;
-		this.selectedIndex = selectedIndex;
 		
 		// Shows all the profile information
-		profileIdField.setText(Integer.toString(selectedIndex));
+		profileIdField.setText(Integer.toString(profile.getProfileId()));
 		profileEnvironmentField.setText(Integer.toString(profile.getEnvironmentId()));	
 		profileHostField.setText(Integer.toString(profile.getHostId()));		
 		profileJbarField.setText(Integer.toString(profile.getJbarId()));
 		profileJiraField.setText(Integer.toString(profile.getJiraId()));
 		profilePrefixField.setText(Integer.toString(profile.getPrefixId()));
-		profileComponentField.setText(profile.getProfileComponent());		
+//		profileComponentField.setText(profile.getProfileComponent());		
 		profileDescriptionField.setText(profile.getProfileDescription());
 		profileDnsNameField.setText(profile.getProfileDnsName());
 //		profileDomainField.setText(profile.getDomain());
