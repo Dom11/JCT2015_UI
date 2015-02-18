@@ -1,0 +1,55 @@
+package com.bluesky.jct.model;
+
+import java.io.Serializable;
+
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
+
+public class Prefix implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
+	
+	private IntegerProperty prefixId = new SimpleIntegerProperty();
+	private StringProperty prefixName = new SimpleStringProperty();
+
+	
+	/**
+	 * Default constructor.
+	 */ 
+	public Prefix() {
+		this(0, null);
+	}
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param jbarId, jbarName
+	 */
+	public Prefix(int prefixId, String prefixName) {
+		this.prefixId = new SimpleIntegerProperty(prefixId);
+		this.prefixName = new SimpleStringProperty(prefixName);
+	}
+	
+	public int getId() {
+		return prefixId.get();
+	}
+
+	public IntegerProperty idProperty() {
+		return prefixId;
+	}
+	
+	public String getName() {
+		return prefixName.get();
+	}
+
+	public void setName(String prefixName) {
+		this.prefixName.set(prefixName);
+	}
+
+	public StringProperty nameProperty() {
+		return prefixName;
+	}
+}

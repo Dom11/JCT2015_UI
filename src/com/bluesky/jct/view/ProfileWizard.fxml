@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="477.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bluesky.jct.view.ProfileWizardController">
+   <children>
+      <TextField fx:id="domainNameField" layoutX="437.0" layoutY="282.0" AnchorPane.rightAnchor="14.0" />
+      <Label layoutX="437.0" layoutY="258.0" text="Domain" AnchorPane.rightAnchor="121.0" />
+      <Button fx:id="create" layoutX="437.0" layoutY="315.0" mnemonicParsing="false" onAction="#handleCreate" text="Create" AnchorPane.rightAnchor="112.0" />
+      <Button fx:id="rpm" layoutX="529.0" layoutY="111.0" mnemonicParsing="false" onAction="#handleRPM" text="RPM" />
+      <Slider fx:id="slider" layoutX="15.0" layoutY="68.0" max="7.0" prefHeight="14.0" prefWidth="570.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="60.0" />
+      <HBox layoutX="8.0" prefHeight="20.0" prefWidth="560.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="10.0">
+         <children>
+            <Label alignment="CENTER" prefWidth="140.0" text="create Profile" />
+            <Label alignment="CENTER" prefWidth="150.0" text="add JVM Argument" />
+            <Label alignment="CENTER" prefWidth="140.0" text="generate RPM" />
+            <Label alignment="CENTER" prefWidth="140.0" text="send Package" />
+         </children>
+      </HBox>
+      <ProgressBar fx:id="progressBar" layoutX="18.0" layoutY="41.0" prefHeight="18.0" prefWidth="521.0" progress="0.2" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="40.0" />
+      <GridPane layoutX="60.0" layoutY="95.0">
+         <children>
+            <Label text="Profile Name" />
+            <Label text="Description" GridPane.rowIndex="1" />
+            <Label text="Domain" GridPane.rowIndex="2" />
+            <Label text="Prefix" GridPane.rowIndex="3" />
+            <Label text="JBar" GridPane.rowIndex="4" />
+            <Label text="Environment" GridPane.rowIndex="5" />
+            <Label text="DNS Name" GridPane.rowIndex="6" />
+            <Label text="Host" GridPane.rowIndex="7" />
+            <TextField fx:id="profileNameField" GridPane.columnIndex="1" />
+            <TextField fx:id="profileDescriptionField" promptText="mandatory" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="profileDnsNameField" promptText="mandatory" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <Label text="Jira Project Key" GridPane.rowIndex="8" />
+            <Label text="Component" GridPane.rowIndex="9" />
+            <TextField fx:id="profileComponentField" promptText="optional" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+            <ComboBox fx:id="domainComboBox" prefHeight="25.0" prefWidth="200.0" promptText="please select" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <ComboBox fx:id="prefixComboBox" prefHeight="25.0" prefWidth="223.0" promptText="please select" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <ComboBox fx:id="jbarComboBox" prefHeight="25.0" prefWidth="201.0" promptText="please select" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <ComboBox fx:id="environmentComboBox" prefHeight="25.0" prefWidth="199.0" promptText="please select" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <ComboBox fx:id="hostComboBox" prefHeight="25.0" prefWidth="194.0" promptText="please select" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+            <ComboBox fx:id="jiraComboBox" prefHeight="25.0" prefWidth="224.0" promptText="please select" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+         </children>
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="134.0" minWidth="10.0" prefWidth="103.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="201.0" minWidth="10.0" prefWidth="177.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+      </GridPane>
+      <Button layoutX="397.0" layoutY="370.0" mnemonicParsing="false" onAction="#handleSave" text="Save" />
+   </children>
+</AnchorPane>

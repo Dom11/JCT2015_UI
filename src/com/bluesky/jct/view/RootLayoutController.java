@@ -12,7 +12,8 @@ public class RootLayoutController {
 	// Reference to the main application
 	@SuppressWarnings("unused")
 	private MainApp mainApp;
-
+	
+	
 	/**
 	 * Is called by the main application to give a reference back to itself.
 	 * 
@@ -21,23 +22,8 @@ public class RootLayoutController {
 	public void setMainApp(MainApp mainApp) {
 		this.mainApp = mainApp;
 	}
-
 	
-    /**
-     * Opens an about dialog.
-     */
-    @FXML
-    private void handleAbout() {
-
-    	Alert alert = new Alert(AlertType.INFORMATION);
-		alert.setTitle("JCT 2015");
-		alert.setHeaderText("About");
-		alert.setContentText("Author: Dominik Rey\nVersion: 1.0 (Prototye for Bachelor Thesis, March 2015)");
-
-		alert.showAndWait();
-    }
-    
-
+	
     /**
      * Opens an about dialog.
      */
@@ -52,6 +38,21 @@ public class RootLayoutController {
 		alert.showAndWait();
     }
     
+    
+    /**
+     * Opens an about dialog.
+     */
+    @FXML
+    private void handleAbout() {
+
+    	Alert alert = new Alert(AlertType.INFORMATION);
+		alert.setTitle("JCT 2015");
+		alert.setHeaderText("About");
+		alert.setContentText("Author: Dominik Rey\nVersion: 1.0 (Prototye for Bachelor Thesis, March 2015)");
+
+		alert.showAndWait();
+    }
+        
 
     /**
      * Closes the application.

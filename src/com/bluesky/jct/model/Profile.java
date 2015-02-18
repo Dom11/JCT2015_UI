@@ -13,39 +13,48 @@ public class Profile implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private IntegerProperty profileId = new SimpleIntegerProperty();
+	//private ProfileContent content = new ProfileContent();
+	
 	private IntegerProperty environmentId = new SimpleIntegerProperty();
 	private IntegerProperty hostId = new SimpleIntegerProperty();
 	private IntegerProperty jbarId = new SimpleIntegerProperty();
 	private IntegerProperty jiraId = new SimpleIntegerProperty();
 	private IntegerProperty prefixId = new SimpleIntegerProperty();
-	private StringProperty profileComponent = new SimpleStringProperty();
+	private IntegerProperty domainId = new SimpleIntegerProperty();
 	private StringProperty profileDescription = new SimpleStringProperty();
 	private StringProperty profileDnsName = new SimpleStringProperty();
-
+	private StringProperty profileComponent = new SimpleStringProperty();
+	private IntegerProperty version = new SimpleIntegerProperty();
 	
 	/**
 	 * Default constructor.
 	 */
 	public Profile() {
-		this(0, 0, 0, 0, 0, 0, null, null, null);
+		this(0, 0, 0, 0, 0, 0, null, null, null, 0);
 	}
 
 	
 	/**
 	 * Constructor
 	 * 
-	 * @param environmentId, environmentId, hostId, jbarId, jiraId, prefixId, profileComponent, profileDescription, profileDnsName
+	 * @param profileId, environmentId, hostId, jbarId, jiraId, prefixId, domainId, profileDescription, profileDnsName, profileComponentName
 	 */
-	public Profile(int profileId, int environmentId, int hostId, int jbarId, int jiraId, int prefixId, String profileComponent, String profileDescription, String profileDnsName) {
-		this.profileId = new SimpleIntegerProperty(profileId);
+	public Profile(int environmentId, int hostId, int jbarId, int jiraId, int prefixId, int domainId, String profileDescription, String profileDnsName, String profileComponentName, Integer version) {
+		this.profileId = new SimpleIntegerProperty();
 		this.environmentId = new SimpleIntegerProperty(environmentId);
 		this.hostId = new SimpleIntegerProperty(hostId);
 		this.jbarId = new SimpleIntegerProperty(jbarId);
 		this.jiraId = new SimpleIntegerProperty(jiraId);
 		this.prefixId = new SimpleIntegerProperty(prefixId);
-		this.profileComponent = new SimpleStringProperty(profileComponent);
+		this.domainId = new SimpleIntegerProperty(domainId);		
 		this.profileDescription = new SimpleStringProperty(profileDescription);		
 		this.profileDnsName = new SimpleStringProperty(profileDnsName);
+		this.profileComponent = new SimpleStringProperty(profileComponentName);
+		this.version = new SimpleIntegerProperty(version);
+	}
+	
+	public void setProfileId(int profileId) {
+		this.profileId.set(profileId);
 	}
 
 	public int getProfileId() {
@@ -116,6 +125,18 @@ public class Profile implements Serializable {
 		return prefixId;
 	}
 	
+	public int getDomainId() {
+		return domainId.get();
+	}
+	
+	public void setDomainId(int domainId) {
+		this.domainId.set(domainId);
+	}
+
+	public IntegerProperty domainIdProperty() {
+		return domainId;
+	}
+	
 	public String getProfileComponent() {
 		return profileComponent.get();
 	}
@@ -150,5 +171,17 @@ public class Profile implements Serializable {
 
 	public StringProperty profileDnsNameProperty() {
 		return profileDnsName;
+	}
+	
+	public int getVersion() {
+		return version.get();
+	}
+	
+	public void setVersion(int version) {
+		this.version.set(version);
+	}
+
+	public IntegerProperty versionProperty() {
+		return version;
 	}
 }

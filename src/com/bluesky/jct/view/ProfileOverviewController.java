@@ -9,19 +9,19 @@ import javafx.collections.transformation.SortedList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.util.StringConverter;
 
+import com.bluesky.jct.ComboBoxDomain;
+import com.bluesky.jct.ComboBoxEnvironment;
+import com.bluesky.jct.ComboBoxJbar;
 import com.bluesky.jct.MainApp;
-import com.bluesky.jct.model.Environment;
-import com.bluesky.jct.model.Jbar;
-import com.bluesky.jct.model.Profile;
-import com.bluesky.jct.model.ProfileView;
+import com.bluesky.jct.model.*;
 import com.bluesky.jct.rest.RestClient;
 
 
@@ -39,11 +39,18 @@ public class ProfileOverviewController {
 	@FXML
 	private TableColumn<ProfileView, String> profilePrefixColumn;
 	@FXML
+	private ComboBox<Domain> domainComboBox;
+	@FXML
 	private ComboBox<Environment> environmentComboBox;
 	@FXML
 	private ComboBox<Jbar> jbarComboBox;
+	
+	
+	@FXML
+	private TextField Test;
 
 	private ObservableList<ProfileView> profileData = FXCollections.observableArrayList();
+	private ObservableList<Domain> domainData = FXCollections.observableArrayList();
 	private ObservableList<Environment> environmentData = FXCollections.observableArrayList();
 	private ObservableList<Jbar> jbarData = FXCollections.observableArrayList();
 	
@@ -64,8 +71,12 @@ public class ProfileOverviewController {
 		
 		// fill ObservableLists with information
 		loadProfileViewData();
-		loadEnvironmentData();
-		loadJbarData();
+//		ComboBoxDomain.loadDomainData();
+		ComboBoxEnvironment.loadEnvironmentData();
+		ComboBoxJbar.loadJbarData();
+//		domainData = ComboBoxDomain.getDomainData();
+		environmentData = ComboBoxEnvironment.getEnvironmentData();
+		jbarData = ComboBoxJbar.getJbarData();		
 	}
 		
 
@@ -80,11 +91,17 @@ public class ProfileOverviewController {
 		profileDescriptionColumn.setCellValueFactory(cellData -> cellData.getValue().profileDescriptionProperty());
 		profileHosteNameColumn.setCellValueFactory(cellData -> cellData.getValue().hostNameProperty());
 		profilePrefixColumn.setCellValueFactory(cellData -> cellData.getValue().prefixNameProperty());
+		
+		
+		ComboBoxDomain.loadDomainData();
+		domainData = ComboBoxDomain.getDomainData();
+		domainComboBox.setItems(domainData);
 		environmentComboBox.setItems(environmentData);
 		jbarComboBox.setItems(jbarData);
 		
-		iniEnvironmentCombobox();
-		iniJbarCombobox();
+		ComboBoxDomain.iniDomainCombobox(domainComboBox);
+		ComboBoxEnvironment.iniEnvironmentCombobox(environmentComboBox);
+		ComboBoxJbar.iniJbarCombobox(jbarComboBox);
 		
 		Tooltip t = new Tooltip("double click for more details");
 		Tooltip.install(profileTable, t);
@@ -98,7 +115,7 @@ public class ProfileOverviewController {
 		// 1. Wrap the ObservableList in a FilteredList (initially display all data).
 		FilteredList<ProfileView> filteredData = new FilteredList<>(profileData, p -> true);
 		
-		// 2.1 Set the filter Predicate whenever the Search Field changes.
+		// 2.1.1 Set the filter Predicate whenever the Search Field changes.
 		searchField.textProperty().addListener((observable, oldValue, newValue) -> {
 			filteredData.setPredicate(profileView -> {
 				// If filter text is empty, display all profiles.
@@ -120,8 +137,53 @@ public class ProfileOverviewController {
 				return false; // Does not match.
 			});
 		});
+			
+		// 2.1.2 Set the filter Predicate to null on ESC.
+		searchField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent event) {
+				if (event.getCode() == KeyCode.ESCAPE) {
+					searchField.setText(null);
+					filteredData.setPredicate(profileView -> {
+							return true;
+					});
+				}
+			}
+		});
 		
-		// 2.2.1 Set the filter Predicate whenever the Environment ComboBox selection changes.
+		// 2.2.1 Set the filter Predicate whenever the Domain ComboBox selection changes.
+		domainComboBox.setOnAction((event) -> {
+			String selectedDomain = domainComboBox.getSelectionModel().getSelectedItem().getName();
+
+			filteredData.setPredicate(profileView -> {
+					// If filter text is empty, display all profiles.
+					if (selectedDomain == null || selectedDomain.isEmpty()) {
+						return true;
+					}
+					
+					// Compare Environment of every profile with filter text.
+					String lowerCaseFilter = selectedDomain.toLowerCase();
+					if (profileView.getDomainName().toLowerCase().indexOf(lowerCaseFilter) != -1) {
+						return true; // Filter matches profileEnvironment
+					}
+					return false; // Does not match.
+				});
+			});
+
+		// 2.2.2 Set the filter Predicate to null on double click.
+		domainComboBox.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				if (event.getClickCount() == 2) {
+					domainComboBox.setValue(null);
+					filteredData.setPredicate(profileView -> {
+							return true;
+					});
+				}
+			}
+		});
+		
+		// 2.3.1 Set the filter Predicate whenever the Environment ComboBox selection changes.
 		environmentComboBox.setOnAction((event) -> {
 			String selectedEnvironment = environmentComboBox.getSelectionModel().getSelectedItem().getName();
 
@@ -140,7 +202,7 @@ public class ProfileOverviewController {
 				});
 			});
 
-		// 2.2.2 Set the filter Predicate to null on double click.
+		// 2.3.2 Set the filter Predicate to null on double click.
 		environmentComboBox.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
@@ -154,7 +216,7 @@ public class ProfileOverviewController {
 		});
 		
 		
-		// 2.3.1 Set the filter Predicate whenever the Jbar ComboBox selection changes.		
+		// 2.4.1 Set the filter Predicate whenever the Jbar ComboBox selection changes.		
 		jbarComboBox.setOnAction((event) -> {
 			String selectedJbar = jbarComboBox.getSelectionModel().getSelectedItem().getName();
 
@@ -173,7 +235,7 @@ public class ProfileOverviewController {
 				});
 			});
 		
-		// 2.3.2 Set the filter Predicate to null on double click.
+		// 2.4.2 Set the filter Predicate to null on double click.
 		jbarComboBox.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
@@ -217,6 +279,10 @@ public class ProfileOverviewController {
 	@FXML
 	private void handleNewProfile() {
 		System.out.println("start Wizard");
+		
+		mainApp.showProfileWizardNew();
+		
+		
 	}
 
 	
@@ -239,115 +305,7 @@ public class ProfileOverviewController {
 		}
 	}
 	
-	
-	public void loadEnvironmentData() {
-		List<Environment> environments = RestClient.findAllEnvironment();
-		environmentData.clear();
-		
-		try {
-			for (Environment environment : environments) {
-				environmentData.add(environment);
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	
-	public void loadJbarData() {
-		List<Jbar> jbars = RestClient.findAllJbar();
-		jbarData.clear();
-		
-		try {
-			for (Jbar jbar : jbars) {
-				jbarData.add(jbar);
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	
-	/**
-	 * Combobox Environment
-	 */
-	private void iniEnvironmentCombobox() {
-		// Define rendering of the list of values in ComboBox drop down.
-		environmentComboBox.setCellFactory((comboBox) -> {
-			return new ListCell<Environment>() {
-				@Override
-				protected void updateItem(Environment item, boolean empty) {
-					super.updateItem(item, empty);
 
-					if (item == null || empty) {
-						setText(null);
-					} else {
-						setText(item.getName());
-					}
-				}
-			};
-		});
-		
-		// Define rendering of selected value shown in ComboBox.
-		environmentComboBox.setConverter(new StringConverter<Environment>() {
-			@Override
-			public String toString(Environment environment) {
-				if (environment == null) {
-					return null;
-				} else {
-					return environment.getName();
-				}
-			}
-
-			@Override
-			public Environment fromString(String environmentString) {
-				return null; // No conversion fromString needed.
-			}
-		});
-	}
-	
-	
-	/**
-	 * Combobox Jbar
-	 */
-	private void iniJbarCombobox() {
-		// Define rendering of the list of values in ComboBox drop down.
-		jbarComboBox.setCellFactory((comboBox) -> {
-			return new ListCell<Jbar>() {
-				@Override
-				protected void updateItem(Jbar item, boolean empty) {
-					super.updateItem(item, empty);
-
-					if (item == null || empty) {
-						setText(null);
-					} else {
-						setText(item.getName());
-					}
-				}
-			};
-		});
-
-		// Define rendering of selected value shown in ComboBox.
-		jbarComboBox.setConverter(new StringConverter<Jbar>() {
-			@Override
-			public String toString(Jbar jbar) {
-				if (jbar == null) {
-					return null;
-				} else {
-					return jbar.getName();
-				}
-			}
-
-			@Override
-			public Jbar fromString(String jbarNameString) {
-				return null; // No conversion fromString needed.
-			}
-		});
-	}
-
-	
 	/**
 	 * Returns data as an observable list.
 	 * 
@@ -359,26 +317,6 @@ public class ProfileOverviewController {
 
 	
 	/**
-	 * Returns data as an observable list.
-	 * 
-	 * @return environmentData
-	 */
-	public ObservableList<Environment> getEnvironmentData() {
-		return environmentData;
-	}
-	
-	
-	/**
-	 * Returns data as an observable list.
-	 * 
-	 * @return jbarData
-	 */
-	public ObservableList<Jbar> getJbarData() {
-		return jbarData;
-	}
-	
-
-	/**
 	 * Is called by the main application to give a reference back to itself.
 	 * 
 	 * @param mainApp
@@ -389,5 +327,17 @@ public class ProfileOverviewController {
 	
 	public void setProfileOverviewController(ProfileOverviewController profileOverviewController) {
 		this.profileOverviewController = profileOverviewController;
+	}
+	
+	
+	@FXML
+	public void refreshAll() {
+		ComboBoxDomain.loadDomainData();
+		ComboBoxDomain.getDomainData();
+		ComboBoxDomain.iniDomainCombobox(domainComboBox);
+		
+		loadProfileViewData();
+		
+
 	}
 }
