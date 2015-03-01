@@ -17,7 +17,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 
 
 public class ProfileWizardController {
@@ -57,7 +56,7 @@ public class ProfileWizardController {
 	@FXML
 	private Button rpm;
 	
-	private Stage dialogStage;
+//	private Stage dialogStage;
 	private boolean exitClicked = false;
 	
 	private ObservableList<Domain> domainData = FXCollections.observableArrayList();
@@ -132,18 +131,9 @@ public class ProfileWizardController {
        	int jiraId = jiraComboBox.getSelectionModel().getSelectedItem().getId();
        	String profileComponent = profileComponentField.getText();
        	Integer version = 0;
-      	
-       	System.out.println(profileDescription);
-       	System.out.println(domainId);
-       	System.out.println(prefixId);
-       	System.out.println(jbarId);
-       	System.out.println(environmentId);
-       	System.out.println(profileDnsName);
-       	System.out.println(hostId);
-       	System.out.println(jiraId);
-       	System.out.println(profileComponent);
        	
        	RestClient.createProfile(environmentId, hostId, jbarId, jiraId, prefixId, domainId, profileDescription, profileDnsName, profileComponent, version);
+//		loadProfileViewData();
     }
 	
 	
@@ -172,16 +162,6 @@ public class ProfileWizardController {
     	slider.setValue(sliderValue + 2);
     	
     }
-	
-	
-	/**
-	 * Sets the stage of this dialog.
-	 * 
-	 * @param dialogStage
-	 */
-	public void setDialogStage(Stage dialogStage) {
-		this.dialogStage = dialogStage;
-	}
 	
 	
 	/**

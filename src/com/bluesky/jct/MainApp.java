@@ -1,5 +1,6 @@
 package com.bluesky.jct;
 
+
 import java.io.IOException;
 
 import javafx.application.Application;
@@ -7,6 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
@@ -42,15 +44,12 @@ public class MainApp extends Application {
 
 	@Override
 	 public void start(Stage primaryStage) {
-
-		Alert alert = new Alert(AlertType.INFORMATION);
-		alert.setTitle("Progress Dialog");
-		alert.setHeaderText("Welcome " + getUserName());
-//		alert.showWorkerProgress(service);
-//		service.start();
+		//TODO finalize Login Dialog with userList to distinguish between admin and regular user
+//		LoginDialog.openLoginDialog();
 
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("JCT 2015 (Prototype)");
+	    this.primaryStage.getIcons().add(new Image("file:resources/images/JCT_2015_64.png"));
 		
 		initRootLayout();
 //		checkConnectivity();
@@ -127,13 +126,12 @@ public class MainApp extends Application {
 	 * @param profile
 	 * @return true if the user clicked OK, false otherwise
 	 */
-	public boolean showProfileEditDialog(Profile profile, ProfileOverviewController profileOverviewController) {
+	public boolean showProfileEditDialog(Profile profile) {
 
 		try {
 			// Load the fxml file and create a new stage for the pop-up dialog.
 			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(MainApp.class
-					.getResource("view/ProfileEditDialog.fxml"));
+			loader.setLocation(MainApp.class.getResource("view/ProfileEditDialog.fxml"));
 			AnchorPane page = (AnchorPane) loader.load();
 
 			// Create the dialog Stage.
@@ -148,7 +146,6 @@ public class MainApp extends Application {
 			ProfileEditDialogController controller = loader.getController();
 			controller.setDialogStage(dialogStage);
 			controller.setProfile(profile);
-			controller.setProfileOverviewController(profileOverviewController);
 
 			// Show the dialog and wait until the user closes it.
 			dialogStage.showAndWait();
@@ -210,7 +207,7 @@ public class MainApp extends Application {
 
 			// Set the profile into the controller.
 			ProfileWizardController controller = loader.getController();
-			controller.setDialogStage(dialogStage);
+//			controller.setDialogStage(dialogStage);
 
 			// Show the dialog and wait until the user closes it.
 			dialogStage.showAndWait();

@@ -78,7 +78,7 @@ public class Profile implements Serializable {
 	}
 	
 	public int getHostId() {
-		return environmentId.get();
+		return hostId.get();
 	}
 	
 	public void setHostId(int hostId) {

@@ -13,8 +13,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.http.HttpEntity;
-
 import com.bluesky.jct.model.*;
 import com.bluesky.jct.util.GsonMessageBodyHandler;
 
@@ -73,7 +71,7 @@ public class RestClient {
 
 	public static Profile findProfile(int profileId) {
 
-		Response response = client.target(REST_SERVICE_URL).path("/profiles/" + profileId).request(MediaType.APPLICATION_JSON).get();
+		Response response = client.target(REST_SERVICE_URL).path("/profile/" + profileId).request(MediaType.APPLICATION_JSON).get();
 
 		if (response.getStatus() == Status.INTERNAL_SERVER_ERROR.getStatusCode()) {
 			throw new IllegalStateException();
@@ -85,10 +83,10 @@ public class RestClient {
 		}
 	}
 	
-	
+/**	
 	public static List<Profile> findAll() {
 
-		Response response = client.target(REST_SERVICE_URL).path("/profiles/list").request(MediaType.APPLICATION_JSON).get();
+		Response response = client.target(REST_SERVICE_URL).path("/profile/list").request(MediaType.APPLICATION_JSON).get();
 
 		if (response.getStatus() == Status.INTERNAL_SERVER_ERROR.getStatusCode()) {
 			throw new IllegalStateException();
@@ -99,11 +97,11 @@ public class RestClient {
 			return list;
 		}
 	}
-	
+*/	
 	
 	public static ProfileView findProfileView(int profileId) {
 
-		Response response = client.target(REST_SERVICE_URL).path("/profileview/" + profileId).request(MediaType.APPLICATION_JSON).get();
+		Response response = client.target(REST_SERVICE_URL).path("/profileView/" + profileId).request(MediaType.APPLICATION_JSON).get();
 
 		if (response.getStatus() == Status.INTERNAL_SERVER_ERROR.getStatusCode()) {
 			throw new IllegalStateException();
@@ -118,7 +116,7 @@ public class RestClient {
 	
 	public static List<ProfileView> findAllProfiles() {
 
-		Response response = client.target(REST_SERVICE_URL).path("/profileview/list").request(MediaType.APPLICATION_JSON).get();
+		Response response = client.target(REST_SERVICE_URL).path("/profileView/list").request(MediaType.APPLICATION_JSON).get();
 
 		if (response.getStatus() == Status.INTERNAL_SERVER_ERROR.getStatusCode()) {
 			throw new IllegalStateException();
@@ -251,6 +249,25 @@ public class RestClient {
 	}
 	
 	
+	public static <E> List<E> findAll(Class<? extends E> clazz) {
+
+		Response response = client.target(REST_SERVICE_URL).path("/" + clazz + "/list").request(MediaType.APPLICATION_JSON).get();
+
+		if (response.getStatus() == Status.INTERNAL_SERVER_ERROR.getStatusCode()) {
+			throw new IllegalStateException();
+		} else {
+		
+			List<E> list = response.readEntity(new GenericType<List<E>>() {});
+			
+			return list;
+		}
+	}
+	
+	
+	
+	
+	
+	
 	public static Host findHost(int hostId) {
 
 		Response response = client.target(REST_SERVICE_URL).path("/host/" + hostId).request(MediaType.APPLICATION_JSON).get();
@@ -329,7 +346,7 @@ public class RestClient {
 	public static Profile createProfile(int environmentId, int hostId, int jbarId, int jiraId, int prefixId, int domainId, String profileDescription, String profileDnsName, String profileComponentName, Integer version) {
 		
 		Profile profile = new Profile(environmentId, hostId, jbarId, jiraId, prefixId, domainId, profileDescription, profileDnsName, profileComponentName, version);
-		Response response = client.target(REST_SERVICE_URL).path("/profiles").request().post(Entity.json(profile));
+		Response response = client.target(REST_SERVICE_URL).path("/profile").request().post(Entity.json(profile));
 		
 		if (response.getStatus() == Status.INTERNAL_SERVER_ERROR.getStatusCode()) {
 			throw new IllegalStateException();
@@ -346,7 +363,7 @@ public class RestClient {
 		Profile profile = new Profile(environmentId, hostId, jbarId, jiraId, prefixId, domainId, profileDescription, profileDnsName, profileComponentName, version);
 		profile.setProfileId(profileId);	
 	
-		Response response = client.target(REST_SERVICE_URL).path("/profiles").request().put(Entity.json(profile));
+		Response response = client.target(REST_SERVICE_URL).path("/profile").request().put(Entity.json(profile));
 
 		if (response.getStatus() == Status.INTERNAL_SERVER_ERROR.getStatusCode()) {
 			throw new IllegalStateException();
@@ -361,7 +378,7 @@ public class RestClient {
 	
 	public static boolean deleteProfile(int profileId) {
 
-		Response response = client.target(REST_SERVICE_URL).path("/profiles/" + profileId).request().delete();
+		Response response = client.target(REST_SERVICE_URL).path("/profile/" + profileId).request().delete();
 
 		if (response.getStatus() == Status.INTERNAL_SERVER_ERROR.getStatusCode()) {
 			httpStatusCode = Integer.toString(response.getStatus());

@@ -12,20 +12,22 @@ import com.bluesky.jct.model.Domain;
 import com.bluesky.jct.rest.RestClient;
 
 
-public class ComboBoxDomain {
+public class ComboBoxDomain extends GenericComboBox <Domain>{
 	
 	private static ObservableList<Domain> domainData = FXCollections.observableArrayList();
 	
 	
 	public ComboBoxDomain() {
+		super(Domain.class);
 	}
 	
 
+	
 	/**
 	 * Loads the items from the DB via REST and fills them into an ObservableList.
 	 */
 	public static void loadDomainData() {
-		List<Domain> domains = RestClient.findAllDomain();
+		List<Domain> domains = RestClient.findAllDomain(); 
 		domainData.clear();
 		
 		try {

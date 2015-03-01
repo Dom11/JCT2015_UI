@@ -1,22 +1,23 @@
 package com.bluesky.jct.view;
 
-import java.util.List;
-import java.util.Optional;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import javafx.util.StringConverter;
 
+import com.bluesky.jct.ComboBoxDomain;
+import com.bluesky.jct.ComboBoxEnvironment;
+import com.bluesky.jct.ComboBoxHost;
+import com.bluesky.jct.ComboBoxJbar;
+import com.bluesky.jct.ComboBoxJira;
+import com.bluesky.jct.ComboBoxPrefix;
+import com.bluesky.jct.ProfileFunctions;
 import com.bluesky.jct.model.*;
 import com.bluesky.jct.rest.RestClient;
 
@@ -31,8 +32,6 @@ public class ProfileEditDialogController {
 	private TextField profileNameField;
 	@FXML
 	private TextField profileDescriptionField;
-	@FXML
-	private TextField profileDomainField;
 	@FXML
 	private TextField profilePrefixField;
 	@FXML
@@ -50,30 +49,40 @@ public class ProfileEditDialogController {
 	
 	@FXML
 	private ComboBox<Domain> domainComboBox;
+	@FXML
+	private ComboBox<Prefix> prefixComboBox;
+	@FXML
+	private ComboBox<Jbar> jbarComboBox;
+	@FXML
+	private ComboBox<Environment> environmentComboBox;
+	@FXML
+	private ComboBox<Host> hostComboBox;
+	@FXML
+	private ComboBox<Jira> jiraComboBox;
 
 	@FXML
 	private Button startServer;
+	
 	@FXML
 	private HBox hbox;
 
-	
-//	private int selectedIndex;
-	private Stage dialogStage;
 	private Profile profile;
+	private Stage dialogStage;
 	private boolean saveClicked = false;
 	
 	private ObservableList<Domain> domainData = FXCollections.observableArrayList();
-	
-	// Reference to the ProfileOverviewController Class
-	private ProfileOverviewController profileOverviewController;
+	private ObservableList<Prefix> prefixData = FXCollections.observableArrayList();
+	private ObservableList<Jbar> jbarData = FXCollections.observableArrayList();
+	private ObservableList<Environment> environmentData = FXCollections.observableArrayList();
+	private ObservableList<Host> hostData = FXCollections.observableArrayList();
+	private ObservableList<Jira> jiraData = FXCollections.observableArrayList();
 	
 	
 	/**
-	 * The constructor. The constructor is called before the initialize()
-	 * method.
+	 * The constructor.
+	 * The constructor is called before the initialize() method.
 	 */
 	public ProfileEditDialogController() {
-		loadDomainData();
 	}
 	
 	
@@ -86,9 +95,19 @@ public class ProfileEditDialogController {
 		// hides the save/cancel button and shows start/stop button
 		hbox.setVisible(false);
 		startServer.setVisible(true);
-		domainComboBox.setItems(domainData);
 		
-		iniDomainCombobox();
+		domainComboBox.setItems(ComboBoxDomain.getDomainData());
+		ComboBoxDomain.iniDomainCombobox(domainComboBox);
+		prefixComboBox.setItems(ComboBoxPrefix.getPrefixData());
+		ComboBoxPrefix.iniPrefixCombobox(prefixComboBox);
+		jbarComboBox.setItems(ComboBoxJbar.getJbarData());
+		ComboBoxJbar.iniJbarCombobox(jbarComboBox);
+		environmentComboBox.setItems(ComboBoxEnvironment.getEnvironmentData());
+		ComboBoxEnvironment.iniEnvironmentCombobox(environmentComboBox);
+		hostComboBox.setItems(ComboBoxHost.getHostData());
+		ComboBoxHost.iniHostCombobox(hostComboBox);
+		jiraComboBox.setItems(ComboBoxJira.getJiraData());
+		ComboBoxJira.iniJiraCombobox(jiraComboBox);
 	}
 	
 	
@@ -100,17 +119,7 @@ public class ProfileEditDialogController {
 	public void setDialogStage(Stage dialogStage) {
 		this.dialogStage = dialogStage;
 	}
-	
-	
-	/**
-	 * Is called by the main application to give a reference back to ProfileOverviewController.
-	 * 
-	 * @param profileOverviewController
-	 *
-	public void setProfileOverviewController(ProfileOverviewController profileOverviewController) {
-		this.profileOverviewController = profileOverviewController;
-	}
-*/	
+
 	
 	/**
 	 * Sets the profile to be displayed in the dialog.
@@ -123,25 +132,35 @@ public class ProfileEditDialogController {
 		// Shows all the profile information
 		profileNameField.setText(getProfileName(profile.getProfileId()));
 		profileDescriptionField.setText(profile.getProfileDescription());
-		profileDomainField.setText(getDomainName(profile.getDomainId()));
-		profilePrefixField.setText(getPrefixName(profile.getPrefixId()));
-		profileJbarField.setText(getJbarName(profile.getJbarId()));
-		profileEnvironmentField.setText(getEnvironmentName(profile.getEnvironmentId()));
+		domainComboBox.setValue(getDomain(profile.getDomainId()));
+		prefixComboBox.setValue(getPrefix(profile.getPrefixId()));
+//		profilePrefixField.setText(getPrefixName(profile.getPrefixId()));
+		jbarComboBox.setValue(getJbar(profile.getJbarId()));
+//		profileJbarField.setText(getJbarName(profile.getJbarId()));
+		environmentComboBox.setValue(getEnvironment(profile.getEnvironmentId()));
+//		profileEnvironmentField.setText(getEnvironmentName(profile.getEnvironmentId()));
 		profileDnsField.setText(profile.getProfileDnsName());
-		profileHostField.setText(getHostName(profile.getHostId()));
-		profileJiraField.setText(getJiraName(profile.getJiraId()));
+		hostComboBox.setValue(getHost(profile.getHostId()));
+//		profileHostField.setText(getHostName(profile.getHostId()));
+		jiraComboBox.setValue(getJira(profile.getJiraId()));
+//		profileJiraField.setText(getJiraName(profile.getJiraId()));
 		profileComponentField.setText(profile.getProfileComponent());
 		
 		// sets the text fields as inactive
 		profileNameField.setDisable(true);	
 		profileDescriptionField.setDisable(true);
-		profileDomainField.setDisable(true);		
-		profilePrefixField.setDisable(true);
-		profileJbarField.setDisable(true);
-		profileEnvironmentField.setDisable(true);
+		domainComboBox.setDisable(true);
+		prefixComboBox.setDisable(true);
+//		profilePrefixField.setDisable(true);
+		jbarComboBox.setDisable(true);		
+//		profileJbarField.setDisable(true);
+		environmentComboBox.setDisable(true);
+//		profileEnvironmentField.setDisable(true);
 		profileDnsField.setDisable(true);
-		profileHostField.setDisable(true);	
-		profileJiraField.setDisable(true);
+		hostComboBox.setDisable(true);
+//		profileHostField.setDisable(true);	
+		jiraComboBox.setDisable(true);
+//		profileJiraField.setDisable(true);
 		profileComponentField.setDisable(true);
 	}
 	
@@ -151,44 +170,34 @@ public class ProfileEditDialogController {
 		return profileView.getProfileName();
 	}
 	
-	private String getDomainName(int domainId) {
+	private Domain getDomain(int domainId) {
 		Domain domain = RestClient.findDomain(domainId);
-		return domain.getName();
+		return domain;
 	}
 
-	private String getPrefixName(int prefixId) {
+	private Prefix getPrefix(int prefixId) {
 		Prefix prefix = RestClient.findPrefix(prefixId);
-		return prefix.getName();
+		return prefix;
 	}
 
-	private String getJbarName(int jbarId) {
+	private Jbar getJbar(int jbarId) {
 		Jbar jbar = RestClient.findJbar(jbarId);
-		return jbar.getName();
+		return jbar;
 	}	
 	
-	private String getEnvironmentName(int environmentId) {
+	private Environment getEnvironment(int environmentId) {
 		Environment environment = RestClient.findEnvironment(environmentId);
-		return environment.getName();
+		return environment;
 	}
 	
-	private String getHostName(int hostId) {
+	private Host getHost(int hostId) {
 		Host host = RestClient.findHost(hostId);
-		return host.getName();
+		return host;
 	}
 	
-	private String getJiraName(int jiraId) {
+	private Jira getJira(int jiraId) {
 		Jira jira = RestClient.findJira(jiraId);
-		return jira.getName();
-	}
-
-	
-	/**
-	 * Returns true if the user clicked save, false otherwise.
-	 * 
-	 * @return
-	 */
-	public boolean isSaveClicked() {
-		return saveClicked;
+		return jira;
 	}
 	
 	
@@ -201,13 +210,18 @@ public class ProfileEditDialogController {
 		// sets the text fields as active
 		profileNameField.setDisable(true);	
 		profileDescriptionField.setDisable(false);
-		profileDomainField.setDisable(true);		
-		profilePrefixField.setDisable(true);
-		profileJbarField.setDisable(true);
-		profileEnvironmentField.setDisable(true);
+		domainComboBox.setDisable(false);
+		prefixComboBox.setDisable(false);	
+//		profilePrefixField.setDisable(true);
+		jbarComboBox.setDisable(false);				
+//		profileJbarField.setDisable(true);
+		environmentComboBox.setDisable(false);		
+//		profileEnvironmentField.setDisable(true);
 		profileDnsField.setDisable(false);
-		profileHostField.setDisable(true);	
-		profileJiraField.setDisable(true);
+		hostComboBox.setDisable(false);		
+//		profileHostField.setDisable(true);
+		jiraComboBox.setDisable(false);		
+//		profileJiraField.setDisable(true);
 		profileComponentField.setDisable(false);
 		
 		// show save/cancel button and hide start/stop button
@@ -216,33 +230,6 @@ public class ProfileEditDialogController {
 		// focusing on first editable field
 		profileDescriptionField.requestFocus();
 	}
-	
-	
-	/**
-     * Called when the user clicks ok.
-     */
-    @FXML
-    private void handleSave() {
-        if (isInputValid()) {
-        	
-        	int profileId = profile.getProfileId();
-        	int environmentId = profile.getEnvironmentId();
-        	int hostId = profile.getHostId();
-        	int jbarId = profile.getJbarId();
-        	int jiraId = profile.getJiraId();
-        	int prefixId = profile.getPrefixId();
-        	int domainId = profile.getDomainId();
-        	String profileDescription = profileDescriptionField.getText();
-        	String profileDnsName = profileDnsField.getText();
-        	String profileComponentName = profileComponentField.getText();
-        	Integer version = profile.getVersion();
-        	
-        	RestClient.editProfile(profileId, environmentId, hostId, jbarId, jiraId, prefixId, domainId, profileDescription, profileDnsName, profileComponentName, version);
-    
-            saveClicked = true;
-            dialogStage.close();
-        }
-    }
     
     
     /**
@@ -289,15 +276,6 @@ public class ProfileEditDialogController {
         }
         
     }
-	
-	
-    /**
-     * Called when the user clicks cancel.
-     */
-    @FXML
-    private void handleCancel() {
-        dialogStage.close();
-    }
     
     
     //TODO
@@ -312,51 +290,7 @@ public class ProfileEditDialogController {
 	 */
 	@FXML
 	private void handleDelete() {
-		// show dialog and get confirmation from user
-		int activeProfile = profile.getProfileId();
-		
-       	Alert alert = new Alert(AlertType.CONFIRMATION);
-		alert.setTitle("Confirmation");
-		alert.setHeaderText("Are you sure you want to delete the following Profile?");
-		alert.setContentText("Profile Index: "
-								+ activeProfile 
-								+ "\nProfile Description: " 
-								+ profile.getProfileDescription());
-		
-		Optional<ButtonType> result = alert.showAndWait();
-		
-		if (result.get() == ButtonType.OK){
-			// ... user clicks OK
-			RestClient.deleteProfile(activeProfile);
-			alert.close();
-
-	        //TODO fix listener on for tableView and remove line below once fixed.
-//			profileOverviewController.deleteProfile(selectedIndex);
-//			profileOverviewController.refreshProfileData();
-
-			String headerText = null;
-			
-   			if (RestClient.isSuccessful() == false) {
-   				headerText = "Profile could not be deleted!";
-   			} else {
-   				headerText = "Profile has been successfully deleted";
-   			};
-			
-          	Alert info = new Alert(AlertType.INFORMATION);
-           	info.setTitle("Information");
-           	info.setHeaderText(headerText);
-           	info.setContentText("Profile Index: "
-    								+ activeProfile 
-    								+ "\nHTTP Status Code: " 
-    								+ RestClient.getHttpStatusCode());
-           	info.showAndWait();
-           	profileOverviewController.loadProfileViewData();
-	        dialogStage.close();
-	        
-		} else {
-		    // ... user clicks CANCEL or closed the dialog
-			alert.close();
-		}
+		ProfileFunctions.deleteProfile(profile);
 	}
     
     
@@ -387,73 +321,50 @@ public class ProfileEditDialogController {
 
 		alert.showAndWait();
     }
-    
-    
-	public void loadDomainData() {
-		List<Domain> domains = RestClient.findAllDomain();
-		domainData.clear();
-		
-		try {
-			for (Domain domain : domains) {
-				domainData.add(domain);
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+	
+	
+    /**
+     * Called when the user clicks cancel.
+     */
+    @FXML
+    private void handleCancel() {
+        dialogStage.close();
+    }
     
     
 	/**
-	 * Returns data as an observable list.
+	 * Returns true if the user clicked save, false otherwise.
 	 * 
-	 * @return environmentData
+	 * @return
 	 */
-	public ObservableList<Domain> getDomainData() {
-		return domainData;
+	public boolean isSaveClicked() {
+		return saveClicked;
 	}
 	
 	
 	/**
-	 * Combobox Domain
-	 */
-	private void iniDomainCombobox() {
-		// Define rendering of the list of values in ComboBox drop down.
-		domainComboBox.setCellFactory((comboBox) -> {
-			return new ListCell<Domain>() {
-				@Override
-				protected void updateItem(Domain item, boolean empty) {
-					super.updateItem(item, empty);
-					
-					if (item == null || empty) {
-						setText(null);
-					} else {
-						setText(item.getName());
-					}
-				}
-			};
-		});
-		
-		// Define rendering of selected value shown in ComboBox.
-		domainComboBox.setConverter(new StringConverter<Domain>() {
-			@Override
-			public String toString(Domain domain) {
-				if (domain == null) {
-					return null;
-				} else {
-					return domain.getName();
-				}
-			}
-
-			@Override
-			public Domain fromString(String domainString) {
-				return null; // No conversion fromString needed.
-			}
-		});
-	}
-	
-	
-	public void setProfileOverviewController(ProfileOverviewController profileOverviewController) {
-		this.profileOverviewController = profileOverviewController;
-	}
+     * Called when the user clicks ok.
+     */
+    @FXML
+    private void handleSave() {
+        if (isInputValid()) {
+        	
+        	int profileId = profile.getProfileId();
+        	int environmentId = environmentComboBox.getSelectionModel().getSelectedItem().getId();
+        	int hostId = hostComboBox.getSelectionModel().getSelectedItem().getId();
+        	int jbarId = jbarComboBox.getSelectionModel().getSelectedItem().getId();
+        	int jiraId = jiraComboBox.getSelectionModel().getSelectedItem().getId();
+        	int prefixId = prefixComboBox.getSelectionModel().getSelectedItem().getId();
+        	int domainId = domainComboBox.getSelectionModel().getSelectedItem().getId();
+        	String profileDescription = profileDescriptionField.getText();
+        	String profileDnsName = profileDnsField.getText();
+        	String profileComponentName = profileComponentField.getText();
+        	Integer version = profile.getVersion();
+        	
+        	RestClient.editProfile(profileId, environmentId, hostId, jbarId, jiraId, prefixId, domainId, profileDescription, profileDnsName, profileComponentName, version);
+    
+            saveClicked = true;
+            dialogStage.close();
+        }
+    }
 }

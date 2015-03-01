@@ -168,19 +168,18 @@ public final class GsonMessageBodyHandler implements MessageBodyWriter<Object>,
 		@Override
 		public JsonElement serialize(StringProperty src, Type typeOfSrc, JsonSerializationContext context) {
 			return src == null ? null : new JsonPrimitive(src.get());
-//			return src == null ? null : new JsonPrimitive(src.toString());
 		}
 	};
-
+	
 	
 	JsonDeserializer<StringProperty> stringDeserializer = new JsonDeserializer<StringProperty>() {
 		@Override
 		public StringProperty deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-
+	
 			if (json == null) {
 				return null;
 			} else {
-
+	
 				try {
 					return new SimpleStringProperty(json.getAsString());
 				} catch (Exception e) {
