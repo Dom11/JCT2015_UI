@@ -6,8 +6,6 @@ import java.io.IOException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -16,6 +14,7 @@ import javafx.stage.Stage;
 
 import com.bluesky.jct.model.Profile;
 import com.bluesky.jct.rest.RestClient;
+import com.bluesky.jct.util.ExceptionHandling;
 import com.bluesky.jct.view.ProfileEditDialogController;
 import com.bluesky.jct.view.ProfileOverviewController;
 import com.bluesky.jct.view.ProfileWizardController;
@@ -44,8 +43,12 @@ public class MainApp extends Application {
 
 	@Override
 	 public void start(Stage primaryStage) {
+		
 		//TODO finalize Login Dialog with userList to distinguish between admin and regular user
-//		LoginDialog.openLoginDialog();
+//		if(LoginDialog.openLoginDialog() == false) {
+//			System.exit(0);
+//		};
+
 
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("JCT 2015 (Prototype)");
@@ -229,22 +232,16 @@ public class MainApp extends Application {
 	public void checkConnectivity() {
 
 		if (RestClient.checkConnectionRestServer() == false) {
-
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.setHeaderText("Server Error");
-			alert.setContentText("The Rest Service is currently not accessible!\nPlease contact the System Administrator.");
-			alert.showAndWait();
-
+			
+			ExceptionHandling.handleError("Server Error",
+					"The Rest Service is currently not accessible!\nPlease contact the System Administrator.");
 			System.exit(0);
 
 		} else {
 			if (RestClient.checkConnectionDB() == false) {
 
-				Alert alert = new Alert(AlertType.ERROR);
-				alert.setHeaderText("DB Server Error");
-				alert.setContentText("The Database Server is currently not accessible!\nPlease contact the System Administrator.");
-				alert.showAndWait();
-
+				ExceptionHandling.handleError("DB Server Error",
+						"The Database Server is currently not accessible!\nPlease contact the System Administrator.");
 				System.exit(0);
 			};
 		}

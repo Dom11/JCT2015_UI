@@ -1,12 +1,11 @@
 package com.bluesky.jct.view;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
@@ -61,7 +60,10 @@ public class ProfileEditDialogController {
 	private ComboBox<Jira> jiraComboBox;
 
 	@FXML
-	private Button startServer;
+	private Label profileStatusLabel;
+	@FXML
+	private Button profileStatusButton;
+	
 	
 	@FXML
 	private HBox hbox;
@@ -69,13 +71,11 @@ public class ProfileEditDialogController {
 	private Profile profile;
 	private Stage dialogStage;
 	private boolean saveClicked = false;
+	private boolean selected = false;
 	
-	private ObservableList<Domain> domainData = FXCollections.observableArrayList();
-	private ObservableList<Prefix> prefixData = FXCollections.observableArrayList();
-	private ObservableList<Jbar> jbarData = FXCollections.observableArrayList();
-	private ObservableList<Environment> environmentData = FXCollections.observableArrayList();
-	private ObservableList<Host> hostData = FXCollections.observableArrayList();
-	private ObservableList<Jira> jiraData = FXCollections.observableArrayList();
+	private String profileStatusButtonText = "";
+	private String profileStatusText = "";
+	private String profileStatusTextColor = "";	
 	
 	
 	/**
@@ -94,8 +94,8 @@ public class ProfileEditDialogController {
 	private void initialize() {
 		// hides the save/cancel button and shows start/stop button
 		hbox.setVisible(false);
-		startServer.setVisible(true);
-		
+		profileStatusButton.setVisible(true);
+	
 		domainComboBox.setItems(ComboBoxDomain.getDomainData());
 		ComboBoxDomain.iniDomainCombobox(domainComboBox);
 		prefixComboBox.setItems(ComboBoxPrefix.getPrefixData());
@@ -108,6 +108,18 @@ public class ProfileEditDialogController {
 		ComboBoxHost.iniHostCombobox(hostComboBox);
 		jiraComboBox.setItems(ComboBoxJira.getJiraData());
 		ComboBoxJira.iniJiraCombobox(jiraComboBox);
+		
+		profileStatusButton.setOnAction((event) -> {
+			if(selected == true) {
+				selected = false;
+			} else {
+				selected = true;
+			}
+			profileStatusButton.setText(getProfileStatusButtonText(selected));
+			profileStatusLabel.setText(getProfileStatusLabelText(selected));
+			profileStatusLabel.setStyle(getProfileStatusTextColor(selected));
+			handleSave();
+		});
 	}
 	
 	
@@ -128,39 +140,34 @@ public class ProfileEditDialogController {
 	 */
 	public void setProfile(Profile profile) {
 		this.profile = profile;
+		selected = profile.getProfileStatus();
 		
 		// Shows all the profile information
 		profileNameField.setText(getProfileName(profile.getProfileId()));
 		profileDescriptionField.setText(profile.getProfileDescription());
 		domainComboBox.setValue(getDomain(profile.getDomainId()));
 		prefixComboBox.setValue(getPrefix(profile.getPrefixId()));
-//		profilePrefixField.setText(getPrefixName(profile.getPrefixId()));
 		jbarComboBox.setValue(getJbar(profile.getJbarId()));
-//		profileJbarField.setText(getJbarName(profile.getJbarId()));
 		environmentComboBox.setValue(getEnvironment(profile.getEnvironmentId()));
-//		profileEnvironmentField.setText(getEnvironmentName(profile.getEnvironmentId()));
 		profileDnsField.setText(profile.getProfileDnsName());
 		hostComboBox.setValue(getHost(profile.getHostId()));
-//		profileHostField.setText(getHostName(profile.getHostId()));
 		jiraComboBox.setValue(getJira(profile.getJiraId()));
-//		profileJiraField.setText(getJiraName(profile.getJiraId()));
 		profileComponentField.setText(profile.getProfileComponent());
+		
+		profileStatusButton.setText(getProfileStatusButtonText(profile.getProfileStatus()));		
+		profileStatusLabel.setText(getProfileStatusLabelText(profile.getProfileStatus()));
+		profileStatusLabel.setStyle(getProfileStatusTextColor(profile.getProfileStatus()));
 		
 		// sets the text fields as inactive
 		profileNameField.setDisable(true);	
 		profileDescriptionField.setDisable(true);
 		domainComboBox.setDisable(true);
 		prefixComboBox.setDisable(true);
-//		profilePrefixField.setDisable(true);
 		jbarComboBox.setDisable(true);		
-//		profileJbarField.setDisable(true);
 		environmentComboBox.setDisable(true);
-//		profileEnvironmentField.setDisable(true);
 		profileDnsField.setDisable(true);
 		hostComboBox.setDisable(true);
-//		profileHostField.setDisable(true);	
 		jiraComboBox.setDisable(true);
-//		profileJiraField.setDisable(true);
 		profileComponentField.setDisable(true);
 	}
 	
@@ -200,6 +207,33 @@ public class ProfileEditDialogController {
 		return jira;
 	}
 	
+	private String getProfileStatusButtonText(boolean profileStatus) {
+		if(profileStatus == true) {
+			profileStatusButtonText = "Stop";
+		} else {
+			profileStatusButtonText = "Start";
+		}
+		return profileStatusButtonText;
+	}
+	
+	private String getProfileStatusLabelText(boolean profileStatus) {
+		if(profileStatus == true) {
+			profileStatusText = "running";
+		} else {
+			profileStatusText = "stopped";
+		}
+		return profileStatusText;
+	}
+	
+	private String getProfileStatusTextColor(boolean profileStatus) {
+		if(profileStatus == true) {
+			profileStatusTextColor = "-fx-text-fill: #25ba47";
+		} else {
+			profileStatusTextColor = "-fx-text-fill: #f70c0c";		
+		}
+		return profileStatusTextColor;
+	}
+	
 	
 	/**
 	 * Called when the user clicks the edit from the profile menu.
@@ -212,21 +246,17 @@ public class ProfileEditDialogController {
 		profileDescriptionField.setDisable(false);
 		domainComboBox.setDisable(false);
 		prefixComboBox.setDisable(false);	
-//		profilePrefixField.setDisable(true);
 		jbarComboBox.setDisable(false);				
-//		profileJbarField.setDisable(true);
 		environmentComboBox.setDisable(false);		
-//		profileEnvironmentField.setDisable(true);
 		profileDnsField.setDisable(false);
 		hostComboBox.setDisable(false);		
-//		profileHostField.setDisable(true);
 		jiraComboBox.setDisable(false);		
-//		profileJiraField.setDisable(true);
 		profileComponentField.setDisable(false);
 		
 		// show save/cancel button and hide start/stop button
 		hbox.setVisible(true);
-		startServer.setVisible(false);
+		profileStatusButton.setVisible(false);
+		
 		// focusing on first editable field
 		profileDescriptionField.requestFocus();
 	}
@@ -239,33 +269,35 @@ public class ProfileEditDialogController {
      */
     private boolean isInputValid() {
         String errorMessage = "";
-
         
-        //TODO add missing validation checks 
-/**        
-        if (profileIdField.getText() == null || profileIdField.getText().length() == 0) {
-            errorMessage += "No valid ID!\n"; 
+        // Description is mandatory and can only be 45 characters long
+        if (profileDescriptionField.getText() == null || profileDescriptionField.getText().length() == 0) {
+            errorMessage += "Please enter a Profile Description!\n"; 
         } else {
-            // try to parse the postal code into an int.
-            try {
-                Integer.parseInt(profileIdField.getText());
-            } catch (NumberFormatException e) {
-                errorMessage += "No valid ID (must be an integer)!\n"; 
-            }
-        }   
-*/
-        /**
-        if (profileJBarNameField.getText() == null || profileJBarNameField.getText().length() == 0) {
-            errorMessage += "No valid JBar Name!\n"; 
+        	if (profileDescriptionField.getText().length() > 15) {
+        		errorMessage += "Description can only be 5 caracters\n"; 
+        	}
         }
-        */
+        
+        // DNS Name is mandatory and can only be 45 characters long
+        if (profileDnsField.getText() == null || profileDnsField.getText().length() == 0) {
+            errorMessage += "Please enter a DNS Name!\n"; 
+        } else {
+        	if (profileDescriptionField.getText().length() > 15) {
+        		errorMessage += "DNS Name can only be 5 caracters\n"; 
+        	}
+        }
+        
+        // Component is optional but can only hold 255 caracters
+        if (profileComponentField.getText().length() > 255) {
+    		errorMessage += "Component can only be 255 caracters\n"; 
+    	}
 
         if (errorMessage.length() == 0) {
             return true;
         } else {
             // Show the error message.
-        	
-           	Alert alert = new Alert(AlertType.ERROR);
+          	Alert alert = new Alert(AlertType.ERROR);
     		alert.setTitle("Invalid Fields");
     		alert.setHeaderText("Please correct invalid fields");
     		alert.setContentText(errorMessage);
@@ -274,7 +306,6 @@ public class ProfileEditDialogController {
     		
             return false;
         }
-        
     }
     
     
@@ -359,12 +390,16 @@ public class ProfileEditDialogController {
         	String profileDescription = profileDescriptionField.getText();
         	String profileDnsName = profileDnsField.getText();
         	String profileComponentName = profileComponentField.getText();
+        	boolean profileStatus = selected;
         	Integer version = profile.getVersion();
         	
-        	RestClient.editProfile(profileId, environmentId, hostId, jbarId, jiraId, prefixId, domainId, profileDescription, profileDnsName, profileComponentName, version);
+        	RestClient.editProfile(profileId, environmentId, hostId, jbarId, jiraId, prefixId, domainId, profileDescription, profileDnsName, profileComponentName, profileStatus, version);
     
             saveClicked = true;
-            dialogStage.close();
+    		//.loadProfileViewData();
+            
+            
+//            dialogStage.close();
         }
     }
 }

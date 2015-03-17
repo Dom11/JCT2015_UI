@@ -19,9 +19,9 @@ public class Domain implements Serializable {
 	/**
 	 * Default constructor.
 	 */ 
-	public Domain() {
-		this(null);
-	}
+//	public Domain() {
+//		this(null);
+//	}
 	
 	/**
 	 * Constructor

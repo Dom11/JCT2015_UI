@@ -1,5 +1,6 @@
 package com.bluesky.jct;
 
+import java.util.List;
 import java.util.Optional;
 
 import javafx.scene.control.Alert;
@@ -7,11 +8,14 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Alert.AlertType;
 
 import com.bluesky.jct.model.Profile;
+import com.bluesky.jct.model.ProfileView;
 import com.bluesky.jct.rest.RestClient;
 import com.bluesky.jct.view.ProfileOverviewController;
 
 
 public class ProfileFunctions {
+	
+	
 	
 	
 	public static void editProfile(Profile profile) {
@@ -54,5 +58,11 @@ public class ProfileFunctions {
 		    // ... user clicks CANCEL or closed the dialog
 			alert.close();
 		}
+	}
+	
+	
+	public static void newProfile() {
+		//TODO make showProfileWizardNew static???
+//		MainApp.showProfileWizardNew();
 	}
 }

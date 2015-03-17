@@ -130,9 +130,10 @@ public class ProfileWizardController {
        	int hostId = hostComboBox.getSelectionModel().getSelectedItem().getId();
        	int jiraId = jiraComboBox.getSelectionModel().getSelectedItem().getId();
        	String profileComponent = profileComponentField.getText();
+       	boolean profileStatus = false;
        	Integer version = 0;
        	
-       	RestClient.createProfile(environmentId, hostId, jbarId, jiraId, prefixId, domainId, profileDescription, profileDnsName, profileComponent, version);
+       	RestClient.createProfile(environmentId, hostId, jbarId, jiraId, prefixId, domainId, profileDescription, profileDnsName, profileComponent, profileStatus, version);
 //		loadProfileViewData();
     }
 	

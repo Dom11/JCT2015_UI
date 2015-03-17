@@ -146,7 +146,8 @@ public class RestClient {
 	
 	public static List<Domain> findAllDomain() {
 
-		Response response = client.target(REST_SERVICE_URL).path("/domain/list").request(MediaType.APPLICATION_JSON).get();
+		Response response = client.target(REST_SERVICE_URL)
+				.path("/domain/list").request(MediaType.APPLICATION_JSON).get();
 
 		if (response.getStatus() == Status.INTERNAL_SERVER_ERROR.getStatusCode()) {
 			throw new IllegalStateException();
@@ -343,9 +344,9 @@ public class RestClient {
 	}
 	
 	
-	public static Profile createProfile(int environmentId, int hostId, int jbarId, int jiraId, int prefixId, int domainId, String profileDescription, String profileDnsName, String profileComponentName, Integer version) {
+	public static Profile createProfile(int environmentId, int hostId, int jbarId, int jiraId, int prefixId, int domainId, String profileDescription, String profileDnsName, String profileComponentName, boolean profileStatus, Integer version) {
 		
-		Profile profile = new Profile(environmentId, hostId, jbarId, jiraId, prefixId, domainId, profileDescription, profileDnsName, profileComponentName, version);
+		Profile profile = new Profile(environmentId, hostId, jbarId, jiraId, prefixId, domainId, profileDescription, profileDnsName, profileComponentName, profileStatus, version);
 		Response response = client.target(REST_SERVICE_URL).path("/profile").request().post(Entity.json(profile));
 		
 		if (response.getStatus() == Status.INTERNAL_SERVER_ERROR.getStatusCode()) {
@@ -358,9 +359,9 @@ public class RestClient {
 	}
 	
 	
-	public static Profile editProfile(int profileId, int environmentId, int hostId, int jbarId, int jiraId, int prefixId, int domainId, String profileDescription, String profileDnsName, String profileComponentName, Integer version) {
+	public static Profile editProfile(int profileId, int environmentId, int hostId, int jbarId, int jiraId, int prefixId, int domainId, String profileDescription, String profileDnsName, String profileComponentName, boolean profileStatus, Integer version) {
 		
-		Profile profile = new Profile(environmentId, hostId, jbarId, jiraId, prefixId, domainId, profileDescription, profileDnsName, profileComponentName, version);
+		Profile profile = new Profile(environmentId, hostId, jbarId, jiraId, prefixId, domainId, profileDescription, profileDnsName, profileComponentName, profileStatus, version);
 		profile.setProfileId(profileId);	
 	
 		Response response = client.target(REST_SERVICE_URL).path("/profile").request().put(Entity.json(profile));

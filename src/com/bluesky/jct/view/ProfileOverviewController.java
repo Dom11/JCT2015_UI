@@ -10,9 +10,11 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -21,6 +23,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 import com.bluesky.jct.ComboBoxDomain;
 import com.bluesky.jct.ComboBoxEnvironment;
@@ -28,17 +32,17 @@ import com.bluesky.jct.ComboBoxHost;
 import com.bluesky.jct.ComboBoxJbar;
 import com.bluesky.jct.ComboBoxJira;
 import com.bluesky.jct.ComboBoxPrefix;
+import com.bluesky.jct.Filter;
 import com.bluesky.jct.MainApp;
 import com.bluesky.jct.ProfileFunctions;
 import com.bluesky.jct.model.*;
 import com.bluesky.jct.rest.RestClient;
 
 
-public class ProfileOverviewController {
+public class ProfileOverviewController extends Filter {
 	
 	@Inject
 	ComboBoxDomain comboBoxDomain;
-	
 	
 	
 	@FXML
@@ -52,7 +56,7 @@ public class ProfileOverviewController {
 	@FXML
 	private TableColumn<ProfileView, String> profileHosteNameColumn;
 	@FXML
-	private TableColumn<ProfileView, String> profilePrefixColumn;
+	private TableColumn<ProfileView, Boolean> profileStatusColumn;
 	@FXML
 	private ComboBox<Domain> domainComboBox;
 	@FXML
@@ -74,7 +78,6 @@ public class ProfileOverviewController {
 	
 	private int selectedIndex;
 	private static int selectedProfileId;
-	
 	final ContextMenu contextMenu = new ContextMenu();
 	
 	private MainApp mainApp;
@@ -112,7 +115,42 @@ public class ProfileOverviewController {
 		profileNameColumn.setCellValueFactory(cellData -> cellData.getValue().profileNameProperty());
 		profileDescriptionColumn.setCellValueFactory(cellData -> cellData.getValue().profileDescriptionProperty());
 		profileHosteNameColumn.setCellValueFactory(cellData -> cellData.getValue().hostNameProperty());
-		profilePrefixColumn.setCellValueFactory(cellData -> cellData.getValue().prefixNameProperty());
+		profileStatusColumn.setCellValueFactory(cellData -> cellData.getValue().profileStatusProperty());
+		
+	
+		// Custom rendering of the table cell.
+		profileStatusColumn.setCellFactory(column -> {
+			return new TableCell<ProfileView, Boolean>() {
+				
+				@Override
+				public void updateItem(Boolean item, boolean empty) {
+					super.updateItem(item, empty);
+					
+					if (item == null || empty) {
+						setText(null);
+						setStyle("");
+					} else {
+						// Style true/false with a different color.
+						if (item == true) {
+					        Rectangle rect = new Rectangle(11, 11, 11, 11);
+					        rect.setFill(Color.GREEN);
+					        rect.setStroke(Color.LIGHTGREY);
+					        rect.setStrokeWidth(1);
+							setGraphic(rect);							
+							setAlignment(Pos.CENTER);
+						} else {
+					        Rectangle rect = new Rectangle(11, 11, 11, 11);
+					        rect.setFill(Color.RED);
+					        rect.setStroke(Color.LIGHTGREY);
+					        rect.setStrokeWidth(1);
+					        setGraphic(rect);
+							setAlignment(Pos.CENTER);
+						}
+					}
+				}
+			};
+		});
+		
 		
 		//TODO this method should only be visible or active for admin users
 		deleteProfile.setDisable(true);
@@ -130,6 +168,8 @@ public class ProfileOverviewController {
 		Tooltip.install(profileTable, t);
 		
 
+		
+		
 		/**
 		 * Filtering based on search Field and ComboBox
 		 * (basic inputs from Marco Jakob's search Field)
@@ -155,8 +195,10 @@ public class ProfileOverviewController {
 					return true; // Filter matches profileDescription.					
 				} else if (profileView.getHostName().toLowerCase().indexOf(lowerCaseFilter) != -1) {
 					return true; // Filter matches HostName.
-				} else if (profileView.getPrefixName().toLowerCase().indexOf(lowerCaseFilter) != -1) {
-					return true; // Filter matches PrefixName.
+					//TODO filter by ProfileStatus
+				} else if (profileView.getProfileStatus())  {
+						//profileView.getProfileStatus().toLowerCase().indexOf(lowerCaseFilter) != -1) {
+					return true; // Filter matches ProfileStatus.
 				}
 				return false; // Does not match.
 			});
@@ -243,6 +285,8 @@ public class ProfileOverviewController {
 		// 2.4.1 Set the filter Predicate whenever the Jbar ComboBox selection changes.		
 		jbarComboBox.setOnAction((event) -> {
 			String selectedJbar = jbarComboBox.getSelectionModel().getSelectedItem().getName();
+			setFilterJbarComboBox(selectedJbar);
+			
 
 			filteredData.setPredicate(profileView -> {
 					// If filter text is empty, display all profiles.
@@ -265,6 +309,7 @@ public class ProfileOverviewController {
 			public void handle(MouseEvent event) {
 				if (event.getClickCount() == 2) {
 					jbarComboBox.setValue(null);
+					setFilterJbarComboBox(null);
 					filteredData.setPredicate(profileView -> {
 							return true;
 					});
@@ -280,6 +325,38 @@ public class ProfileOverviewController {
 		
 		// 5. Add sorted (and filtered) data to the table.
 		profileTable.setItems(sortedData);
+		
+		
+		// opens the Edit dialog on double click or shows a contextMenu on right click
+		profileTable.addEventHandler(MouseEvent.ANY, (MouseEvent event) -> {
+			if (event.getClickCount() >1) {
+				handleViewProfile();
+			} else if (event.getButton() == MouseButton.SECONDARY || event.isControlDown()) {
+				contextMenu.show(profileTable, event.getScreenX(), event.getScreenY());
+			} else {
+				contextMenu.hide();
+			}
+		});
+
+//TODO to be removed if version above is working		
+/**		
+		// opens the Edit dialog on double click or through contextMenu
+		profileTable.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				if (event.getClickCount() > 1) {
+					handleViewProfile();
+				}
+				
+				if (event.getButton() == MouseButton.SECONDARY || event.isControlDown()) {
+					contextMenu.show(profileTable, event.getScreenX(), event.getScreenY());
+				} else {
+					contextMenu.hide();
+				}
+			}
+		});
+		
+*/		
 		
 		
 		// opens the Edit dialog on double click or through contextMenu
@@ -298,7 +375,7 @@ public class ProfileOverviewController {
 			}
 		});
 	}
-
+	
 	
 	@FXML
 	private void handleViewProfile() {	
@@ -345,7 +422,7 @@ public class ProfileOverviewController {
 	 * 
 	 * @return profileData
 	 */
-	public ObservableList<ProfileView> getProfileData() {
+	public static ObservableList<ProfileView> getProfileData() {
 		return profileData;
 	}
 	
@@ -364,14 +441,12 @@ public class ProfileOverviewController {
 	}
 	
 	public static int getSelectedProfileId() {
-//		selectedProfileId = profileTable.getSelectionModel().getSelectedItem().getProfileId();
 		return selectedProfileId;
 	}
 	
 
 	@FXML
 	public void refreshAll() {
-//		comboBoxDomain.loadData();
 		ComboBoxDomain.loadDomainData();
 		ComboBoxDomain.getDomainData();
 		ComboBoxDomain.iniDomainCombobox(domainComboBox);

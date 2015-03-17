@@ -47,6 +47,13 @@ public class RootLayoutController {
 	}
 	
 	
+	@FXML
+	private void handleNewProfile() {
+		mainApp.showProfileWizardNew();
+	}
+
+	
+	
     /**
      * Opens an about dialog.
      */

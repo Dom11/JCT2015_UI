@@ -2,7 +2,9 @@ package com.bluesky.jct.model;
 
 import java.io.Serializable;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -24,13 +26,14 @@ public class Profile implements Serializable {
 	private StringProperty profileDescription = new SimpleStringProperty();
 	private StringProperty profileDnsName = new SimpleStringProperty();
 	private StringProperty profileComponent = new SimpleStringProperty();
+	private BooleanProperty profileStatus = new SimpleBooleanProperty();
 	private IntegerProperty version = new SimpleIntegerProperty();
 	
 	/**
 	 * Default constructor.
 	 */
 	public Profile() {
-		this(0, 0, 0, 0, 0, 0, null, null, null, 0);
+		this(0, 0, 0, 0, 0, 0, null, null, null, false, 0);
 	}
 
 	
@@ -39,7 +42,7 @@ public class Profile implements Serializable {
 	 * 
 	 * @param profileId, environmentId, hostId, jbarId, jiraId, prefixId, domainId, profileDescription, profileDnsName, profileComponentName
 	 */
-	public Profile(int environmentId, int hostId, int jbarId, int jiraId, int prefixId, int domainId, String profileDescription, String profileDnsName, String profileComponentName, Integer version) {
+	public Profile(int environmentId, int hostId, int jbarId, int jiraId, int prefixId, int domainId, String profileDescription, String profileDnsName, String profileComponentName, boolean profileStatus, Integer version) {
 		this.profileId = new SimpleIntegerProperty();
 		this.environmentId = new SimpleIntegerProperty(environmentId);
 		this.hostId = new SimpleIntegerProperty(hostId);
@@ -50,6 +53,7 @@ public class Profile implements Serializable {
 		this.profileDescription = new SimpleStringProperty(profileDescription);		
 		this.profileDnsName = new SimpleStringProperty(profileDnsName);
 		this.profileComponent = new SimpleStringProperty(profileComponentName);
+		this.profileStatus = new SimpleBooleanProperty(profileStatus);
 		this.version = new SimpleIntegerProperty(version);
 	}
 	
@@ -171,6 +175,18 @@ public class Profile implements Serializable {
 
 	public StringProperty profileDnsNameProperty() {
 		return profileDnsName;
+	}
+	
+	public boolean getProfileStatus() {
+		return profileStatus.get();
+	}
+
+	public void setProfileStatus(boolean profileStatus) {
+		this.profileStatus.set(profileStatus);
+	}	
+	
+	public BooleanProperty profileStatusProperty() {
+		return profileStatus;
 	}
 	
 	public int getVersion() {

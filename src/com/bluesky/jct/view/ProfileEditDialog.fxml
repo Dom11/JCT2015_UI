@@ -77,10 +77,11 @@
         </menus>
       </MenuBar>
       <Label layoutX="10.0" layoutY="360.0" text="JBoss Profile Process Status" />
-      <Button fx:id="startServer" alignment="CENTER" contentDisplay="CENTER" layoutX="230.0" layoutY="356.0" mnemonicParsing="false" prefWidth="60.0" text="Start">
+      <Button fx:id="profileStatusButton" alignment="CENTER" contentDisplay="CENTER" layoutX="230.0" layoutY="356.0" mnemonicParsing="false" prefWidth="60.0" text="Start">
          <opaqueInsets>
             <Insets />
          </opaqueInsets>
       </Button>
+      <Label fx:id="profileStatusLabel" layoutX="166.0" layoutY="360.0" text="Label" />
    </children>
 </AnchorPane>

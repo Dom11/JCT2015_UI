@@ -2,7 +2,9 @@ package com.bluesky.jct.model;
 
 import java.io.Serializable;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -22,13 +24,14 @@ public class ProfileView implements Serializable {
 	private StringProperty jiraProjectKey = new SimpleStringProperty();
 	private StringProperty prefixName = new SimpleStringProperty();
 	private StringProperty domainName = new SimpleStringProperty();
+	private BooleanProperty profileStatus = new SimpleBooleanProperty();
 	
 	
 	/**
 	 * Default constructor.
 	 */
 	public ProfileView() {
-		this(0, null, null, null, null, null, null, null, null, null, null);
+		this(0, null, null, null, null, null, null, null, null, null, null, false);
 	}
 	
 	
@@ -38,7 +41,7 @@ public class ProfileView implements Serializable {
 	 * @param profileId, profileName, profileDescription, profileComponent, profileDnsName, environmentName, hostName, jbarName, jiraProjectKey, prefixName, domainName
 	 */
 	public ProfileView(int profileId, String profileName, String profileDescription, String profileComponent, 
-			String profileDnsName, String environmentName, String hostName, String jbarName, String jiraProjectKey, String prefixName, String domainName) {
+			String profileDnsName, String environmentName, String hostName, String jbarName, String jiraProjectKey, String prefixName, String domainName, boolean profileStatus) {
 		this.profileId = new SimpleIntegerProperty(profileId);
 		this.profileName = new SimpleStringProperty(profileName);
 		this.profileDescription = new SimpleStringProperty(profileDescription);
@@ -49,7 +52,8 @@ public class ProfileView implements Serializable {
 		this.jbarName = new SimpleStringProperty(jbarName);
 		this.jiraProjectKey = new SimpleStringProperty(jiraProjectKey);
 		this.prefixName = new SimpleStringProperty(prefixName);		
-		this.domainName = new SimpleStringProperty(domainName);		
+		this.domainName = new SimpleStringProperty(domainName);
+		this.profileStatus = new SimpleBooleanProperty(profileStatus);
 	}
 	
 	
@@ -139,5 +143,13 @@ public class ProfileView implements Serializable {
 
 	public StringProperty domainNameProperty() {
 		return domainName;
+	}
+	
+	public boolean getProfileStatus() {
+		return profileStatus.get();
+	}
+
+	public BooleanProperty profileStatusProperty() {
+		return profileStatus;
 	}
 }
