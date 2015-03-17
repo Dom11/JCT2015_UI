@@ -44,7 +44,7 @@ public class Environment implements Serializable {
 	public String getName() {
 		return environmentName.get();
 	}
-
+	
 	public void setName(String environmentName) {
 		this.environmentName.set(environmentName);
 	}

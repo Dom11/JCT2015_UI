@@ -8,7 +8,9 @@ import java.io.OutputStreamWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -49,7 +51,9 @@ public final class GsonMessageBodyHandler implements MessageBodyWriter<Object>,
 			                .registerTypeAdapter(IntegerProperty.class, integerSerializer)
 			                .registerTypeAdapter(IntegerProperty.class, integerDeserializer)
 							.registerTypeAdapter(StringProperty.class, stringSerializer)
-							.registerTypeAdapter(StringProperty.class, stringDeserializer);
+							.registerTypeAdapter(StringProperty.class, stringDeserializer)
+							.registerTypeAdapter(BooleanProperty.class, booleanSerializer)
+							.registerTypeAdapter(BooleanProperty.class, booleanDeserializer);			
 			gson = gsonBuilder.create();
 		}
 		return gson;
@@ -117,11 +121,29 @@ public final class GsonMessageBodyHandler implements MessageBodyWriter<Object>,
 	}
 	
 	
-	JsonSerializer<Integer> integerSerializer = new JsonSerializer<Integer>() {
+	JsonSerializer<IntegerProperty> integerSerializer = new JsonSerializer<IntegerProperty>() {
 		@Override
-		public JsonElement serialize(Integer src, Type typeOfSrc, JsonSerializationContext context) {
-			return src == null ? null : new JsonPrimitive(src.toString());
+		public JsonElement serialize(IntegerProperty src, Type typeOfSrc, JsonSerializationContext context) {
+			return src == null ? null : new JsonPrimitive(src.intValue());
+			}
+
+/**		
+			if (src == null) {
+				return null;
+			} else {
+	
+				try {
+//					String intString = src.toString();
+					
+//					return new SimpleIntegerProperty(new Integer(intString).intValue());
+					return src == null ? null : new JsonPrimitive(src.toString());
+	
+				} catch (Exception e) {
+					return null;
+				}
+			}
 		}
+*/		
 	};
 
 	
@@ -146,26 +168,52 @@ public final class GsonMessageBodyHandler implements MessageBodyWriter<Object>,
 	};
 
 	
-	JsonSerializer<String> stringSerializer = new JsonSerializer<String>() {
+	JsonSerializer<StringProperty> stringSerializer = new JsonSerializer<StringProperty>() {
 		@Override
-		public JsonElement serialize(String src, Type typeOfSrc, JsonSerializationContext context) {
-			return src == null ? null : new JsonPrimitive(src.toString());
+		public JsonElement serialize(StringProperty src, Type typeOfSrc, JsonSerializationContext context) {
+			return src == null ? null : new JsonPrimitive(src.get());
 		}
 	};
-
+	
 	
 	JsonDeserializer<StringProperty> stringDeserializer = new JsonDeserializer<StringProperty>() {
 		@Override
 		public StringProperty deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-
+	
 			if (json == null) {
 				return null;
 			} else {
-
+	
 				try {
 					return new SimpleStringProperty(json.getAsString());
 				} catch (Exception e) {
 					return new SimpleStringProperty();
+				}
+			}
+		}
+	};
+	
+	
+	JsonSerializer<BooleanProperty> booleanSerializer = new JsonSerializer<BooleanProperty>() {
+		@Override
+		public JsonElement serialize(BooleanProperty src, Type typeOfSrc, JsonSerializationContext context) {
+			return src == null ? null : new JsonPrimitive(src.get());
+		}
+	};
+	
+	
+	JsonDeserializer<BooleanProperty> booleanDeserializer = new JsonDeserializer<BooleanProperty>() {
+		@Override
+		public BooleanProperty deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+	
+			if (json == null) {
+				return null;
+			} else {
+	
+				try {
+					return new SimpleBooleanProperty(json.getAsBoolean());
+				} catch (Exception e) {
+					return new SimpleBooleanProperty();
 				}
 			}
 		}

@@ -2,30 +2,49 @@ package com.bluesky.jct.view;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListCell;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.util.StringConverter;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
+import com.bluesky.jct.ComboBoxDomain;
+import com.bluesky.jct.ComboBoxEnvironment;
+import com.bluesky.jct.ComboBoxHost;
+import com.bluesky.jct.ComboBoxJbar;
+import com.bluesky.jct.ComboBoxJira;
+import com.bluesky.jct.ComboBoxPrefix;
+import com.bluesky.jct.Filter;
 import com.bluesky.jct.MainApp;
-import com.bluesky.jct.model.Environment;
-import com.bluesky.jct.model.Jbar;
-import com.bluesky.jct.model.Profile;
-import com.bluesky.jct.model.ProfileView;
+import com.bluesky.jct.ProfileFunctions;
+import com.bluesky.jct.model.*;
 import com.bluesky.jct.rest.RestClient;
 
 
-public class ProfileOverviewController {
+public class ProfileOverviewController extends Filter {
+	
+	@Inject
+	ComboBoxDomain comboBoxDomain;
+	
+	
 	@FXML
 	private TextField searchField;
 	@FXML
@@ -37,35 +56,52 @@ public class ProfileOverviewController {
 	@FXML
 	private TableColumn<ProfileView, String> profileHosteNameColumn;
 	@FXML
-	private TableColumn<ProfileView, String> profilePrefixColumn;
+	private TableColumn<ProfileView, Boolean> profileStatusColumn;
+	@FXML
+	private ComboBox<Domain> domainComboBox;
 	@FXML
 	private ComboBox<Environment> environmentComboBox;
 	@FXML
 	private ComboBox<Jbar> jbarComboBox;
+	
+	@FXML
+	private MenuItem editProfile;
+	@FXML
+	private MenuItem cloneProfile;	
+	@FXML
+	private MenuItem deleteProfile;
 
-	private ObservableList<ProfileView> profileData = FXCollections.observableArrayList();
+	private static ObservableList<ProfileView> profileData = FXCollections.observableArrayList();
+	private ObservableList<Domain> domainData = FXCollections.observableArrayList();
 	private ObservableList<Environment> environmentData = FXCollections.observableArrayList();
 	private ObservableList<Jbar> jbarData = FXCollections.observableArrayList();
 	
 	private int selectedIndex;
-	private ProfileOverviewController profileOverviewController;
-
-	// Reference to the main Application
+	private static int selectedProfileId;
+	final ContextMenu contextMenu = new ContextMenu();
+	
 	private MainApp mainApp;
 
 	
 	/**
-	 * The constructor. The constructor is called before the initialize()
-	 * method.
+	 * The constructor.
+	 * The constructor is called before the initialize() method.
 	 */
-	public ProfileOverviewController() {
-		// sets variable to reference to this class
-		setProfileOverviewController(this);
-		
+	public ProfileOverviewController() {		
 		// fill ObservableLists with information
 		loadProfileViewData();
-		loadEnvironmentData();
-		loadJbarData();
+//		comboBoxDomain.loadData();
+		ComboBoxDomain.loadDomainData();
+		ComboBoxEnvironment.loadEnvironmentData();
+		ComboBoxJbar.loadJbarData();
+		ComboBoxPrefix.loadPrefixData();
+		ComboBoxHost.loadHostData();
+		ComboBoxJbar.loadJbarData();
+		ComboBoxJira.loadJiraData();		
+		
+		domainData = ComboBoxDomain.getDomainData();
+		environmentData = ComboBoxEnvironment.getEnvironmentData();
+		jbarData = ComboBoxJbar.getJbarData();
 	}
 		
 
@@ -79,16 +115,61 @@ public class ProfileOverviewController {
 		profileNameColumn.setCellValueFactory(cellData -> cellData.getValue().profileNameProperty());
 		profileDescriptionColumn.setCellValueFactory(cellData -> cellData.getValue().profileDescriptionProperty());
 		profileHosteNameColumn.setCellValueFactory(cellData -> cellData.getValue().hostNameProperty());
-		profilePrefixColumn.setCellValueFactory(cellData -> cellData.getValue().prefixNameProperty());
+		profileStatusColumn.setCellValueFactory(cellData -> cellData.getValue().profileStatusProperty());
+		
+	
+		// Custom rendering of the table cell.
+		profileStatusColumn.setCellFactory(column -> {
+			return new TableCell<ProfileView, Boolean>() {
+				
+				@Override
+				public void updateItem(Boolean item, boolean empty) {
+					super.updateItem(item, empty);
+					
+					if (item == null || empty) {
+						setText(null);
+						setStyle("");
+					} else {
+						// Style true/false with a different color.
+						if (item == true) {
+					        Rectangle rect = new Rectangle(11, 11, 11, 11);
+					        rect.setFill(Color.GREEN);
+					        rect.setStroke(Color.LIGHTGREY);
+					        rect.setStrokeWidth(1);
+							setGraphic(rect);							
+							setAlignment(Pos.CENTER);
+						} else {
+					        Rectangle rect = new Rectangle(11, 11, 11, 11);
+					        rect.setFill(Color.RED);
+					        rect.setStroke(Color.LIGHTGREY);
+					        rect.setStrokeWidth(1);
+					        setGraphic(rect);
+							setAlignment(Pos.CENTER);
+						}
+					}
+				}
+			};
+		});
+		
+		
+		//TODO this method should only be visible or active for admin users
+		deleteProfile.setDisable(true);
+//		deleteProfile.setVisible(false);
+		
+		domainComboBox.setItems(domainData);
 		environmentComboBox.setItems(environmentData);
 		jbarComboBox.setItems(jbarData);
 		
-		iniEnvironmentCombobox();
-		iniJbarCombobox();
+		ComboBoxDomain.iniDomainCombobox(domainComboBox);
+		ComboBoxEnvironment.iniEnvironmentCombobox(environmentComboBox);
+		ComboBoxJbar.iniJbarCombobox(jbarComboBox);
 		
 		Tooltip t = new Tooltip("double click for more details");
 		Tooltip.install(profileTable, t);
+		
 
+		
+		
 		/**
 		 * Filtering based on search Field and ComboBox
 		 * (basic inputs from Marco Jakob's search Field)
@@ -98,7 +179,7 @@ public class ProfileOverviewController {
 		// 1. Wrap the ObservableList in a FilteredList (initially display all data).
 		FilteredList<ProfileView> filteredData = new FilteredList<>(profileData, p -> true);
 		
-		// 2.1 Set the filter Predicate whenever the Search Field changes.
+		// 2.1.1 Set the filter Predicate whenever the Search Field changes.
 		searchField.textProperty().addListener((observable, oldValue, newValue) -> {
 			filteredData.setPredicate(profileView -> {
 				// If filter text is empty, display all profiles.
@@ -114,14 +195,61 @@ public class ProfileOverviewController {
 					return true; // Filter matches profileDescription.					
 				} else if (profileView.getHostName().toLowerCase().indexOf(lowerCaseFilter) != -1) {
 					return true; // Filter matches HostName.
-				} else if (profileView.getPrefixName().toLowerCase().indexOf(lowerCaseFilter) != -1) {
-					return true; // Filter matches PrefixName.
+					//TODO filter by ProfileStatus
+				} else if (profileView.getProfileStatus())  {
+						//profileView.getProfileStatus().toLowerCase().indexOf(lowerCaseFilter) != -1) {
+					return true; // Filter matches ProfileStatus.
 				}
 				return false; // Does not match.
 			});
 		});
+			
+		// 2.1.2 Set the filter Predicate to null on ESC.
+		searchField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent event) {
+				if (event.getCode() == KeyCode.ESCAPE) {
+					searchField.setText(null);
+					filteredData.setPredicate(profileView -> {
+							return true;
+					});
+				}
+			}
+		});
 		
-		// 2.2.1 Set the filter Predicate whenever the Environment ComboBox selection changes.
+		// 2.2.1 Set the filter Predicate whenever the Domain ComboBox selection changes.
+		domainComboBox.setOnAction((event) -> {
+			String selectedDomain = domainComboBox.getSelectionModel().getSelectedItem().getName();
+
+			filteredData.setPredicate(profileView -> {
+					// If filter text is empty, display all profiles.
+					if (selectedDomain == null || selectedDomain.isEmpty()) {
+						return true;
+					}
+					
+					// Compare Environment of every profile with filter text.
+					String lowerCaseFilter = selectedDomain.toLowerCase();
+					if (profileView.getDomainName().toLowerCase().indexOf(lowerCaseFilter) != -1) {
+						return true; // Filter matches profileEnvironment
+					}
+					return false; // Does not match.
+				});
+			});
+
+		// 2.2.2 Set the filter Predicate to null on double click.
+		domainComboBox.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				if (event.getClickCount() == 2) {
+					domainComboBox.setValue(null);
+					filteredData.setPredicate(profileView -> {
+							return true;
+					});
+				}
+			}
+		});
+		
+		// 2.3.1 Set the filter Predicate whenever the Environment ComboBox selection changes.
 		environmentComboBox.setOnAction((event) -> {
 			String selectedEnvironment = environmentComboBox.getSelectionModel().getSelectedItem().getName();
 
@@ -140,7 +268,7 @@ public class ProfileOverviewController {
 				});
 			});
 
-		// 2.2.2 Set the filter Predicate to null on double click.
+		// 2.3.2 Set the filter Predicate to null on double click.
 		environmentComboBox.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
@@ -154,9 +282,11 @@ public class ProfileOverviewController {
 		});
 		
 		
-		// 2.3.1 Set the filter Predicate whenever the Jbar ComboBox selection changes.		
+		// 2.4.1 Set the filter Predicate whenever the Jbar ComboBox selection changes.		
 		jbarComboBox.setOnAction((event) -> {
 			String selectedJbar = jbarComboBox.getSelectionModel().getSelectedItem().getName();
+			setFilterJbarComboBox(selectedJbar);
+			
 
 			filteredData.setPredicate(profileView -> {
 					// If filter text is empty, display all profiles.
@@ -173,12 +303,13 @@ public class ProfileOverviewController {
 				});
 			});
 		
-		// 2.3.2 Set the filter Predicate to null on double click.
+		// 2.4.2 Set the filter Predicate to null on double click.
 		jbarComboBox.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
 				if (event.getClickCount() == 2) {
 					jbarComboBox.setValue(null);
+					setFilterJbarComboBox(null);
 					filteredData.setPredicate(profileView -> {
 							return true;
 					});
@@ -194,38 +325,84 @@ public class ProfileOverviewController {
 		
 		// 5. Add sorted (and filtered) data to the table.
 		profileTable.setItems(sortedData);
+		
+		
+		// opens the Edit dialog on double click or shows a contextMenu on right click
+		profileTable.addEventHandler(MouseEvent.ANY, (MouseEvent event) -> {
+			if (event.getClickCount() >1) {
+				handleViewProfile();
+			} else if (event.getButton() == MouseButton.SECONDARY || event.isControlDown()) {
+				contextMenu.show(profileTable, event.getScreenX(), event.getScreenY());
+			} else {
+				contextMenu.hide();
+			}
+		});
 
-
-		// opens the Edit dialog on double click
+//TODO to be removed if version above is working		
+/**		
+		// opens the Edit dialog on double click or through contextMenu
 		profileTable.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
 				if (event.getClickCount() > 1) {
-					selectedIndex = profileTable.getSelectionModel().getSelectedItem().getProfileId();
-					Profile profile = RestClient.findProfile(selectedIndex);
-					mainApp.showProfileEditDialog(profile, profileOverviewController);
+					handleViewProfile();
+				}
+				
+				if (event.getButton() == MouseButton.SECONDARY || event.isControlDown()) {
+					contextMenu.show(profileTable, event.getScreenX(), event.getScreenY());
+				} else {
+					contextMenu.hide();
+				}
+			}
+		});
+		
+*/		
+		
+		
+		// opens the Edit dialog on double click or through contextMenu
+		profileTable.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				if (event.getClickCount() > 1) {
+					handleViewProfile();
+				}
+				
+				if (event.getButton() == MouseButton.SECONDARY || event.isControlDown()) {
+					contextMenu.show(profileTable, event.getScreenX(), event.getScreenY());
+				} else {
+					contextMenu.hide();
 				}
 			}
 		});
 	}
-
 	
-	/**
-	 * Called when the user clicks the new button. Opens a wizard to create a
-	 * new profile.
-	 */
+	
+	@FXML
+	private void handleViewProfile() {	
+		mainApp.showProfileEditDialog(findProfile());
+	}
+	
+	
+	@FXML
+	private void handleCloneProfile() {
+		System.out.println("start Wizard");		
+		mainApp.showProfileWizardNew();
+	}
+	
+	
 	@FXML
 	private void handleNewProfile() {
-		System.out.println("start Wizard");
+		mainApp.showProfileWizardNew();
 	}
 
 	
-	public void deleteProfile(int selectedIndex) {
-		profileData.remove(selectedIndex);
+	@FXML
+	public void handleDeleteProfile() {
+		ProfileFunctions.deleteProfile(findProfile());
 	}
 	
 	
-	public void loadProfileViewData() {
+	public static void loadProfileViewData() {
 		List<ProfileView> profileView = RestClient.findAllProfiles();
 		profileData.clear();
 
@@ -239,145 +416,44 @@ public class ProfileOverviewController {
 		}
 	}
 	
-	
-	public void loadEnvironmentData() {
-		List<Environment> environments = RestClient.findAllEnvironment();
-		environmentData.clear();
-		
-		try {
-			for (Environment environment : environments) {
-				environmentData.add(environment);
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	
-	public void loadJbarData() {
-		List<Jbar> jbars = RestClient.findAllJbar();
-		jbarData.clear();
-		
-		try {
-			for (Jbar jbar : jbars) {
-				jbarData.add(jbar);
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	
-	/**
-	 * Combobox Environment
-	 */
-	private void iniEnvironmentCombobox() {
-		// Define rendering of the list of values in ComboBox drop down.
-		environmentComboBox.setCellFactory((comboBox) -> {
-			return new ListCell<Environment>() {
-				@Override
-				protected void updateItem(Environment item, boolean empty) {
-					super.updateItem(item, empty);
 
-					if (item == null || empty) {
-						setText(null);
-					} else {
-						setText(item.getName());
-					}
-				}
-			};
-		});
-		
-		// Define rendering of selected value shown in ComboBox.
-		environmentComboBox.setConverter(new StringConverter<Environment>() {
-			@Override
-			public String toString(Environment environment) {
-				if (environment == null) {
-					return null;
-				} else {
-					return environment.getName();
-				}
-			}
-
-			@Override
-			public Environment fromString(String environmentString) {
-				return null; // No conversion fromString needed.
-			}
-		});
-	}
-	
-	
-	/**
-	 * Combobox Jbar
-	 */
-	private void iniJbarCombobox() {
-		// Define rendering of the list of values in ComboBox drop down.
-		jbarComboBox.setCellFactory((comboBox) -> {
-			return new ListCell<Jbar>() {
-				@Override
-				protected void updateItem(Jbar item, boolean empty) {
-					super.updateItem(item, empty);
-
-					if (item == null || empty) {
-						setText(null);
-					} else {
-						setText(item.getName());
-					}
-				}
-			};
-		});
-
-		// Define rendering of selected value shown in ComboBox.
-		jbarComboBox.setConverter(new StringConverter<Jbar>() {
-			@Override
-			public String toString(Jbar jbar) {
-				if (jbar == null) {
-					return null;
-				} else {
-					return jbar.getName();
-				}
-			}
-
-			@Override
-			public Jbar fromString(String jbarNameString) {
-				return null; // No conversion fromString needed.
-			}
-		});
-	}
-
-	
 	/**
 	 * Returns data as an observable list.
 	 * 
 	 * @return profileData
 	 */
-	public ObservableList<ProfileView> getProfileData() {
+	public static ObservableList<ProfileView> getProfileData() {
 		return profileData;
 	}
-
 	
-	/**
-	 * Returns data as an observable list.
-	 * 
-	 * @return environmentData
-	 */
-	public ObservableList<Environment> getEnvironmentData() {
-		return environmentData;
+	
+	public Profile findProfile(){
+		selectedIndex = profileTable.getSelectionModel().getSelectedItem().getProfileId();
+		Profile profile = RestClient.findProfile(selectedIndex);
+		return profile;
 	}
 	
 	
-	/**
-	 * Returns data as an observable list.
-	 * 
-	 * @return jbarData
-	 */
-	public ObservableList<Jbar> getJbarData() {
-		return jbarData;
+	public int setSelectedProfileId() {
+		selectedIndex = profileTable.getSelectionModel().getSelectedItem().getProfileId();
+		selectedProfileId = selectedIndex;
+		return selectedIndex;
+	}
+	
+	public static int getSelectedProfileId() {
+		return selectedProfileId;
 	}
 	
 
+	@FXML
+	public void refreshAll() {
+		ComboBoxDomain.loadDomainData();
+		ComboBoxDomain.getDomainData();
+		ComboBoxDomain.iniDomainCombobox(domainComboBox);
+		loadProfileViewData();
+	}
+	
+	
 	/**
 	 * Is called by the main application to give a reference back to itself.
 	 * 
@@ -387,7 +463,4 @@ public class ProfileOverviewController {
 		this.mainApp = mainApp;
 	}
 	
-	public void setProfileOverviewController(ProfileOverviewController profileOverviewController) {
-		this.profileOverviewController = profileOverviewController;
-	}
 }

@@ -9,14 +9,18 @@
    <top>
       <MenuBar BorderPane.alignment="CENTER">
         <menus>
-          <Menu mnemonicParsing="false" text="File">
+          <Menu mnemonicParsing="false" text="Menu">
             <items>
-              <MenuItem mnemonicParsing="false" onAction="#handleExit" text="Close" />
+                  <MenuItem mnemonicParsing="false" text="Self-Service Portal" />
+              <MenuItem mnemonicParsing="false" onAction="#handleExit" text="Exit" />
             </items>
           </Menu>
-          <Menu mnemonicParsing="false" text="Edit">
+          <Menu mnemonicParsing="false" text="Profile">
             <items>
-              <MenuItem mnemonicParsing="false" onAction="#handleEdit" text="Edit Profile" />
+              <MenuItem mnemonicParsing="false" onAction="#handleViewProfile" text="View" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleNewProfile" text="New" />
+                  <MenuItem mnemonicParsing="false" text="Clone" />
+                  <MenuItem mnemonicParsing="false" text="Delete" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Help">
