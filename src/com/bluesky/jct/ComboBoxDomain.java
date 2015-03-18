@@ -12,13 +12,12 @@ import com.bluesky.jct.model.Domain;
 import com.bluesky.jct.rest.RestClient;
 
 
-public class ComboBoxDomain extends GenericComboBox <Domain>{
+public class ComboBoxDomain {
 	
 	private static ObservableList<Domain> domainData = FXCollections.observableArrayList();
 	
 	
 	public ComboBoxDomain() {
-		super(Domain.class);
 	}
 	
 

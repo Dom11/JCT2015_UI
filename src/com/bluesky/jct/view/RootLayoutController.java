@@ -49,7 +49,7 @@ public class RootLayoutController {
 	
 	@FXML
 	private void handleNewProfile() {
-		mainApp.showProfileWizardNew();
+		mainApp.showProfileWizard();
 	}
 
 	

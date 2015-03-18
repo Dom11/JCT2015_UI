@@ -2,8 +2,6 @@ package com.bluesky.jct.view;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -40,10 +38,6 @@ import com.bluesky.jct.rest.RestClient;
 
 
 public class ProfileOverviewController extends Filter {
-	
-	@Inject
-	ComboBoxDomain comboBoxDomain;
-	
 	
 	@FXML
 	private TextField searchField;
@@ -386,13 +380,14 @@ public class ProfileOverviewController extends Filter {
 	@FXML
 	private void handleCloneProfile() {
 		System.out.println("start Wizard");		
-		mainApp.showProfileWizardNew();
+//		mainApp.showProfileWizardNew();
 	}
 	
 	
 	@FXML
 	private void handleNewProfile() {
-		mainApp.showProfileWizardNew();
+//		mainApp.showProfileWizardNew();
+//		mainApp.showProfileWizard();
 	}
 
 	

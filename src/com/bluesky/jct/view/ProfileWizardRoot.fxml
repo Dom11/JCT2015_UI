@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bluesky.jct.view.ProfileWizardController">
+   <top>
+      <AnchorPane prefHeight="80.0" prefWidth="500.0" BorderPane.alignment="CENTER">
+         <children>
+            <ProgressBar fx:id="progressBar" layoutX="89.0" layoutY="15.0" progress="0.15" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="25.0" />
+            <HBox layoutX="15.0" layoutY="6.0" prefHeight="17.0" prefWidth="382.0" spacing="50.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="5.0">
+               <children>
+                  <Label layoutX="15.0" layoutY="6.0" text="create Profile" />
+                  <Label layoutX="57.0" layoutY="6.0" text="add JVM Argument" />
+                  <Label layoutX="99.0" layoutY="6.0" text="generate RPM" />
+                  <Label layoutX="142.0" layoutY="6.0" text="send Package" />
+               </children>
+            </HBox>
+         </children>
+      </AnchorPane>
+   </top>
+   <bottom>
+      <AnchorPane prefHeight="60.0" prefWidth="500.0" BorderPane.alignment="CENTER">
+         <children>
+            <HBox alignment="CENTER" layoutX="204.0" layoutY="10.0" spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.topAnchor="25.0">
+               <children>
+                  <Button fx:id="backButton" disable="true" layoutX="192.0" layoutY="13.0" mnemonicParsing="false" onAction="#handleBack" text="Back" />
+                  <Button fx:id="nextButton" layoutX="250.0" layoutY="13.0" mnemonicParsing="false" onAction="#handleNext" text="Next" />
+               </children>
+            </HBox>
+         </children>
+      </AnchorPane>
+   </bottom>
+</BorderPane>

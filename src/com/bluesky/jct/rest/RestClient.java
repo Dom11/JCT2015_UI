@@ -68,37 +68,13 @@ public class RestClient {
 		return successfulTransaction;
 	}
 	
-
-	public static Profile findProfile(int profileId) {
-
-		Response response = client.target(REST_SERVICE_URL).path("/profile/" + profileId).request(MediaType.APPLICATION_JSON).get();
-
-		if (response.getStatus() == Status.INTERNAL_SERVER_ERROR.getStatusCode()) {
-			throw new IllegalStateException();
-		} else {
-			
-			Profile profile = response.readEntity(new GenericType<Profile>() {});
-			
-			return profile;
-		}
-	}
 	
-/**	
-	public static List<Profile> findAll() {
-
-		Response response = client.target(REST_SERVICE_URL).path("/profile/list").request(MediaType.APPLICATION_JSON).get();
-
-		if (response.getStatus() == Status.INTERNAL_SERVER_ERROR.getStatusCode()) {
-			throw new IllegalStateException();
-		} else {
-		
-			List<Profile> list = response.readEntity(new GenericType<List<Profile>>() {});
-			
-			return list;
-		}
-	}
-*/	
-	
+	/**
+	 * Provides the full view of a single Profile
+	 * 
+	 * @param profileId
+	 * @return profileView
+	 */
 	public static ProfileView findProfileView(int profileId) {
 
 		Response response = client.target(REST_SERVICE_URL).path("/profileView/" + profileId).request(MediaType.APPLICATION_JSON).get();
@@ -114,6 +90,11 @@ public class RestClient {
 	}
 	
 	
+	/**
+	 * Provides the full view of all Profiles available
+	 * 
+	 * @return profileViewList
+	 */
 	public static List<ProfileView> findAllProfiles() {
 
 		Response response = client.target(REST_SERVICE_URL).path("/profileView/list").request(MediaType.APPLICATION_JSON).get();
@@ -126,6 +107,105 @@ public class RestClient {
 			
 			return profileViewList;
 		}
+	}	
+	
+
+	/**
+	 * Provides all details of a single Profile
+	 * 
+	 * @param profileId
+	 * @return profile
+	 */
+	public static Profile findProfile(int profileId) {
+
+		Response response = client.target(REST_SERVICE_URL).path("/profile/" + profileId).request(MediaType.APPLICATION_JSON).get();
+
+		if (response.getStatus() == Status.INTERNAL_SERVER_ERROR.getStatusCode()) {
+			throw new IllegalStateException();
+		} else {
+			
+			Profile profile = response.readEntity(new GenericType<Profile>() {});
+			
+			return profile;
+		}
+	}
+	
+	
+	/**
+	 * Provides all details of all Profiles available
+	 * 
+	 * @return profileList
+	 */
+	public static List<Profile> findAllProfile() {
+
+		Response response = client.target(REST_SERVICE_URL).path("/profile/list").request(MediaType.APPLICATION_JSON).get();
+
+		if (response.getStatus() == Status.INTERNAL_SERVER_ERROR.getStatusCode()) {
+			throw new IllegalStateException();
+		} else {
+		
+			List<Profile> profileList = response.readEntity(new GenericType<List<Profile>>() {});
+			
+			return profileList;
+		}
+	}
+	
+	
+	public static Profile createProfile(int environmentId, int hostId, int jbarId, int jiraId, int prefixId, int domainId, String profileDescription, String profileDnsName, String profileComponentName, boolean profileStatus, Integer version) {
+		
+		Profile profile = new Profile(environmentId, hostId, jbarId, jiraId, prefixId, domainId, profileDescription, profileDnsName, profileComponentName, profileStatus, version);
+		Response response = client.target(REST_SERVICE_URL).path("/profile").request().post(Entity.json(profile));
+		
+		if (response.getStatus() == Status.INTERNAL_SERVER_ERROR.getStatusCode()) {
+			throw new IllegalStateException();
+		}
+		// response must either be read or ignored (closed)
+		response.close();
+		
+		return profile;
+	}
+	
+	
+	public static Profile editProfile(int profileId, int environmentId, int hostId, int jbarId, int jiraId, int prefixId, int domainId, String profileDescription, String profileDnsName, String profileComponentName, boolean profileStatus, Integer version) {
+		
+		Profile profile = new Profile(environmentId, hostId, jbarId, jiraId, prefixId, domainId, profileDescription, profileDnsName, profileComponentName, profileStatus, version);
+		profile.setProfileId(profileId);	
+	
+		Response response = client.target(REST_SERVICE_URL).path("/profile").request().put(Entity.json(profile));
+
+		if (response.getStatus() == Status.INTERNAL_SERVER_ERROR.getStatusCode()) {
+			throw new IllegalStateException();
+		} else {
+			// response must either be read or ignored (closed)
+			response.close();
+			
+			return profile;
+		}
+	}
+
+	
+	public static boolean deleteProfile(int profileId) {
+
+		Response response = client.target(REST_SERVICE_URL).path("/profile/" + profileId).request().delete();
+
+		if (response.getStatus() == Status.INTERNAL_SERVER_ERROR.getStatusCode()) {
+			httpStatusCode = Integer.toString(response.getStatus());
+			throw new IllegalStateException();
+		} else {
+			if (response.getStatus() == Status.OK.getStatusCode()) {
+				client.target(REST_SERVICE_URL).path("/profiles/" + profileId).request().delete();
+				httpStatusCode = Integer.toString(response.getStatus());
+				successfulTransaction = true;
+				
+				return true;
+			} else {
+				httpStatusCode = Integer.toString(response.getStatus());
+			}
+		}
+		// response must either be read or ignored (closed)
+		response.close();
+		
+		return true;
 	}
 	
 	
@@ -157,6 +237,21 @@ public class RestClient {
 			
 			return domainList;
 		}
+	}
+	
+	
+	public static Domain createDomain(String domainName) {
+		
+		Domain domain = new Domain(domainName);
+		Response response = client.target(REST_SERVICE_URL).path("/domain").request().post(Entity.json(domain));
+		
+		if (response.getStatus() == Status.INTERNAL_SERVER_ERROR.getStatusCode()) {
+			throw new IllegalStateException();
+		}
+		// response must either be read or ignored (closed)
+		response.close();
+		
+		return domain;
 	}
 	
 	
@@ -248,26 +343,7 @@ public class RestClient {
 			return prefixList;
 		}
 	}
-	
-	
-	public static <E> List<E> findAll(Class<? extends E> clazz) {
-
-		Response response = client.target(REST_SERVICE_URL).path("/" + clazz + "/list").request(MediaType.APPLICATION_JSON).get();
-
-		if (response.getStatus() == Status.INTERNAL_SERVER_ERROR.getStatusCode()) {
-			throw new IllegalStateException();
-		} else {
 		
-			List<E> list = response.readEntity(new GenericType<List<E>>() {});
-			
-			return list;
-		}
-	}
-	
-	
-	
-	
-	
 	
 	public static Host findHost(int hostId) {
 
@@ -328,77 +404,34 @@ public class RestClient {
 		}
 	}
 	
+	
+	public static List<JvmArgument> findAllJvmArgument() {
 
-	public static Domain createDomain(String domainName) {
-		
-		Domain domain = new Domain(domainName);
-		Response response = client.target(REST_SERVICE_URL).path("/domain").request().post(Entity.json(domain));
-		
-		if (response.getStatus() == Status.INTERNAL_SERVER_ERROR.getStatusCode()) {
-			throw new IllegalStateException();
-		}
-		// response must either be read or ignored (closed)
-		response.close();
-		
-		return domain;
-	}
-	
-	
-	public static Profile createProfile(int environmentId, int hostId, int jbarId, int jiraId, int prefixId, int domainId, String profileDescription, String profileDnsName, String profileComponentName, boolean profileStatus, Integer version) {
-		
-		Profile profile = new Profile(environmentId, hostId, jbarId, jiraId, prefixId, domainId, profileDescription, profileDnsName, profileComponentName, profileStatus, version);
-		Response response = client.target(REST_SERVICE_URL).path("/profile").request().post(Entity.json(profile));
-		
-		if (response.getStatus() == Status.INTERNAL_SERVER_ERROR.getStatusCode()) {
-			throw new IllegalStateException();
-		}
-		// response must either be read or ignored (closed)
-		response.close();
-		
-		return profile;
-	}
-	
-	
-	public static Profile editProfile(int profileId, int environmentId, int hostId, int jbarId, int jiraId, int prefixId, int domainId, String profileDescription, String profileDnsName, String profileComponentName, boolean profileStatus, Integer version) {
-		
-		Profile profile = new Profile(environmentId, hostId, jbarId, jiraId, prefixId, domainId, profileDescription, profileDnsName, profileComponentName, profileStatus, version);
-		profile.setProfileId(profileId);	
-	
-		Response response = client.target(REST_SERVICE_URL).path("/profile").request().put(Entity.json(profile));
+		Response response = client.target(REST_SERVICE_URL).path("/jvm/list").request(MediaType.APPLICATION_JSON).get();
 
 		if (response.getStatus() == Status.INTERNAL_SERVER_ERROR.getStatusCode()) {
 			throw new IllegalStateException();
 		} else {
-			// response must either be read or ignored (closed)
-			response.close();
+		
+			List<JvmArgument> jvmList = response.readEntity(new GenericType<List<JvmArgument>>() {});
 			
-			return profile;
+			return jvmList;
 		}
 	}
-
 	
-	public static boolean deleteProfile(int profileId) {
-
-		Response response = client.target(REST_SERVICE_URL).path("/profile/" + profileId).request().delete();
-
+	
+	public static JvmArgument createJvmArgument(String jvmArgumentText) {
+		
+		JvmArgument jvmArgument = new JvmArgument(jvmArgumentText);
+		Response response = client.target(REST_SERVICE_URL).path("/jvm").request().post(Entity.json(jvmArgument));
+		
 		if (response.getStatus() == Status.INTERNAL_SERVER_ERROR.getStatusCode()) {
-			httpStatusCode = Integer.toString(response.getStatus());
 			throw new IllegalStateException();
-		} else {
-			if (response.getStatus() == Status.OK.getStatusCode()) {
-				client.target(REST_SERVICE_URL).path("/profiles/" + profileId).request().delete();
-				httpStatusCode = Integer.toString(response.getStatus());
-				successfulTransaction = true;
-				
-				return true;
-			} else {
-				httpStatusCode = Integer.toString(response.getStatus());
-			}
 		}
 		// response must either be read or ignored (closed)
 		response.close();
 		
-		return true;
+		return jvmArgument;
 	}
 	
 	

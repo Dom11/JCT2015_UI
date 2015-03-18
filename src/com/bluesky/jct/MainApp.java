@@ -24,9 +24,8 @@ import com.bluesky.jct.view.RootLayoutController;
 public class MainApp extends Application {
 
 	private Stage primaryStage;
-	private Stage secondaryStage;
 	private BorderPane rootLayout;
-	private BorderPane wizardRootLayout;
+	private BorderPane profileWizardRoot;
 
 
 	/**
@@ -53,7 +52,7 @@ public class MainApp extends Application {
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("JCT 2015 (Prototype)");
 	    this.primaryStage.getIcons().add(new Image("file:resources/images/JCT_2015_64.png"));
-		
+
 		initRootLayout();
 //		checkConnectivity();
 		showProfileOverview();
@@ -165,39 +164,64 @@ public class MainApp extends Application {
 	public void showProfileWizard() {
 
 		try {
-			// Load root Layout from fxml file.
+			// Load root from wizard.
 			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(MainApp.class
-					.getResource("view/ProfileWizardRootLayout.fxml"));
-			wizardRootLayout = (BorderPane) loader.load();
-
+			loader.setLocation(MainApp.class.getResource("view/ProfileWizardRoot.fxml"));
+			profileWizardRoot = (BorderPane) loader.load();
+			
 			// Create the dialog Stage.
 			Stage dialogStage = new Stage();
-			dialogStage.setTitle("Wizard");
+			dialogStage.setTitle("New Profile Wizard");
 			dialogStage.initModality(Modality.WINDOW_MODAL);
 			dialogStage.initOwner(primaryStage);
-			Scene scene = new Scene(wizardRootLayout);
+			Scene scene = new Scene(profileWizardRoot);
 			dialogStage.setScene(scene);
 
 			// Give the controller access to the main app.
-			RootLayoutController controller = loader.getController();
+			ProfileWizardController controller = loader.getController();
 			controller.setMainApp(this);
-
-			secondaryStage.show();
+			
+			showProfileWizardPage(1);
+			dialogStage.showAndWait();
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
+	/**
+	 * loads the right page on the new profile wizard. 
+	 * 
+	 * @param pageNumber
+	 */
+	public void showProfileWizardPage(int pageNumber) {
 
+		try {
+			// Load page from wizard.
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(MainApp.class.getResource("view/ProfileWizardPage" + pageNumber + ".fxml"));
+			AnchorPane profileWizardPage = (AnchorPane) loader.load();
+
+			// Set profile overview into the center of root layout.
+			profileWizardRoot.setCenter(profileWizardPage);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
+
+	
+	
+/**
 	public boolean showProfileWizardNew() {
 
 		try {
 			// Load the fxml file and create a new stage for the pop-up dialog.
 			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(MainApp.class
-					.getResource("view/ProfileWizard.fxml"));
+			loader.setLocation(MainApp.class.getResource("view/ProfileWizard.fxml"));
 			AnchorPane page = (AnchorPane) loader.load();
 
 			// Create the dialog Stage.
@@ -215,19 +239,14 @@ public class MainApp extends Application {
 			// Show the dialog and wait until the user closes it.
 			dialogStage.showAndWait();
 
-			return controller.isExitClicked();
+//			return controller.isExitClicked();
 
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
 		}
 	}
-
-	
-	private String getUserName() {
-		return System.getProperty("user.name");
-	}
-	
+*/
 	
 	public void checkConnectivity() {
 

@@ -65,4 +65,5 @@ public class ProfileFunctions {
 		//TODO make showProfileWizardNew static???
 //		MainApp.showProfileWizardNew();
 	}
+	
 }

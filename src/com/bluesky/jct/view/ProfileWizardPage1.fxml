@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="360.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bluesky.jct.view.ProfileWizardControllerPage1">
+   <children>
+      <GridPane layoutX="60.0" layoutY="95.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="20.0">
+         <children>
+            <Label text="Profile Name" />
+            <Label text="Description" GridPane.rowIndex="1" />
+            <Label text="Domain" GridPane.rowIndex="2" />
+            <Label text="Prefix" GridPane.rowIndex="3" />
+            <Label text="JBar" GridPane.rowIndex="4" />
+            <Label text="Environment" GridPane.rowIndex="5" />
+            <Label text="DNS Name" GridPane.rowIndex="6" />
+            <Label text="Host" GridPane.rowIndex="7" />
+            <TextField fx:id="profileNameField" prefWidth="200.0" GridPane.columnIndex="1" />
+            <TextField fx:id="profileDescriptionField" prefWidth="200.0" promptText="mandatory" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="profileDnsNameField" prefWidth="200.0" promptText="mandatory" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <Label text="Jira Project Key" GridPane.rowIndex="8" />
+            <Label text="Component" GridPane.rowIndex="9" />
+            <TextField fx:id="profileComponentField" prefWidth="200.0" promptText="optional" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+            <ComboBox fx:id="domainComboBox" prefHeight="25.0" prefWidth="200.0" promptText="please select" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <ComboBox fx:id="prefixComboBox" prefHeight="25.0" prefWidth="200.0" promptText="please select" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <ComboBox fx:id="jbarComboBox" prefHeight="25.0" prefWidth="200.0" promptText="please select" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <ComboBox fx:id="environmentComboBox" prefHeight="25.0" prefWidth="200.0" promptText="please select" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <ComboBox fx:id="hostComboBox" prefHeight="25.0" prefWidth="200.0" promptText="please select" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+            <ComboBox fx:id="jiraComboBox" prefHeight="25.0" prefWidth="200.0" promptText="please select" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+         </children>
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="134.0" minWidth="10.0" prefWidth="103.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="10.0" prefWidth="177.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+      </GridPane>
+      <VBox layoutX="426.0" layoutY="280.0" spacing="7.0" AnchorPane.rightAnchor="15.0">
+         <children>
+            <Button layoutX="445.0" layoutY="252.0" mnemonicParsing="false" onAction="#handleSave" prefWidth="55.0" text="Save" />
+            <Button layoutX="434.0" layoutY="284.0" mnemonicParsing="false" onAction="#handleCancel" prefWidth="55.0" text="Cancel" />
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>
