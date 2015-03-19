@@ -43,10 +43,9 @@ public class MainApp extends Application {
 	@Override
 	 public void start(Stage primaryStage) {
 		
-		//TODO finalize Login Dialog with userList to distinguish between admin and regular user
-//		if(LoginDialog.openLoginDialog() == false) {
-//			System.exit(0);
-//		};
+		if(LoginDialog.openLoginDialog() == false) {
+			System.exit(0);
+		};
 
 
 		this.primaryStage = primaryStage;
@@ -180,6 +179,7 @@ public class MainApp extends Application {
 			// Give the controller access to the main app.
 			ProfileWizardController controller = loader.getController();
 			controller.setMainApp(this);
+			controller.setDialogStage(dialogStage);
 			
 			showProfileWizardPage(1);
 			dialogStage.showAndWait();

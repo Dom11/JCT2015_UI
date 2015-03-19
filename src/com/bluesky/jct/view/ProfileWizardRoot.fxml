@@ -12,7 +12,7 @@
    <top>
       <AnchorPane prefHeight="80.0" prefWidth="500.0" BorderPane.alignment="CENTER">
          <children>
-            <ProgressBar fx:id="progressBar" layoutX="89.0" layoutY="15.0" progress="0.15" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="25.0" />
+            <ProgressBar fx:id="progressBar" layoutX="89.0" layoutY="15.0" progress="0.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="25.0" />
             <HBox layoutX="15.0" layoutY="6.0" prefHeight="17.0" prefWidth="382.0" spacing="50.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="5.0">
                <children>
                   <Label layoutX="15.0" layoutY="6.0" text="create Profile" />
@@ -33,6 +33,7 @@
                   <Button fx:id="nextButton" layoutX="250.0" layoutY="13.0" mnemonicParsing="false" onAction="#handleNext" text="Next" />
                </children>
             </HBox>
+            <Button layoutX="85.0" layoutY="18.0" mnemonicParsing="false" onAction="#handleClose" text="Close" />
          </children>
       </AnchorPane>
    </bottom>

@@ -66,4 +66,15 @@ public class ProfileFunctions {
 //		MainApp.showProfileWizardNew();
 	}
 	
+	
+    public static void saveProfile(String profileDescription, int domainId, int prefixId, int jbarId, int environmentId,
+    								String profileDnsName, int hostId, int jiraId, String profileComponent,	boolean profileStatus,
+    								Integer version) {
+        
+       	RestClient.createProfile(environmentId, hostId, jbarId, jiraId, prefixId, domainId, profileDescription, profileDnsName,
+       								profileComponent, profileStatus, version);
+       	
+       	ProfileOverviewController.loadProfileViewData();
+    }
+	
 }

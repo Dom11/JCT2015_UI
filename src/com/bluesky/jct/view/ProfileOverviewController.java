@@ -31,6 +31,7 @@ import com.bluesky.jct.ComboBoxJbar;
 import com.bluesky.jct.ComboBoxJira;
 import com.bluesky.jct.ComboBoxPrefix;
 import com.bluesky.jct.Filter;
+import com.bluesky.jct.LoginDialog;
 import com.bluesky.jct.MainApp;
 import com.bluesky.jct.ProfileFunctions;
 import com.bluesky.jct.model.*;
@@ -147,7 +148,7 @@ public class ProfileOverviewController extends Filter {
 		
 		
 		//TODO this method should only be visible or active for admin users
-		deleteProfile.setDisable(true);
+		deleteProfile.setDisable(LoginDialog.getDisabledType());
 //		deleteProfile.setVisible(false);
 		
 		domainComboBox.setItems(domainData);

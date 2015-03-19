@@ -7,6 +7,7 @@ import com.bluesky.jct.ComboBoxJbar;
 import com.bluesky.jct.ComboBoxJira;
 import com.bluesky.jct.ComboBoxPrefix;
 import com.bluesky.jct.MainApp;
+import com.bluesky.jct.ProfileFunctions;
 import com.bluesky.jct.model.*;
 import com.bluesky.jct.rest.RestClient;
 
@@ -51,9 +52,9 @@ public class ProfileWizardControllerPage1 {
 	private ObservableList<Jira> jiraData = FXCollections.observableArrayList();
 	private Stage dialogStage;
 	
-	public static boolean saveClicked;
+	public boolean saveClicked;
 	
-			
+		
 	/**
 	 * The constructor. The constructor is called before the initialize()
 	 * method.
@@ -74,6 +75,9 @@ public class ProfileWizardControllerPage1 {
 	}
 	
 	
+
+	
+	
 	/**
 	 * Initializes the controller class.
 	 * This method is actually called after the fxml file has been loaded.
@@ -82,6 +86,7 @@ public class ProfileWizardControllerPage1 {
 	private void initialize() {
 	
 		profileNameField.setDisable(true);	
+		
 		profileDescriptionField.setDisable(false);
 		profileDnsNameField.setDisable(false);
 		profileComponentField.setDisable(false);
@@ -98,6 +103,7 @@ public class ProfileWizardControllerPage1 {
 		ComboBoxHost.iniHostCombobox(hostComboBox);		
 		jiraComboBox.setItems(jiraData);
 		ComboBoxJira.iniJiraCombobox(jiraComboBox);
+
 	}
 	
 	
@@ -106,14 +112,18 @@ public class ProfileWizardControllerPage1 {
      * 
      * @param dialogStage
      */
-    public void setDialogStage(Stage dialogStage) {
-        dialogStage = ProfileWizardController.getDialogStage();
-    }
+//    public void setDialogStage(Stage dialogStage) {
+ //       dialogStage = ProfileWizardController.getDialogStage();
+ //   }
     
 
     @FXML
     private void handleSave() {
-    
+    	
+    	ProfileWizardController.increasePageCounter();
+    	System.out.println(ProfileWizardController.getPageCounter());
+    	System.out.println(ProfileWizardController.getProgressValue());
+/**    
     	String profileDescription = profileDescriptionField.getText();
        	int domainId = domainComboBox.getSelectionModel().getSelectedItem().getId();
        	int prefixId = prefixComboBox.getSelectionModel().getSelectedItem().getId();
@@ -131,14 +141,13 @@ public class ProfileWizardControllerPage1 {
        	saveClicked = true;
        	saveButton.setDisable(isSaveClicked());
        	ProfileOverviewController.loadProfileViewData();
-       	
+*/       	
     }
-    
+
     
     @FXML
     private void handleCancel() {
-    	//TODO 
-    	dialogStage.close();
+    	ProfileWizardController.closeWizard();
     }
 	
 
