@@ -53,7 +53,7 @@
       <HBox layoutX="223.0" layoutY="354.0" spacing="10.0" AnchorPane.leftAnchor="190.0" AnchorPane.rightAnchor="190.0">
          <children>
             <Button layoutX="223.0" layoutY="354.0" mnemonicParsing="false" onAction="#handleCancel" prefWidth="55.0" text="Cancel" />
-            <Button layoutX="292.0" layoutY="354.0" mnemonicParsing="false" onAction="#handleSave" prefWidth="55.0" text="Save" />
+            <Button fx:id="saveButton" layoutX="292.0" layoutY="354.0" mnemonicParsing="false" onAction="#handleSave" prefWidth="55.0" text="Save" />
          </children>
       </HBox>
    </children>

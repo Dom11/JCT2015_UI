@@ -17,18 +17,12 @@ public class Prefix implements Serializable {
 
 	
 	/**
-	 * Default constructor.
-	 */ 
-	public Prefix() {
-		this(0, null);
-	}
-	
-	/**
 	 * Constructor
 	 * 
 	 * @param jbarId, jbarName
 	 */
 	public Prefix(int prefixId, String prefixName) {
+		super();
 		this.prefixId = new SimpleIntegerProperty(prefixId);
 		this.prefixName = new SimpleStringProperty(prefixName);
 	}

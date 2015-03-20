@@ -12,17 +12,20 @@ import com.bluesky.jct.model.JvmArgument;
 import com.bluesky.jct.rest.RestClient;
 
 
+/**
+ * This is the controller class for comboBox @category which contains all the methods
+ * needed to use and work with it from different classes.
+ * 
+ * @category JvmArgument
+ * @author Dominik
+ */
 public class ComboBoxJvmArgument {
 	
 	private static ObservableList<JvmArgument> jvmData = FXCollections.observableArrayList();
 	
 	
-	public ComboBoxJvmArgument() {
-	}
-	
-
 	/**
-	 * Loads the items from the DB via REST and fills them into an ObservableList.
+	 * Loads the items from the DB through a REST call and fills them into an ObservableList.
 	 */
 	public static void loadJvmArgumentData() {
 		List<JvmArgument> jvms = RestClient.findAllJvmArgument();
@@ -40,7 +43,7 @@ public class ComboBoxJvmArgument {
 	
 	
 	/**
-	 * Returns the loaded data as an observable list.
+	 * Returns the loaded data as an ObservableList.
 	 * 
 	 * @return environmentData
 	 */
@@ -50,7 +53,7 @@ public class ComboBoxJvmArgument {
 	
 	
 	/**
-	 * Initialization of ComboBox Environment
+	 * Initialization of the ComboBox
 	 */
 	public static void iniJvmArgumentCombobox(ComboBox<JvmArgument> jvmArgumentComboBox) {
 		// Define rendering of the list of values in ComboBox drop down.

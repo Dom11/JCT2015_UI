@@ -25,15 +25,7 @@ public class ProfileView implements Serializable {
 	private StringProperty prefixName = new SimpleStringProperty();
 	private StringProperty domainName = new SimpleStringProperty();
 	private BooleanProperty profileStatus = new SimpleBooleanProperty();
-	
-	
-	/**
-	 * Default constructor.
-	 */
-	public ProfileView() {
-		this(0, null, null, null, null, null, null, null, null, null, null, false);
-	}
-	
+
 	
 	/**
 	 * Constructor
@@ -42,6 +34,7 @@ public class ProfileView implements Serializable {
 	 */
 	public ProfileView(int profileId, String profileName, String profileDescription, String profileComponent, 
 			String profileDnsName, String environmentName, String hostName, String jbarName, String jiraProjectKey, String prefixName, String domainName, boolean profileStatus) {
+		super();
 		this.profileId = new SimpleIntegerProperty(profileId);
 		this.profileName = new SimpleStringProperty(profileName);
 		this.profileDescription = new SimpleStringProperty(profileDescription);

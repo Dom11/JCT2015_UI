@@ -24,17 +24,4 @@
          </children>
       </AnchorPane>
    </top>
-   <bottom>
-      <AnchorPane prefHeight="60.0" prefWidth="500.0" BorderPane.alignment="CENTER">
-         <children>
-            <HBox alignment="CENTER" layoutX="204.0" layoutY="10.0" spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.topAnchor="25.0">
-               <children>
-                  <Button fx:id="backButton" disable="true" layoutX="192.0" layoutY="13.0" mnemonicParsing="false" onAction="#handleBack" text="Back" />
-                  <Button fx:id="nextButton" layoutX="250.0" layoutY="13.0" mnemonicParsing="false" onAction="#handleNext" text="Next" />
-               </children>
-            </HBox>
-            <Button layoutX="85.0" layoutY="18.0" mnemonicParsing="false" onAction="#handleClose" text="Close" />
-         </children>
-      </AnchorPane>
-   </bottom>
 </BorderPane>

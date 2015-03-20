@@ -12,17 +12,20 @@ import com.bluesky.jct.model.Jbar;
 import com.bluesky.jct.rest.RestClient;
 
 
+/**
+ * This is the controller class for comboBox @category which contains all the methods
+ * needed to use and work with it from different classes.
+ * 
+ * @category Jbar
+ * @author Dominik
+ */
 public class ComboBoxJbar {
 	
 	private static ObservableList<Jbar> jbarData = FXCollections.observableArrayList();
 	
 	
-	public ComboBoxJbar() {
-	}
-	
-
 	/**
-	 * Loads the items from the DB via REST and fills them into an ObservableList.
+	 * Loads the items from the DB through a REST call and fills them into an ObservableList.
 	 */
 	public static void loadJbarData() {
 		List<Jbar> jbars = RestClient.findAllJbar();
@@ -40,7 +43,7 @@ public class ComboBoxJbar {
 	
 	
 	/**
-	 * Returns the loaded data as an observable list.
+	 * Returns the loaded data as an ObservableList.
 	 * 
 	 * @return jbarData
 	 */
@@ -50,7 +53,7 @@ public class ComboBoxJbar {
 	
 	
 	/**
-	 * Initialization of ComboBox Jbar
+	 * Initialization of the ComboBox
 	 */
 	public static void iniJbarCombobox(ComboBox<Jbar> jbarComboBox) {
 		// Define rendering of the list of values in ComboBox drop down.

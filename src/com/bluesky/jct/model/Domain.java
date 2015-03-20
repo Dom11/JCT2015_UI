@@ -17,18 +17,12 @@ public class Domain implements Serializable {
 
 	
 	/**
-	 * Default constructor.
-	 */ 
-//	public Domain() {
-//		this(null);
-//	}
-	
-	/**
 	 * Constructor
 	 * 
 	 * @param domainId, domainName
 	 */
 	public Domain(String domainName) {
+		super();
  		this.domainId = new SimpleIntegerProperty();
 		this.domainName = new SimpleStringProperty(domainName);
 	}

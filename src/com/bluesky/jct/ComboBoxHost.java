@@ -12,17 +12,20 @@ import com.bluesky.jct.model.Host;
 import com.bluesky.jct.rest.RestClient;
 
 
+/**
+ * This is the controller class for comboBox @category which contains all the methods
+ * needed to use and work with it from different classes.
+ * 
+ * @category Host
+ * @author Dominik
+ */
 public class ComboBoxHost {
 	
 	private static ObservableList<Host> hostData = FXCollections.observableArrayList();
 	
 	
-	public ComboBoxHost() {
-	}
-	
-
 	/**
-	 * Loads the items from the DB via REST and fills them into an ObservableList.
+	 * Loads the items from the DB through a REST call and fills them into an ObservableList.
 	 */
 	public static void loadHostData() {
 		List<Host> hosts = RestClient.findAllHost();
@@ -40,7 +43,7 @@ public class ComboBoxHost {
 	
 	
 	/**
-	 * Returns the loaded data as an observable list.
+	 * Returns the loaded data as an ObservableList.
 	 * 
 	 * @return hostData
 	 */
@@ -50,7 +53,7 @@ public class ComboBoxHost {
 	
 	
 	/**
-	 * Initialization of ComboBox Host
+	 * Initialization of the ComboBox
 	 */
 	public static void iniHostCombobox(ComboBox<Host> hostComboBox) {
 		// Define rendering of the list of values in ComboBox drop down.

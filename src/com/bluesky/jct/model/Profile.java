@@ -29,20 +29,14 @@ public class Profile implements Serializable {
 	private BooleanProperty profileStatus = new SimpleBooleanProperty();
 	private IntegerProperty version = new SimpleIntegerProperty();
 	
-	/**
-	 * Default constructor.
-	 */
-	public Profile() {
-		this(0, 0, 0, 0, 0, 0, null, null, null, false, 0);
-	}
 
-	
 	/**
 	 * Constructor
 	 * 
 	 * @param profileId, environmentId, hostId, jbarId, jiraId, prefixId, domainId, profileDescription, profileDnsName, profileComponentName
 	 */
-	public Profile(int environmentId, int hostId, int jbarId, int jiraId, int prefixId, int domainId, String profileDescription, String profileDnsName, String profileComponentName, boolean profileStatus, Integer version) {
+	public Profile(int environmentId, int hostId, int jbarId, int jiraId, int prefixId, int domainId, String profileDescription, String profileDnsName, String profileComponent, boolean profileStatus, Integer version) {
+		super();
 		this.profileId = new SimpleIntegerProperty();
 		this.environmentId = new SimpleIntegerProperty(environmentId);
 		this.hostId = new SimpleIntegerProperty(hostId);
@@ -52,7 +46,7 @@ public class Profile implements Serializable {
 		this.domainId = new SimpleIntegerProperty(domainId);		
 		this.profileDescription = new SimpleStringProperty(profileDescription);		
 		this.profileDnsName = new SimpleStringProperty(profileDnsName);
-		this.profileComponent = new SimpleStringProperty(profileComponentName);
+		this.profileComponent = new SimpleStringProperty(profileComponent);
 		this.profileStatus = new SimpleBooleanProperty(profileStatus);
 		this.version = new SimpleIntegerProperty(version);
 	}

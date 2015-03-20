@@ -19,6 +19,7 @@ import com.bluesky.jct.ComboBoxPrefix;
 import com.bluesky.jct.ProfileFunctions;
 import com.bluesky.jct.model.*;
 import com.bluesky.jct.rest.RestClient;
+import com.bluesky.jct.util.Progress;
 
 
 /**
@@ -79,14 +80,6 @@ public class ProfileEditDialogController {
 	
 	
 	/**
-	 * The constructor.
-	 * The constructor is called before the initialize() method.
-	 */
-	public ProfileEditDialogController() {
-	}
-	
-	
-	/**
 	 * Initializes the controller class.
 	 * This method is actually called after the fxml file has been loaded.
 	 */
@@ -118,7 +111,11 @@ public class ProfileEditDialogController {
 			profileStatusButton.setText(getProfileStatusButtonText(selected));
 			profileStatusLabel.setText(getProfileStatusLabelText(selected));
 			profileStatusLabel.setStyle(getProfileStatusTextColor(selected));
-			handleSave();
+			
+			Progress.showProgressDialog();
+
+			
+//			handleSave();
 		});
 	}
 	

@@ -72,7 +72,8 @@ public class ProfileOverviewController extends Filter {
 	private ObservableList<Jbar> jbarData = FXCollections.observableArrayList();
 	
 	private int selectedIndex;
-	private static int selectedProfileId;
+	private static int selectedProfileId = 0;
+	private static Profile selectedProfile = null;
 	final ContextMenu contextMenu = new ContextMenu();
 	
 	private MainApp mainApp;
@@ -82,7 +83,9 @@ public class ProfileOverviewController extends Filter {
 	 * The constructor.
 	 * The constructor is called before the initialize() method.
 	 */
-	public ProfileOverviewController() {		
+	public ProfileOverviewController() {	
+		
+		super();
 		// fill ObservableLists with information
 		loadProfileViewData();
 //		comboBoxDomain.loadData();
@@ -146,10 +149,7 @@ public class ProfileOverviewController extends Filter {
 			};
 		});
 		
-		
-		//TODO this method should only be visible or active for admin users
 		deleteProfile.setDisable(LoginDialog.getDisabledType());
-//		deleteProfile.setVisible(false);
 		
 		domainComboBox.setItems(domainData);
 		environmentComboBox.setItems(environmentData);
@@ -324,7 +324,9 @@ public class ProfileOverviewController extends Filter {
 		
 		// opens the Edit dialog on double click or shows a contextMenu on right click
 		profileTable.addEventHandler(MouseEvent.ANY, (MouseEvent event) -> {
-			if (event.getClickCount() >1) {
+			if (event.getClickCount() == 1) {
+				setSelectedProfile();				
+			} else if (event.getClickCount() >1) {
 				handleViewProfile();
 			} else if (event.getButton() == MouseButton.SECONDARY || event.isControlDown()) {
 				contextMenu.show(profileTable, event.getScreenX(), event.getScreenY());
@@ -332,6 +334,9 @@ public class ProfileOverviewController extends Filter {
 				contextMenu.hide();
 			}
 		});
+		
+		
+		
 
 //TODO to be removed if version above is working		
 /**		
@@ -352,23 +357,7 @@ public class ProfileOverviewController extends Filter {
 		});
 		
 */		
-		
-		
-		// opens the Edit dialog on double click or through contextMenu
-		profileTable.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				if (event.getClickCount() > 1) {
-					handleViewProfile();
-				}
-				
-				if (event.getButton() == MouseButton.SECONDARY || event.isControlDown()) {
-					contextMenu.show(profileTable, event.getScreenX(), event.getScreenY());
-				} else {
-					contextMenu.hide();
-				}
-			}
-		});
+
 	}
 	
 	
@@ -430,11 +419,24 @@ public class ProfileOverviewController extends Filter {
 	}
 	
 	
-	public int setSelectedProfileId() {
-		selectedIndex = profileTable.getSelectionModel().getSelectedItem().getProfileId();
-		selectedProfileId = selectedIndex;
-		return selectedIndex;
+	public void setSelectedProfileId() {
+//		selectedIndex = profileTable.getSelectionModel().getSelectedItem().getProfileId();
+//		selectedProfileId = selectedIndex;		
+		
+		selectedProfileId = profileTable.getSelectionModel().getSelectedItem().getProfileId();
 	}
+	
+	
+	public void setSelectedProfile() {
+		selectedIndex = profileTable.getSelectionModel().getSelectedItem().getProfileId();
+		selectedProfile = RestClient.findProfile(selectedIndex);
+		
+	}
+	
+	public static Profile getSelectedProfile() {
+		return selectedProfile;
+	}
+	
 	
 	public static int getSelectedProfileId() {
 		return selectedProfileId;

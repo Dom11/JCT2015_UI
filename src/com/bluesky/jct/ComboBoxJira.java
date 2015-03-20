@@ -12,17 +12,20 @@ import com.bluesky.jct.model.Jira;
 import com.bluesky.jct.rest.RestClient;
 
 
+/**
+ * This is the controller class for comboBox @category which contains all the methods
+ * needed to use and work with it from different classes.
+ * 
+ * @category Environment
+ * @author Dominik
+ */
 public class ComboBoxJira {
 	
 	private static ObservableList<Jira> jiraData = FXCollections.observableArrayList();
 	
 	
-	public ComboBoxJira() {
-	}
-	
-
 	/**
-	 * Loads the items from the DB via REST and fills them into an ObservableList.
+	 * Loads the items from the DB through a REST call and fills them into an ObservableList.
 	 */
 	public static void loadJiraData() {
 		List<Jira> jiras = RestClient.findAllJira();
@@ -40,7 +43,7 @@ public class ComboBoxJira {
 	
 	
 	/**
-	 * Returns the loaded data as an observable list.
+	 * Returns the loaded data as an ObservableList.
 	 * 
 	 * @return jiraData
 	 */
@@ -50,7 +53,7 @@ public class ComboBoxJira {
 	
 	
 	/**
-	 * Initialization of ComboBox Jira
+	 * Initialization of the ComboBox
 	 */
 	public static void iniJiraCombobox(ComboBox<Jira> jiraComboBox) {
 		// Define rendering of the list of values in ComboBox drop down.

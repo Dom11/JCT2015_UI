@@ -21,18 +21,18 @@ import com.bluesky.jct.view.ProfileWizardController;
 import com.bluesky.jct.view.RootLayoutController;
 
 
+/**
+ * This is the main class of the whole prototype application.
+ * It holds the methods to open the according stages and scenes.
+ * 
+ * @author Dominik
+ * @version 31.03.2015
+ */
 public class MainApp extends Application {
 
 	private Stage primaryStage;
 	private BorderPane rootLayout;
 	private BorderPane profileWizardRoot;
-
-
-	/**
-	 * Constructor
-	 */
-	public MainApp() {
-	}
 	
 
 	public static void main(String[] args) {
@@ -41,19 +41,24 @@ public class MainApp extends Application {
 	
 
 	@Override
-	 public void start(Stage primaryStage) {
+	public void start(Stage primaryStage) {
 		
+		// opens the login
 		if(LoginDialog.openLoginDialog() == false) {
 			System.exit(0);
 		};
 
-
+		// after successful login, primary stage will be loaded
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("JCT 2015 (Prototype)");
 	    this.primaryStage.getIcons().add(new Image("file:resources/images/JCT_2015_64.png"));
 
 		initRootLayout();
-//		checkConnectivity();
+		
+		// connectivity to REST API and DB will be checked
+		checkConnectivity();
+		
+		// data will be loaded and main screen opened
 		showProfileOverview();
 	}
 
@@ -97,8 +102,6 @@ public class MainApp extends Application {
 
 	/**
 	 * Shows the profile overview inside the root layout.
-	 * 
-	 * @return true/false
 	 */
 	private void showProfileOverview() {
 
@@ -160,6 +163,9 @@ public class MainApp extends Application {
 	}
 	
 
+	/**
+	 * This method starts the wizard to create a new profile. 
+	 */
 	public void showProfileWizard() {
 
 		try {
@@ -188,9 +194,10 @@ public class MainApp extends Application {
 			e.printStackTrace();
 		}
 	}
+
 	
 	/**
-	 * loads the right page on the new profile wizard. 
+	 * loads the page (AnchorPane) in the new profile wizard according to the pageNumber. 
 	 * 
 	 * @param pageNumber
 	 */
@@ -211,44 +218,13 @@ public class MainApp extends Application {
 	}
 	
 	
-	
-
-	
-	
-/**
-	public boolean showProfileWizardNew() {
-
-		try {
-			// Load the fxml file and create a new stage for the pop-up dialog.
-			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(MainApp.class.getResource("view/ProfileWizard.fxml"));
-			AnchorPane page = (AnchorPane) loader.load();
-
-			// Create the dialog Stage.
-			Stage dialogStage = new Stage();
-			dialogStage.setTitle("Wizard");
-			dialogStage.initModality(Modality.WINDOW_MODAL);
-			dialogStage.initOwner(primaryStage);
-			Scene scene = new Scene(page);
-			dialogStage.setScene(scene);
-
-			// Set the profile into the controller.
-			ProfileWizardController controller = loader.getController();
-//			controller.setDialogStage(dialogStage);
-
-			// Show the dialog and wait until the user closes it.
-			dialogStage.showAndWait();
-
-//			return controller.isExitClicked();
-
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
-*/
-	
+	/**
+	 * Checks the connectivity of the REST API as well as the DB.
+	 * In case one of the connection attempts fails, an error message will provide further information. 
+	 */
 	public void checkConnectivity() {
+		
+		// TODO check method whether there is a better way to do than currently coded
 
 		if (RestClient.checkConnectionRestServer() == false) {
 			

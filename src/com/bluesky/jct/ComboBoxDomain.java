@@ -12,18 +12,20 @@ import com.bluesky.jct.model.Domain;
 import com.bluesky.jct.rest.RestClient;
 
 
+/**
+ * This is the controller class for comboBox @category which contains all the methods
+ * needed to use and work with it from different classes.
+ * 
+ * @category Domain
+ * @author Dominik
+ */
 public class ComboBoxDomain {
 	
 	private static ObservableList<Domain> domainData = FXCollections.observableArrayList();
-	
-	
-	public ComboBoxDomain() {
-	}
-	
 
 	
 	/**
-	 * Loads the items from the DB via REST and fills them into an ObservableList.
+	 * Loads the items from the DB through a REST call and fills them into an ObservableList.
 	 */
 	public static void loadDomainData() {
 		List<Domain> domains = RestClient.findAllDomain(); 
@@ -41,7 +43,7 @@ public class ComboBoxDomain {
 	
 	
 	/**
-	 * Returns the loaded data as an observable list.
+	 * Returns the loaded data as an ObservableList.
 	 * 
 	 * @return domainData
 	 */
@@ -51,7 +53,7 @@ public class ComboBoxDomain {
 	
 	
 	/**
-	 * Initialization of ComboBox Domain
+	 * Initialization of the ComboBox
 	 */
 	public static void iniDomainCombobox(ComboBox<Domain> domainComboBox) {
 		// Define rendering of the list of values in ComboBox drop down.

@@ -17,18 +17,12 @@ public class JvmArgument implements Serializable {
 
 	
 	/**
-	 * Default constructor.
-	 */ 
-//	public Domain() {
-//		this(null);
-//	}
-	
-	/**
 	 * Constructor
 	 * 
 	 * @param domainId, domainName
 	 */
 	public JvmArgument(String jvmArgument) {
+		super();
  		this.jvmId = new SimpleIntegerProperty();
 		this.jvmArgument = new SimpleStringProperty(jvmArgument);
 	}

@@ -17,18 +17,12 @@ public class Jira implements Serializable {
 
 	
 	/**
-	 * Default constructor.
-	 */ 
-	public Jira() {
-		this(0, null);
-	}
-	
-	/**
 	 * Constructor
 	 * 
 	 * @param jbarId, jbarName
 	 */
 	public Jira(int jiraId, String jiraProjectKey) {
+		super();
 		this.jiraId = new SimpleIntegerProperty(jiraId);
 		this.jiraProjectKey = new SimpleStringProperty(jiraProjectKey);
 	}

@@ -17,18 +17,12 @@ public class Host implements Serializable {
 
 	
 	/**
-	 * Default constructor.
-	 */ 
-	public Host() {
-		this(0, null);
-	}
-	
-	/**
 	 * Constructor
 	 * 
 	 * @param jbarId, jbarName
 	 */
 	public Host(int hostId, String hostName) {
+		super();
 		this.hostId = new SimpleIntegerProperty(hostId);
 		this.hostName = new SimpleStringProperty(hostName);
 	}

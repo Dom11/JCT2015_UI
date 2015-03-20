@@ -42,13 +42,6 @@ public class LoginDialog {
 
 	
 	/**
-	 * Constructor
-	 */
-	public LoginDialog() {
-	}
-
-	
-	/**
 	 * Retrieve of user name from the system
 	 * 
 	 * @return userName
@@ -124,7 +117,7 @@ public class LoginDialog {
 		
 		
 		// Request focus on the username field by default.
-		Platform.runLater(() -> userOption.requestFocus());	
+		Platform.runLater(() -> password.requestFocus());	
 		
 		
 		// Enable/Disable login button depending on whether a username was entered.

@@ -16,12 +16,7 @@ public class Jbar implements Serializable {
 	private StringProperty jbarName = new SimpleStringProperty();
 
 	
-	/**
-	 * Default constructor.
-	 */ 
-	public Jbar() {
-		this(0, null);
-	}
+
 	
 	/**
 	 * Constructor
@@ -29,6 +24,7 @@ public class Jbar implements Serializable {
 	 * @param jbarId, jbarName
 	 */
 	public Jbar(int jbarId, String jbarName) {
+		super();
 		this.jbarId = new SimpleIntegerProperty(jbarId);
 		this.jbarName = new SimpleStringProperty(jbarName);
 	}

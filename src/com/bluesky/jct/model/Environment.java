@@ -17,18 +17,12 @@ public class Environment implements Serializable {
 
 	
 	/**
-	 * Default constructor.
-	 */ 
-	public Environment() {
-		this(0, null);
-	}
-	
-	/**
 	 * Constructor
 	 * 
 	 * @param environmentId, environmentName
 	 */
 	public Environment(int environmentId, String environmentName) {
+		super();
 		this.environmentId = new SimpleIntegerProperty(environmentId);
 		this.environmentName = new SimpleStringProperty(environmentName);
 	}
