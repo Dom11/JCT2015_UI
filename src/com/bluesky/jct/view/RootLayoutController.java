@@ -11,6 +11,11 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.Alert.AlertType;
 
 
+/**
+ * This is the controller for the root layout
+ * 
+ * @author Dominik
+ */
 public class RootLayoutController {
 	
 	@FXML
@@ -65,15 +70,14 @@ public class RootLayoutController {
 	
     @FXML
     private void handleClone() {
-    	
+  	
     	Profile selectedProfile = ProfileOverviewController.getSelectedProfile(); 
     	
     	if (selectedProfile == null) {
     		String title = "Clone";
     		showInformationDialog(title);
     	} else {
-    		// TODO add correct method
-    		System.out.println("Clone Profile");
+        	ProfileFunctions.cloneProfile(selectedProfile);
     	}
     }
     

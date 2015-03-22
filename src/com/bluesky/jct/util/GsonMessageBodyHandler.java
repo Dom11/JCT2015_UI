@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Date;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
@@ -35,6 +36,12 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
 
+/**
+ * Gson Message Body Handler.
+ * Contains serializer and deserialzer methods for data types integer, string and date.
+ * 
+ * @author Dominik
+ */
 @Provider
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -53,7 +60,9 @@ public final class GsonMessageBodyHandler implements MessageBodyWriter<Object>,
 							.registerTypeAdapter(StringProperty.class, stringSerializer)
 							.registerTypeAdapter(StringProperty.class, stringDeserializer)
 							.registerTypeAdapter(BooleanProperty.class, booleanSerializer)
-							.registerTypeAdapter(BooleanProperty.class, booleanDeserializer);			
+							.registerTypeAdapter(BooleanProperty.class, booleanDeserializer)
+							.registerTypeAdapter(Date.class, dateSerializer)
+							.registerTypeAdapter(Date.class, dateDeserializer);			
 			gson = gsonBuilder.create();
 		}
 		return gson;
@@ -125,25 +134,7 @@ public final class GsonMessageBodyHandler implements MessageBodyWriter<Object>,
 		@Override
 		public JsonElement serialize(IntegerProperty src, Type typeOfSrc, JsonSerializationContext context) {
 			return src == null ? null : new JsonPrimitive(src.intValue());
-			}
-
-/**		
-			if (src == null) {
-				return null;
-			} else {
-	
-				try {
-//					String intString = src.toString();
-					
-//					return new SimpleIntegerProperty(new Integer(intString).intValue());
-					return src == null ? null : new JsonPrimitive(src.toString());
-	
-				} catch (Exception e) {
-					return null;
-				}
-			}
 		}
-*/		
 	};
 
 	
@@ -218,4 +209,31 @@ public final class GsonMessageBodyHandler implements MessageBodyWriter<Object>,
 			}
 		}
 	};
+	
+	
+	JsonSerializer<Date> dateSerializer = new JsonSerializer<Date>() {
+		@Override
+		public JsonElement serialize(Date src, Type typeOfSrc, JsonSerializationContext context) {
+			return src == null ? null : new JsonPrimitive(src.getTime());
+		}
+	};
+	
+	
+	JsonDeserializer<Date> dateDeserializer = new JsonDeserializer<Date>() {
+		@Override
+		public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+	
+			if (json == null) {
+				return null;
+			} else {
+	
+				try {
+					return new Date (json.getAsLong());
+				} catch (Exception e) {
+					return new Date();
+				}
+			}
+		}
+	};
+	
 }

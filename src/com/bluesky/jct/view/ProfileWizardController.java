@@ -9,6 +9,11 @@ import javafx.scene.control.ProgressBar;
 import javafx.stage.Stage;
 
 
+/**
+ * This is the root controller for the Profile creation Wizard.
+ * 
+ * @author Dominik
+ */
 public class ProfileWizardController {
 	
 	@FXML
@@ -104,15 +109,4 @@ public class ProfileWizardController {
     	dialogStage.close();
     }
     
-   
-    //TODO remove if not needed
-	/**
-	 * Returns true if the user clicked save, false otherwise.
-	 * 
-	 * @return
-	 */
-/**	public boolean isExitClicked() {
-		return exitClicked;
-	}
-*/	
 }

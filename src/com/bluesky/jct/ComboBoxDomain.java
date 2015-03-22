@@ -10,6 +10,7 @@ import javafx.util.StringConverter;
 
 import com.bluesky.jct.model.Domain;
 import com.bluesky.jct.rest.RestClient;
+import com.bluesky.jct.util.ExceptionHandling;
 
 
 /**
@@ -36,8 +37,10 @@ public class ComboBoxDomain {
 				domainData.add(domain);
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+			String headerText = "Domain ComboBox";
+			String contentText = "Please contact the System Administrator!";
+			ExceptionHandling.handleError(headerText, contentText);
 		}
 	}
 	

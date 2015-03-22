@@ -36,8 +36,14 @@ import com.bluesky.jct.MainApp;
 import com.bluesky.jct.ProfileFunctions;
 import com.bluesky.jct.model.*;
 import com.bluesky.jct.rest.RestClient;
+import com.bluesky.jct.util.ExceptionHandling;
 
 
+/**
+ * This is the controller for the overview page.
+ * 
+ * @author Dominik
+ */
 public class ProfileOverviewController extends Filter {
 	
 	@FXML
@@ -59,6 +65,7 @@ public class ProfileOverviewController extends Filter {
 	@FXML
 	private ComboBox<Jbar> jbarComboBox;
 	
+	final ContextMenu contextMenu = new ContextMenu();
 	@FXML
 	private MenuItem editProfile;
 	@FXML
@@ -72,23 +79,21 @@ public class ProfileOverviewController extends Filter {
 	private ObservableList<Jbar> jbarData = FXCollections.observableArrayList();
 	
 	private int selectedIndex;
-	private static int selectedProfileId = 0;
+//	private static int selectedProfileId = 0;
 	private static Profile selectedProfile = null;
-	final ContextMenu contextMenu = new ContextMenu();
-	
 	private MainApp mainApp;
 
 	
 	/**
-	 * The constructor.
+	 * Constructor
 	 * The constructor is called before the initialize() method.
 	 */
 	public ProfileOverviewController() {	
-		
 		super();
-		// fill ObservableLists with information
+		
+		// fills observableLists with information
 		loadProfileViewData();
-//		comboBoxDomain.loadData();
+		// retrieves ComboBox information from DB
 		ComboBoxDomain.loadDomainData();
 		ComboBoxEnvironment.loadEnvironmentData();
 		ComboBoxJbar.loadJbarData();
@@ -96,7 +101,7 @@ public class ProfileOverviewController extends Filter {
 		ComboBoxHost.loadHostData();
 		ComboBoxJbar.loadJbarData();
 		ComboBoxJira.loadJiraData();		
-		
+		// fills the ComboBoxes with information
 		domainData = ComboBoxDomain.getDomainData();
 		environmentData = ComboBoxEnvironment.getEnvironmentData();
 		jbarData = ComboBoxJbar.getJbarData();
@@ -114,7 +119,6 @@ public class ProfileOverviewController extends Filter {
 		profileDescriptionColumn.setCellValueFactory(cellData -> cellData.getValue().profileDescriptionProperty());
 		profileHosteNameColumn.setCellValueFactory(cellData -> cellData.getValue().hostNameProperty());
 		profileStatusColumn.setCellValueFactory(cellData -> cellData.getValue().profileStatusProperty());
-		
 	
 		// Custom rendering of the table cell.
 		profileStatusColumn.setCellFactory(column -> {
@@ -169,7 +173,7 @@ public class ProfileOverviewController extends Filter {
 		 * Filtering based on search Field and ComboBox
 		 * (basic inputs from Marco Jakob's search Field)
 		 * 
-		 * @author Dominik Rey
+		 * @author Dominik
 		 */
 		// 1. Wrap the ObservableList in a FilteredList (initially display all data).
 		FilteredList<ProfileView> filteredData = new FilteredList<>(profileData, p -> true);
@@ -334,59 +338,30 @@ public class ProfileOverviewController extends Filter {
 				contextMenu.hide();
 			}
 		});
-		
-		
-		
-
-//TODO to be removed if version above is working		
-/**		
-		// opens the Edit dialog on double click or through contextMenu
-		profileTable.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				if (event.getClickCount() > 1) {
-					handleViewProfile();
-				}
-				
-				if (event.getButton() == MouseButton.SECONDARY || event.isControlDown()) {
-					contextMenu.show(profileTable, event.getScreenX(), event.getScreenY());
-				} else {
-					contextMenu.hide();
-				}
-			}
-		});
-		
-*/		
-
 	}
 	
 	
 	@FXML
 	private void handleViewProfile() {	
-		mainApp.showProfileEditDialog(findProfile());
+		mainApp.showProfileEditDialog(getSelectedProfile());
 	}
 	
 	
 	@FXML
 	private void handleCloneProfile() {
-		System.out.println("start Wizard");		
-//		mainApp.showProfileWizardNew();
+		ProfileFunctions.cloneProfile(getSelectedProfile());
 	}
 	
-	
-	@FXML
-	private void handleNewProfile() {
-//		mainApp.showProfileWizardNew();
-//		mainApp.showProfileWizard();
-	}
-
 	
 	@FXML
 	public void handleDeleteProfile() {
-		ProfileFunctions.deleteProfile(findProfile());
+		ProfileFunctions.deleteProfile(getSelectedProfile());
 	}
 	
 	
+	/**
+	 * This method refreshes the displayed profiles on the GUI table. 
+	 */
 	public static void loadProfileViewData() {
 		List<ProfileView> profileView = RestClient.findAllProfiles();
 		profileData.clear();
@@ -396,8 +371,9 @@ public class ProfileOverviewController extends Filter {
 				profileData.add(profiles);
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			String headerText = "Load Profiles";
+			String contentText = "Please contact System Administrator";
+			ExceptionHandling.handleError(headerText, contentText);
 		}
 	}
 	
@@ -410,45 +386,25 @@ public class ProfileOverviewController extends Filter {
 	public static ObservableList<ProfileView> getProfileData() {
 		return profileData;
 	}
+
 	
-	
-	public Profile findProfile(){
-		selectedIndex = profileTable.getSelectionModel().getSelectedItem().getProfileId();
-		Profile profile = RestClient.findProfile(selectedIndex);
-		return profile;
-	}
-	
-	
-	public void setSelectedProfileId() {
-//		selectedIndex = profileTable.getSelectionModel().getSelectedItem().getProfileId();
-//		selectedProfileId = selectedIndex;		
-		
-		selectedProfileId = profileTable.getSelectionModel().getSelectedItem().getProfileId();
-	}
-	
-	
-	public void setSelectedProfile() {
+	/**
+	 * Retrieves the Profile Object from the DB of the current selected line item in the GUI table.
+	 * The Profile will be written to static variable selectedProfile.
+	 */
+	private void setSelectedProfile() {
 		selectedIndex = profileTable.getSelectionModel().getSelectedItem().getProfileId();
 		selectedProfile = RestClient.findProfile(selectedIndex);
-		
 	}
 	
+	
+	/**
+	 * Returns the Profile object of the current selected line item in the GUI table.
+	 * 
+	 * @return selectedProfile
+	 */
 	public static Profile getSelectedProfile() {
 		return selectedProfile;
-	}
-	
-	
-	public static int getSelectedProfileId() {
-		return selectedProfileId;
-	}
-	
-
-	@FXML
-	public void refreshAll() {
-		ComboBoxDomain.loadDomainData();
-		ComboBoxDomain.getDomainData();
-		ComboBoxDomain.iniDomainCombobox(domainComboBox);
-		loadProfileViewData();
 	}
 	
 	
@@ -461,4 +417,29 @@ public class ProfileOverviewController extends Filter {
 		this.mainApp = mainApp;
 	}
 	
+	
+	//TODO remove all methods below if not needed anymore
+/**	
+	@FXML
+	public void refreshAll() {
+		ComboBoxDomain.loadDomainData();
+		ComboBoxDomain.getDomainData();
+		ComboBoxDomain.iniDomainCombobox(domainComboBox);
+		loadProfileViewData();
+	}
+	
+	private int getSelectedProfileId() {
+		return selectedProfileId;
+	}
+	
+	private Profile findProfile(){
+		selectedIndex = profileTable.getSelectionModel().getSelectedItem().getProfileId();
+		Profile profile = RestClient.findProfile(selectedIndex);
+		return profile;
+	}
+	
+	private void setSelectedProfileId() {
+		selectedProfileId = profileTable.getSelectionModel().getSelectedItem().getProfileId();
+	}
+*/	
 }

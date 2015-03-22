@@ -11,7 +11,7 @@
    <children>
       <SplitPane dividerPositions="0.2521489971346705" layoutX="128.0" layoutY="72.0" prefHeight="428.0" prefWidth="700.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="72.0">
         <items>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+          <AnchorPane maxWidth="180.0" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="180.0">
                <children>
                   <VBox layoutX="21.0" layoutY="20.0" prefHeight="398.0" prefWidth="205.0" spacing="6.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                      <children>
@@ -73,7 +73,6 @@
         </items>
       </SplitPane>
       <TextField fx:id="searchField" layoutX="14.0" layoutY="26.0" prefHeight="25.0" prefWidth="260.0" promptText="search" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="25.0" />
-      <Button layoutX="396.0" layoutY="26.0" mnemonicParsing="false" onAction="#refreshAll" text="Refresh" />
       <Button layoutX="574.0" layoutY="26.0" mnemonicParsing="false" text="Self-Service Portal" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="25.0" />
    </children>
 </AnchorPane>

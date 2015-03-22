@@ -8,6 +8,11 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 
+/**
+ * Model class for Environment object
+ * 
+ * @author Dominik
+ */
 public class Environment implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
@@ -27,23 +32,31 @@ public class Environment implements Serializable {
 		this.environmentName = new SimpleStringProperty(environmentName);
 	}
 	
+	
+	// --- Getter and Setter
+	
 	public int getId() {
 		return environmentId.get();
 	}
+	
 
 	public IntegerProperty idProperty() {
 		return environmentId;
 	}
 	
+	
 	public String getName() {
 		return environmentName.get();
 	}
 	
+	
 	public void setName(String environmentName) {
 		this.environmentName.set(environmentName);
 	}
+	
 
 	public StringProperty nameProperty() {
 		return environmentName;
 	}
+	
 }

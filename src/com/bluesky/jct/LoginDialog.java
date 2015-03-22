@@ -34,33 +34,12 @@ public class LoginDialog {
 	
 	private final static String PASSWORD = "1234";
 	private final static BooleanProperty GRANTED_ACCESS = new SimpleBooleanProperty(false);
-	private final static int MAX_ATTEMPTS = 3;
 	private final static IntegerProperty ATTEMPTS = new SimpleIntegerProperty(0);
-	private static String USER = getUserName();
+	private final static int MAX_ATTEMPTS = 3;
+	private static String USER = System.getProperty("user.name");
 	private final static String ADMIN = "Administrator";
 	private static boolean disabled = true;
 
-	
-	/**
-	 * Retrieve of user name from the system
-	 * 
-	 * @return userName
-	 */
-	private static String getUserName() {
-		return System.getProperty("user.name");
-	}
-	
-	
-	/**
-	 * This boolean value can be used in order to show/hide certain buttons or functions.
-	 * Administrator sees everything, Regular sees what has been defined.
-	 * 
-	 * @return disabled
-	 */
-	public static boolean getDisabledType() {
-		return disabled;
-	}
-	
 
 	/**
 	 * Login Dialog
@@ -117,7 +96,7 @@ public class LoginDialog {
 		
 		
 		// Request focus on the username field by default.
-		Platform.runLater(() -> password.requestFocus());	
+		Platform.runLater(() -> userOption.requestFocus());	
 		
 		
 		// Enable/Disable login button depending on whether a username was entered.
@@ -140,6 +119,7 @@ public class LoginDialog {
 			} else {
 				disabled = true;
 			}
+			password.requestFocus();
 		});
 		
 		
@@ -180,6 +160,27 @@ public class LoginDialog {
 			}
 		});
 		return GRANTED_ACCESS.get();
+	}
+	
+	
+	/**
+	 * Provides the System's user name.
+	 * 
+	 * @return USER
+	 */
+	public static String getUserName() {
+		return USER;
+	}
+	
+	
+	/**
+	 * This boolean value can be used in order to show/hide certain buttons or functions.
+	 * Administrator sees everything, Regular sees what has been defined.
+	 * 
+	 * @return disabled
+	 */
+	public static boolean getDisabledType() {
+		return disabled;
 	}
 	
 }

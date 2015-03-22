@@ -8,6 +8,11 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 
+/**
+ * Model class for Host object
+ * 
+ * @author Dominik
+ */
 public class Host implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
@@ -27,23 +32,31 @@ public class Host implements Serializable {
 		this.hostName = new SimpleStringProperty(hostName);
 	}
 	
+	
+	// --- Getter and Setter
+	
 	public int getId() {
 		return hostId.get();
 	}
 
+	
 	public IntegerProperty idProperty() {
 		return hostId;
 	}
 	
+	
 	public String getName() {
 		return hostName.get();
 	}
+	
 
 	public void setName(String hostName) {
 		this.hostName.set(hostName);
 	}
+	
 
 	public StringProperty nameProperty() {
 		return hostName;
 	}
+	
 }

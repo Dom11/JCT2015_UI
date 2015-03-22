@@ -8,6 +8,11 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 
+/**
+ * Model class for JvmArgument object
+ * 
+ * @author Dominik
+ */
 public class JvmArgument implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
@@ -19,7 +24,7 @@ public class JvmArgument implements Serializable {
 	/**
 	 * Constructor
 	 * 
-	 * @param domainId, domainName
+	 * @param jvmArgument
 	 */
 	public JvmArgument(String jvmArgument) {
 		super();
@@ -27,23 +32,31 @@ public class JvmArgument implements Serializable {
 		this.jvmArgument = new SimpleStringProperty(jvmArgument);
 	}
 	
+	
+	// --- Getter and Setter
+	
 	public int getId() {
 		return jvmId.get();
 	}
+	
 
 	public IntegerProperty idProperty() {
 		return jvmId;
 	}
 	
+	
 	public String getName() {
 		return jvmArgument.get();
 	}
+	
 	
 	public void setName(String jvmArgument) {
 		this.jvmArgument.set(jvmArgument);
 	}
 
+	
 	public StringProperty nameProperty() {
 		return jvmArgument;
 	}
+	
 }

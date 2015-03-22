@@ -210,7 +210,7 @@ public class MainApp extends Application {
 			AnchorPane profileWizardPage = (AnchorPane) loader.load();
 
 			// Set profile overview into the center of root layout.
-			profileWizardRoot.setCenter(profileWizardPage);
+			profileWizardRoot.setCenter(profileWizardPage);		
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -226,17 +226,21 @@ public class MainApp extends Application {
 		
 		// TODO check method whether there is a better way to do than currently coded
 
-		if (RestClient.checkConnectionRestServer() == false) {
+		if (RestClient.checkConnectionRestServer() == true) {
 			
-			ExceptionHandling.handleError("Server Error",
-					"The Rest Service is currently not accessible!\nPlease contact the System Administrator.");
+			String headerText = "Server Error";
+			String contentText = "The Rest Service is currently not accessible!\n"
+					           + "Please contact the System Administrator.";
+			ExceptionHandling.handleError(headerText, contentText);
 			System.exit(0);
 
 		} else {
-			if (RestClient.checkConnectionDB() == false) {
-
-				ExceptionHandling.handleError("DB Server Error",
-						"The Database Server is currently not accessible!\nPlease contact the System Administrator.");
+			if (RestClient.checkConnectionDB() == true) {
+				
+				String headerText = "DB Server Error";
+				String contentText = "The Database Server is currently not accessible!\n"
+								   + "Please contact the System Administrator.";
+				ExceptionHandling.handleError(headerText, contentText);
 				System.exit(0);
 			};
 		}

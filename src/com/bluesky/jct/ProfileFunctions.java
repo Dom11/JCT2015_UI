@@ -20,6 +20,41 @@ import com.bluesky.jct.view.ProfileOverviewController;
 public class ProfileFunctions {
 	
 	
+	// TODO replace content of this method once ready
+	public static void cloneProfile(Profile selectedProfile) {
+
+		String headerText = "Clone Profile";
+		String contentText = "Work in progress...\n"
+				  		   + "This functions is not yet available.";
+		ExceptionHandling.handleInformation(headerText, contentText);	
+	}
+	
+	
+	// TODO replace content of this method once ready
+	public static void showLogFile(Profile selectedProfile) {
+
+		String headerText = "Log File";
+		String contentText = "Work in progress...\n"
+				  		   + "This functions is not yet available.";
+		ExceptionHandling.handleInformation(headerText, contentText);	
+	}
+	
+	
+	// TODO replace content of this method once ready
+	public static void showStatusReport(Profile selectedProfile) {
+		
+		String headerText = "Status Report";
+		String contentText = "Work in progress...\n"
+				  		   + "This functions is not yet available.";
+		ExceptionHandling.handleInformation(headerText, contentText);	
+	}
+	
+	
+	/**
+	 * Deletes the selected profile (Admin function only).
+	 * 
+	 * @param profile
+	 */
 	public static void deleteProfile(Profile profile) {
 		
 		// show dialog and get confirmation from user
@@ -35,19 +70,6 @@ public class ProfileFunctions {
 		if (result.get() == ButtonType.OK){
 			RestClient.deleteProfile(activeProfile);
 			alert.close();
-
-			String headerText = "";
-  			String contentText = "Profile Index: " + activeProfile 
-					+ "\nHTTP Status Code: " + RestClient.getHttpStatusCode();
-  			
-   			if (RestClient.isSuccessful() == false) {
-   				headerText = "Profile could not be deleted!";
-   			} else {
-   				headerText = "Profile has been successfully deleted";
-   			};
-   			
-            // Show information message     
-        	ExceptionHandling.handleInformation(headerText, contentText);    		
 			
         	// reload profile information to provide the latest status
            	ProfileOverviewController.loadProfileViewData();

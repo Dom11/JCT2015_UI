@@ -18,6 +18,7 @@ import javafx.scene.layout.Priority;
  * @author Dominik
  */
 public class ExceptionHandling {
+
 	
 	/**
 	 * Shows an Error dialog box with the option to view the StackTrace.

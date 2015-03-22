@@ -29,6 +29,6 @@
       </GridPane>
       <Text layoutX="100.0" layoutY="74.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Please choose a JVM Argument from the list, create a new one or continue." wrappingWidth="246.0" />
       <Label layoutX="100.0" layoutY="37.0" text="This is an optional information." />
-      <Button layoutX="241.0" layoutY="294.0" mnemonicParsing="false" text="Next" />
+      <Button layoutX="241.0" layoutY="294.0" mnemonicParsing="false" onAction="#handleNext" text="Next" />
    </children>
 </AnchorPane>

@@ -6,9 +6,16 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+
+import java.time.Duration;
+import java.util.Date;
+
+import org.reactfx.util.FxTimer;
 
 import com.bluesky.jct.ComboBoxDomain;
 import com.bluesky.jct.ComboBoxEnvironment;
@@ -16,10 +23,11 @@ import com.bluesky.jct.ComboBoxHost;
 import com.bluesky.jct.ComboBoxJbar;
 import com.bluesky.jct.ComboBoxJira;
 import com.bluesky.jct.ComboBoxPrefix;
+import com.bluesky.jct.LoginDialog;
 import com.bluesky.jct.ProfileFunctions;
 import com.bluesky.jct.model.*;
 import com.bluesky.jct.rest.RestClient;
-import com.bluesky.jct.util.Progress;
+import com.bluesky.jct.util.ExceptionHandling;
 
 
 /**
@@ -63,16 +71,18 @@ public class ProfileEditDialogController {
 	@FXML
 	private Label profileStatusLabel;
 	@FXML
+	private ProgressIndicator profileStatusProgress;
+	@FXML
 	private Button profileStatusButton;
-	
 	
 	@FXML
 	private HBox hbox;
 
 	private Profile profile;
+	private int currentProfileId;
 	private Stage dialogStage;
 	private boolean saveClicked = false;
-	private boolean selected = false;
+	private boolean currentProfileStatus = false;
 	
 	private String profileStatusButtonText = "";
 	private String profileStatusText = "";
@@ -85,10 +95,20 @@ public class ProfileEditDialogController {
 	 */
 	@FXML
 	private void initialize() {
-		// hides the save/cancel button and shows start/stop button
+		// hides the save/cancel button
 		hbox.setVisible(false);
+		// shows start/stop button
 		profileStatusButton.setVisible(true);
+		// hides the progressIndicator
+		profileStatusProgress.setVisible(false);
+		
+		// provides a toolTip for the textFields
+		Tooltip t = new Tooltip("max. 255 characters");
+		profileDescriptionField.setTooltip(t);
+		profileDnsField.setTooltip(t);
+		profileComponentField.setTooltip(t);
 	
+		// fill comboBoxes with information
 		domainComboBox.setItems(ComboBoxDomain.getDomainData());
 		ComboBoxDomain.iniDomainCombobox(domainComboBox);
 		prefixComboBox.setItems(ComboBoxPrefix.getPrefixData());
@@ -102,20 +122,14 @@ public class ProfileEditDialogController {
 		jiraComboBox.setItems(ComboBoxJira.getJiraData());
 		ComboBoxJira.iniJiraCombobox(jiraComboBox);
 		
+		// listener for status button
 		profileStatusButton.setOnAction((event) -> {
-			if(selected == true) {
-				selected = false;
+			if(currentProfileStatus == true) {
+				currentProfileStatus = false;
 			} else {
-				selected = true;
+				currentProfileStatus = true;
 			}
-			profileStatusButton.setText(getProfileStatusButtonText(selected));
-			profileStatusLabel.setText(getProfileStatusLabelText(selected));
-			profileStatusLabel.setStyle(getProfileStatusTextColor(selected));
-			
-			Progress.showProgressDialog();
-
-			
-//			handleSave();
+			delayedAction();
 		});
 	}
 	
@@ -131,13 +145,14 @@ public class ProfileEditDialogController {
 
 	
 	/**
-	 * Sets the profile to be displayed in the dialog.
+	 * Sets the profile to be displayed in the dialog
+	 * and the fields and comboBoxes as inactive.
 	 * 
 	 * @param profile
 	 */
 	public void setProfile(Profile profile) {
 		this.profile = profile;
-		selected = profile.getProfileStatus();
+		currentProfileId = profile.getProfileId();
 		
 		// Shows all the profile information
 		profileNameField.setText(getProfileName(profile.getProfileId()));
@@ -150,12 +165,12 @@ public class ProfileEditDialogController {
 		hostComboBox.setValue(getHost(profile.getHostId()));
 		jiraComboBox.setValue(getJira(profile.getJiraId()));
 		profileComponentField.setText(profile.getProfileComponent());
+		currentProfileStatus = profile.getProfileStatus();
+		profileStatusButton.setText(getProfileStatusButtonText(currentProfileStatus));		
+		profileStatusLabel.setText(getProfileStatusLabelText(currentProfileStatus));
+		profileStatusLabel.setStyle(getProfileStatusTextColor(currentProfileStatus));
 		
-		profileStatusButton.setText(getProfileStatusButtonText(profile.getProfileStatus()));		
-		profileStatusLabel.setText(getProfileStatusLabelText(profile.getProfileStatus()));
-		profileStatusLabel.setStyle(getProfileStatusTextColor(profile.getProfileStatus()));
-		
-		// sets the text fields as inactive
+		// sets the text fields and comboBoxes as inactive
 		profileNameField.setDisable(true);	
 		profileDescriptionField.setDisable(true);
 		domainComboBox.setDisable(true);
@@ -167,7 +182,9 @@ public class ProfileEditDialogController {
 		jiraComboBox.setDisable(true);
 		profileComponentField.setDisable(true);
 	}
+
 	
+	// --- Getters to retrieve content based on foreign key
 	
 	private String getProfileName(int profileId) {
 		ProfileView profileView = RestClient.findProfileView(profileId);
@@ -233,12 +250,68 @@ public class ProfileEditDialogController {
 	
 	
 	/**
+	 * This method hides the status label and shows the progressIndicator for 3 seconds.
+	 * During the 3 seconds, it will save the new profile status and adjusts the button text, label text and label color.
+	 * After the 3 seconds, progressIndicator will be hidden and status label shown.
+	 */
+	private void delayedAction() {
+		
+		profileStatusLabel.setVisible(false);
+		profileStatusProgress.setVisible(true);
+		
+		FxTimer.runLater(Duration.ofSeconds(3), () -> {
+			saveInformation();
+			profileStatusButton.setText(getProfileStatusButtonText(currentProfileStatus));
+			profileStatusLabel.setText(getProfileStatusLabelText(currentProfileStatus));
+			profileStatusLabel.setStyle(getProfileStatusTextColor(currentProfileStatus));
+			profileStatusLabel.setVisible(true);
+			profileStatusProgress.setVisible(false);			
+		});
+	}
+	
+	
+	/**
+	 * Does input validation and sends a REST call to edit profile entries.
+     * It refreshes the table of the GUI and closes the current stage.
+	 */
+	private void saveInformation() {
+		
+    	int profileId = profile.getProfileId();
+    	int environmentId = environmentComboBox.getSelectionModel().getSelectedItem().getId();
+    	int hostId = hostComboBox.getSelectionModel().getSelectedItem().getId();
+    	int jbarId = jbarComboBox.getSelectionModel().getSelectedItem().getId();
+    	int jiraId = jiraComboBox.getSelectionModel().getSelectedItem().getId();
+    	int prefixId = prefixComboBox.getSelectionModel().getSelectedItem().getId();
+    	int domainId = domainComboBox.getSelectionModel().getSelectedItem().getId();
+    	String profileDescription = profileDescriptionField.getText();
+    	String profileDnsName = profileDnsField.getText();
+    	String profileComponent = profileComponentField.getText();
+    	int jvmId = 0;
+    	boolean profileStatus = currentProfileStatus;
+    	String createdBy = LoginDialog.getUserName();
+    	Date rpmGenerationDate = null;
+    	Date packageSentDate = null;
+    	Integer version = profile.getVersion();
+    	
+    	if (ProfileFunctions.isProfileInputValid(profileDescription, profileDnsName, profileComponent)) {
+        	
+        	RestClient.editProfile(profileId, environmentId, hostId, jbarId, jiraId, prefixId, domainId, profileDescription, 
+        			profileDnsName, profileComponent, jvmId, profileStatus, createdBy, rpmGenerationDate, packageSentDate, version);
+        	
+        	ProfileOverviewController.loadProfileViewData();
+			setProfile(RestClient.findProfile(currentProfileId));
+    	}
+	}
+		
+	
+	
+	/**
 	 * Called when the user clicks the edit from the profile menu.
-	 * Makes text fields to be editable.
+	 * Text fields and comboBoxes will get enabled.
 	 */
 	@FXML
 	private void handleEditProfile() {
-		// sets the text fields as active
+		// sets the textFields and comobBoxes as active
 		profileNameField.setDisable(true);	
 		profileDescriptionField.setDisable(false);
 		domainComboBox.setDisable(false);
@@ -259,85 +332,32 @@ public class ProfileEditDialogController {
 	}
     
     
-    /**
-     * Validates the user input in the text fields.
-     * 
-     * @return true if the input is valid
-     */
-    private boolean isInputValid() {
-        String errorMessage = "";
-        
-        // Description is mandatory and can only be 45 characters long
-        if (profileDescriptionField.getText() == null || profileDescriptionField.getText().length() == 0) {
-            errorMessage += "Please enter a Profile Description!\n"; 
-        } else {
-        	if (profileDescriptionField.getText().length() > 15) {
-        		errorMessage += "Description can only be 5 caracters\n"; 
-        	}
-        }
-        
-        // DNS Name is mandatory and can only be 45 characters long
-        if (profileDnsField.getText() == null || profileDnsField.getText().length() == 0) {
-            errorMessage += "Please enter a DNS Name!\n"; 
-        } else {
-        	if (profileDescriptionField.getText().length() > 15) {
-        		errorMessage += "DNS Name can only be 5 caracters\n"; 
-        	}
-        }
-        
-        // Component is optional but can only hold 255 caracters
-        if (profileComponentField.getText().length() > 255) {
-    		errorMessage += "Component can only be 255 caracters\n"; 
-    	}
-
-        if (errorMessage.length() == 0) {
-            return true;
-        } else {
-            // Show the error message.
-          	Alert alert = new Alert(AlertType.ERROR);
-    		alert.setTitle("Invalid Fields");
-    		alert.setHeaderText("Please correct invalid fields");
-    		alert.setContentText(errorMessage);
-
-    		alert.showAndWait();
-    		
-            return false;
-        }
-    }
-    
-    
-    //TODO
     @FXML
     private void handleClone() {
-    	System.out.println("start Wizard with certain fields filled out");
+		ProfileFunctions.cloneProfile(profile);
     }
     
     
-	/**
-	 * Called when the user clicks on the delete menu item.
-	 */
 	@FXML
 	private void handleDelete() {
 		ProfileFunctions.deleteProfile(profile);
 	}
     
     
-    //TODO
     @FXML
     private void handleLogFile() {
-    	System.out.println("show Log-File");
+    	ProfileFunctions.showLogFile(profile);
     }
     
     
-    //TODO
     @FXML
     private void handleStatusReport() {
-    	System.out.println("show Status Report");
+    	ProfileFunctions.showStatusReport(profile);
     }
     
     
     /**
-     * Opens an about dialog.
+     * Opens the About dialog.
      */
     @FXML
     private void handleInformation() {
@@ -358,6 +378,23 @@ public class ProfileEditDialogController {
     private void handleCancel() {
         dialogStage.close();
     }
+	
+	
+	/**
+     * Called when the user clicks Save.
+     */
+    @FXML
+    private void handleSave() {
+    	
+    	saveInformation();
+    	saveClicked = true;
+            
+        String headerText = "Update successful";
+        String contentText = "Modifications have been sucessfully saved!";
+        ExceptionHandling.handleInformation(headerText, contentText);
+            
+        dialogStage.close();
+    }
     
     
 	/**
@@ -369,34 +406,4 @@ public class ProfileEditDialogController {
 		return saveClicked;
 	}
 	
-	
-	/**
-     * Called when the user clicks ok.
-     */
-    @FXML
-    private void handleSave() {
-        if (isInputValid()) {
-        	
-        	int profileId = profile.getProfileId();
-        	int environmentId = environmentComboBox.getSelectionModel().getSelectedItem().getId();
-        	int hostId = hostComboBox.getSelectionModel().getSelectedItem().getId();
-        	int jbarId = jbarComboBox.getSelectionModel().getSelectedItem().getId();
-        	int jiraId = jiraComboBox.getSelectionModel().getSelectedItem().getId();
-        	int prefixId = prefixComboBox.getSelectionModel().getSelectedItem().getId();
-        	int domainId = domainComboBox.getSelectionModel().getSelectedItem().getId();
-        	String profileDescription = profileDescriptionField.getText();
-        	String profileDnsName = profileDnsField.getText();
-        	String profileComponentName = profileComponentField.getText();
-        	boolean profileStatus = selected;
-        	Integer version = profile.getVersion();
-        	
-        	RestClient.editProfile(profileId, environmentId, hostId, jbarId, jiraId, prefixId, domainId, profileDescription, profileDnsName, profileComponentName, profileStatus, version);
-    
-            saveClicked = true;
-    		//.loadProfileViewData();
-            
-            
-//            dialogStage.close();
-        }
-    }
 }
