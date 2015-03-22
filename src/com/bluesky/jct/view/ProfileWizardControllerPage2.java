@@ -1,7 +1,5 @@
 package com.bluesky.jct.view;
 
-import java.util.List;
-
 import com.bluesky.jct.ComboBoxJvmArgument;
 import com.bluesky.jct.ProfileFunctions;
 import com.bluesky.jct.model.JvmArgument;
@@ -30,14 +28,15 @@ public class ProfileWizardControllerPage2 {
 	private ComboBox<JvmArgument> jvmArgumentComboBox;
 	@FXML
 	private Button createButton;
+	@FXML
+	private Button nextButton;
+	@FXML
+	private Button backButton;
 	
+	private Profile tempProfile;	
 	private ObservableList<JvmArgument> jvmData = FXCollections.observableArrayList();
 	private int index = 0;
-	private int createdJvmId = 0;
 	private String jvmArgumentText;
-	public static boolean createClicked;
-	
-	public static Profile tempProfile2;
 	
 			
 	/**
@@ -46,9 +45,9 @@ public class ProfileWizardControllerPage2 {
 	 */
 	public ProfileWizardControllerPage2() {
 		super();
+		tempProfile = ProfileFunctions.getTempProfile();
 		ComboBoxJvmArgument.loadJvmArgumentData();
 		jvmData = ComboBoxJvmArgument.getJvmArgumentData();
-//		tempProfile2 = ProfileWizardControllerPage1.getTempProfile();
 	}
 	
 	
@@ -82,48 +81,28 @@ public class ProfileWizardControllerPage2 {
 	    	ComboBoxJvmArgument.loadJvmArgumentData();
 	    	
 	    	// select new created JvmArgument and clear TextField
-	    	setNewJvmID();
 	    	index = jvmData.size() - 1;
 	       	jvmArgumentComboBox.setValue(jvmData.get(index));
 	       	jvmArgumentField.setText(null);
-	       	
-	       	// set create Button as inactive
-	       	createClicked = true;
-	       	createButton.setDisable(isCreateClicked());   
     	}
     }
     
     
+	/**
+	 * User clicks on Next button.
+	 * Selected jvmArgument from the comboBox will be added to the temporary Profile.
+	 */
     @FXML
     private void handleNext() {
     	
     	int selectedJvmId = jvmArgumentComboBox.getValue().getId();
     	String selectedJvmArgument = jvmArgumentComboBox.getValue().getName();
     	
-    	tempProfile2.setJvmId(selectedJvmId);
-    	
-/**    	
-    	int profileId = ProfileWizardControllerPage1.getNewProfileID();
-    	Profile profile = RestClient.findProfile(profileId);
-    	
-    	String profileDescription = profile.getProfileDescription();
-	   	int domainId = profile.getDomainId();
-	   	int prefixId = profile.getPrefixId();
-	   	int jbarId = profile.getJbarId();
-	   	int environmentId = profile.getEnvironmentId();
-	   	String profileDnsName = profile.getProfileDnsName();
-	   	int hostId = profile.getHostId();
-	   	int jiraId = profile.getJiraId();
-	   	String profileComponent = profile.getProfileComponent();
-	   	int jvmId = createdJvmId;
-	   	boolean profileStatus = profile.getProfileStatus();
-	   	int version = profile.getVersion();
-	   	
-	   	RestClient.editProfile(profileId, environmentId, hostId, jbarId, jiraId, prefixId, domainId, profileDescription, profileDnsName, profileComponent, jvmId, profileStatus, version);
-*/    	
+    	tempProfile.setJvmId(selectedJvmId);
+
 	   	// load next page of wizard
 		ProfileWizardController.increasePageCounter();
-		ProfileWizardControllerPage3.setTempProfile(tempProfile2);
+		ProfileFunctions.setTempProfile(tempProfile);
 		
 		String headerText = "JVM Argument";
 		String contentText = "Argument '" + selectedJvmArgument + "' has been added.";
@@ -131,25 +110,9 @@ public class ProfileWizardControllerPage2 {
     }
     
     
-	private void setNewJvmID() {
-		List<JvmArgument> jvmArgumentList = (List<JvmArgument>) RestClient.findAllJvmArgument(); 
-		int lastIndex = jvmArgumentList.size() -1;
-		createdJvmId = jvmArgumentList.get(lastIndex).getId();
-	}
-    
-    
-	/**
-	 * Senses whether user has clicked the create button.
-	 * 
-	 * @return true if clicked, false otherwise
-	 */
-	public boolean isCreateClicked() {
-		return createClicked;
-	}
-	
-	
-	public static void setTempProfile(Profile tempProfile) {
-		tempProfile2 = tempProfile;
-	}
-	
+    @FXML
+    private void handleBack() {
+    	ProfileWizardController.decreasePageCounter();
+    }
+
 }

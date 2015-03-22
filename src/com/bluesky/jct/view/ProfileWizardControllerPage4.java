@@ -1,18 +1,23 @@
 package com.bluesky.jct.view;
 
+import java.time.Duration;
 import java.util.Date;
 
+import org.reactfx.util.FxTimer;
+
+import com.bluesky.jct.ProfileFunctions;
 import com.bluesky.jct.model.Profile;
 import com.bluesky.jct.rest.RestClient;
 import com.bluesky.jct.util.ExceptionHandling;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ProgressBar;
 
 
 /**
- * Page 3 of the new profile wizard.
- * Generating an RPM package.
+ * Page 4 of the new profile wizard.
+ * sending the RPM package to the Satellite Server.
  * 
  * @author Dominik
  */
@@ -20,9 +25,12 @@ public class ProfileWizardControllerPage4 {
 
 	@FXML
 	private Button saveButton;
+	@FXML
+	private Button backButton;
+	@FXML
+	private ProgressBar profileCreationProgress;
 
-	public static Profile tempProfile4;
-	public static boolean createClicked;
+	private Profile tempProfile;
 	
 			
 	/**
@@ -31,6 +39,7 @@ public class ProfileWizardControllerPage4 {
 	 */
 	public ProfileWizardControllerPage4() {
 		super();
+		tempProfile = ProfileFunctions.getTempProfile();
 	}
 	
 	
@@ -40,60 +49,57 @@ public class ProfileWizardControllerPage4 {
 	 */
 	@FXML
 	private void initialize() {
+		saveButton.requestFocus();
+		profileCreationProgress.setVisible(false);
 	}
-
 	
     
     @FXML
     private void handleSave() {
-    	
-    	Date date = new Date();
-    	tempProfile4.setPackageSentDate(date);
-    	
-    	int environmentId = tempProfile4.getEnvironmentId();
-    	int hostId = tempProfile4.getHostId();
-    	int jbarId = tempProfile4.getJbarId();
-    	int jiraId = tempProfile4.getJiraId();
-    	int prefixId = tempProfile4.getPrefixId();
-    	int domainId = tempProfile4.getDomainId();
-    	String profileDescription = tempProfile4.getProfileDescription();
-    	String profileDnsName = tempProfile4.getProfileDnsName();
-    	String profileComponent = tempProfile4.getProfileComponent();
-    	int jvmId = tempProfile4.getJvmId();
-    	boolean profileStatus = tempProfile4.getProfileStatus();
-    	String createdBy = tempProfile4.getCreatedBy();
-    	Date rpmGenerationDate = tempProfile4.getRpmGenerationDate();
-    	Date packageSentDate = tempProfile4.getPackageSentDate();
-    	Integer version = tempProfile4.getVersion();
-    	
-    	RestClient.createProfile(
-	   			environmentId, hostId, jbarId, jiraId, prefixId, domainId, profileDescription, profileDnsName, 
-	   			profileComponent, jvmId, profileStatus, createdBy, rpmGenerationDate, packageSentDate, version);
 
-	   	// refresh data table on profile overview
-	   	ProfileOverviewController.loadProfileViewData();
-		
-		String headerText = "Package";
-		String contentText = "Package has been sent and received.";
-		ExceptionHandling.handleInformation(headerText, contentText);
-		
-		ProfileWizardController.closeWizard();
-		
+		profileCreationProgress.setVisible(true);
+    	Date date = new Date();
+    	tempProfile.setPackageSentDate(date);
+    	
+    	int environmentId = tempProfile.getEnvironmentId();
+    	int hostId = tempProfile.getHostId();
+    	int jbarId = tempProfile.getJbarId();
+    	int jiraId = tempProfile.getJiraId();
+    	int prefixId = tempProfile.getPrefixId();
+    	int domainId = tempProfile.getDomainId();
+    	String profileDescription = tempProfile.getProfileDescription();
+    	String profileDnsName = tempProfile.getProfileDnsName();
+    	String profileComponent = tempProfile.getProfileComponent();
+    	int jvmId = tempProfile.getJvmId();
+    	boolean profileStatus = true;
+    	String createdBy = tempProfile.getCreatedBy();
+    	Date rpmGenerationDate = tempProfile.getRpmGenerationDate();
+    	Date packageSentDate = tempProfile.getPackageSentDate();
+    	Integer version = tempProfile.getVersion();
+    	
+		FxTimer.runLater(Duration.ofSeconds(3), () -> {
+    	
+	    	if(RestClient.createProfile(
+		   			environmentId, hostId, jbarId, jiraId, prefixId, domainId, profileDescription, profileDnsName, 
+		   			profileComponent, jvmId, profileStatus, createdBy, rpmGenerationDate, packageSentDate, version) == false) {
+	
+	    	   	// refresh data table on profile overview
+	    	   	ProfileOverviewController.loadProfileViewData();
+	    		
+	    		String headerText = "Package";
+	    		String contentText = "Package has been sent to Satellite and received.\n"
+	    						   + "Your profile is now ready for use.";
+	    		ExceptionHandling.handleInformation(headerText, contentText);
+	    		
+	    		ProfileWizardController.closeWizard();    		
+	    	};
+		});
     }
     
     
-	/**
-	 * Senses whether user has clicked the create button.
-	 * 
-	 * @return true if clicked, false otherwise
-	 */
-	public boolean isCreateClicked() {
-		return createClicked;
-	}
-	
-	
-	public static void setTempProfile(Profile tempProfile) {
-		tempProfile4 = tempProfile;
-	}
-	
+    @FXML
+    private void handleBack() {
+    	ProfileWizardController.decreasePageCounter();
+    }
+
 }

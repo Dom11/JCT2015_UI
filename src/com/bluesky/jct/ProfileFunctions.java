@@ -19,6 +19,28 @@ import com.bluesky.jct.view.ProfileOverviewController;
  */
 public class ProfileFunctions {
 	
+	private final static Profile TEMP_PROFILE = new Profile();
+	
+	
+	/**
+	 * Provides the temporary Profile information.
+	 * 
+	 * @return tempProfile
+	 */
+	public static Profile getTempProfile() {
+		return TEMP_PROFILE;
+	}
+	
+	
+	/**
+	 * Sets the temporary Profile information.
+	 * 
+	 * @param profile
+	 */
+	public static void setTempProfile(Profile profile) {
+		profile = TEMP_PROFILE;
+	}
+	
 	
 	// TODO replace content of this method once ready
 	public static void cloneProfile(Profile selectedProfile) {

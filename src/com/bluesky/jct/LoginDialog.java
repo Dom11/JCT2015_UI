@@ -36,7 +36,7 @@ public class LoginDialog {
 	private final static BooleanProperty GRANTED_ACCESS = new SimpleBooleanProperty(false);
 	private final static IntegerProperty ATTEMPTS = new SimpleIntegerProperty(0);
 	private final static int MAX_ATTEMPTS = 3;
-	private static String USER = System.getProperty("user.name");
+	private final static String USER = System.getProperty("user.name");
 	private final static String ADMIN = "Administrator";
 	private static boolean disabled = true;
 

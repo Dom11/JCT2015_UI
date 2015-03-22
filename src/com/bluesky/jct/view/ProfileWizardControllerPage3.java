@@ -1,13 +1,18 @@
 package com.bluesky.jct.view;
 
-import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.Date;
 
+import org.reactfx.util.FxTimer;
+
+import com.bluesky.jct.ProfileFunctions;
 import com.bluesky.jct.model.Profile;
 import com.bluesky.jct.util.ExceptionHandling;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.layout.HBox;
 
 
 /**
@@ -20,9 +25,14 @@ public class ProfileWizardControllerPage3 {
 
 	@FXML
 	private Button nextButton;
+	@FXML
+	private Button backButton;
+	@FXML
+	private HBox hbox;
+	@FXML
+	private ProgressBar profileCreationProgress;
 
-	public static Profile tempProfile3;
-	public static boolean createClicked;
+	private Profile tempProfile;
 	
 			
 	/**
@@ -31,6 +41,7 @@ public class ProfileWizardControllerPage3 {
 	 */
 	public ProfileWizardControllerPage3() {
 		super();
+		tempProfile = ProfileFunctions.getTempProfile();
 	}
 	
 	
@@ -40,40 +51,33 @@ public class ProfileWizardControllerPage3 {
 	 */
 	@FXML
 	private void initialize() {
+		nextButton.isFocused();
+		profileCreationProgress.setVisible(false);
 	}
 
-	
     
     @FXML
     private void handleNext() {
 
+		profileCreationProgress.setVisible(true);
     	Date date = new Date();
-    	tempProfile3.setRpmGenerationDate(date);
+    	tempProfile.setRpmGenerationDate(date);
 
-	   	// load next page of wizard
-		ProfileWizardController.increasePageCounter();
-		ProfileWizardControllerPage4.setTempProfile(tempProfile3);
-		
-		String headerText = "RPM";
-		String contentText = "RPM has been generated.";
-		ExceptionHandling.handleInformation(headerText, contentText);
-		
-		System.out.println(date.toString());
+		FxTimer.runLater(Duration.ofSeconds(3), () -> {
+		   	// load next page of wizard
+			ProfileWizardController.increasePageCounter();
+			ProfileFunctions.setTempProfile(tempProfile);
+			
+			String headerText = "RPM";
+			String contentText = "Package has been successfully generated.";
+			ExceptionHandling.handleInformation(headerText, contentText);		
+		});
     }
     
     
-	/**
-	 * Senses whether user has clicked the create button.
-	 * 
-	 * @return true if clicked, false otherwise
-	 */
-	public boolean isCreateClicked() {
-		return createClicked;
-	}
-	
-	
-	public static void setTempProfile(Profile tempProfile) {
-		tempProfile3 = tempProfile;
-	}
-	
+    @FXML
+    private void handleBack() {
+    	ProfileWizardController.decreasePageCounter();
+    }
+
 }

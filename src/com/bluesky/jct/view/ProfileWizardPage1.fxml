@@ -50,7 +50,7 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
          </rowConstraints>
       </GridPane>
-      <HBox layoutX="223.0" layoutY="354.0" spacing="10.0" AnchorPane.leftAnchor="190.0" AnchorPane.rightAnchor="190.0">
+      <HBox layoutX="223.0" layoutY="354.0" spacing="10.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="190.0" AnchorPane.rightAnchor="190.0">
          <children>
             <Button layoutX="223.0" layoutY="354.0" mnemonicParsing="false" onAction="#handleCancel" prefWidth="55.0" text="Cancel" />
             <Button fx:id="nextButton" layoutX="292.0" layoutY="354.0" mnemonicParsing="false" onAction="#handleNext" prefWidth="55.0" text="Next" />

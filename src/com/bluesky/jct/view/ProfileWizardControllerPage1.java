@@ -1,7 +1,5 @@
 package com.bluesky.jct.view;
 
-import java.util.List;
-
 import com.bluesky.jct.ComboBoxDomain;
 import com.bluesky.jct.ComboBoxEnvironment;
 import com.bluesky.jct.ComboBoxHost;
@@ -14,8 +12,6 @@ import com.bluesky.jct.model.*;
 import com.bluesky.jct.rest.RestClient;
 import com.bluesky.jct.util.ExceptionHandling;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -53,16 +49,8 @@ public class ProfileWizardControllerPage1 {
 	@FXML
 	private Button nextButton;
 
-	private ObservableList<Domain> domainData = FXCollections.observableArrayList();
-	private ObservableList<Prefix> prefixData = FXCollections.observableArrayList();
-	private ObservableList<Jbar> jbarData = FXCollections.observableArrayList();
-	private ObservableList<Environment> environmentData = FXCollections.observableArrayList();	
-	private ObservableList<Host> hostData = FXCollections.observableArrayList();
-	private ObservableList<Jira> jiraData = FXCollections.observableArrayList();
-	
-	private static int createdProfileId = 0;
-	
-	public static Profile tempProfile = new Profile();
+
+	private Profile tempProfile;
 	private String profileDescription = null;
 	private int domainId = 0;
 	private int prefixId = 0;
@@ -83,20 +71,6 @@ public class ProfileWizardControllerPage1 {
 	 */
 	public ProfileWizardControllerPage1() {
 		super();
-		
-//		tempProfile = new Profile();
-/**		
-		// load ComboBox data for the ones which were not yet loaded
-		ComboBoxPrefix.loadPrefixData();
-		ComboBoxHost.loadHostData();
-		ComboBoxJira.loadJiraData();
-		domainData = ComboBoxDomain.getDomainData();
-		prefixData = ComboBoxPrefix.getPrefixData();
-		jbarData = ComboBoxJbar.getJbarData();
-		environmentData = ComboBoxEnvironment.getEnvironmentData();
-		hostData = ComboBoxHost.getHostData();
-		jiraData = ComboBoxJira.getJiraData();
-*/		
 	}
 	
 	
@@ -108,29 +82,11 @@ public class ProfileWizardControllerPage1 {
 	private void initialize() {
 	
 		profileNameField.setDisable(true);	
-//		profileDescriptionField.setDisable(false);
-//		profileDnsNameField.setDisable(false);
-//		profileComponentField.setDisable(false);
 
 		Tooltip t = new Tooltip("max. 255 characters");
 		profileDescriptionField.setTooltip(t);
 		profileDnsNameField.setTooltip(t);
 		profileComponentField.setTooltip(t);
-/**		
-		domainComboBox.setItems(domainData);
-		ComboBoxDomain.iniDomainCombobox(domainComboBox);
-		prefixComboBox.setItems(prefixData);
-		ComboBoxPrefix.iniPrefixCombobox(prefixComboBox);
-		jbarComboBox.setItems(jbarData);
-		ComboBoxJbar.iniJbarCombobox(jbarComboBox);		
-		environmentComboBox.setItems(environmentData);
-		ComboBoxEnvironment.iniEnvironmentCombobox(environmentComboBox);
-		hostComboBox.setItems(hostData);
-		ComboBoxHost.iniHostCombobox(hostComboBox);		
-		jiraComboBox.setItems(jiraData);
-		ComboBoxJira.iniJiraCombobox(jiraComboBox);
-*/		
-		
 		
 		// fill comboBoxes with information
 		domainComboBox.setItems(ComboBoxDomain.getDomainData());
@@ -145,9 +101,62 @@ public class ProfileWizardControllerPage1 {
 		ComboBoxHost.iniHostCombobox(hostComboBox);
 		jiraComboBox.setItems(ComboBoxJira.getJiraData());
 		ComboBoxJira.iniJiraCombobox(jiraComboBox);
+		
+		// retrieve tempProfile
+		tempProfile = ProfileFunctions.getTempProfile();
+		
+		// if tempProfile not null then fill fields with information
+		if (tempProfile.getProfileDescription() != null) {
+			profileDescriptionField.setText(tempProfile.getProfileDescription());
+			domainComboBox.setValue(getDomain(tempProfile.getDomainId()));
+			prefixComboBox.setValue(getPrefix(tempProfile.getPrefixId()));
+			jbarComboBox.setValue(getJbar(tempProfile.getJbarId()));
+			environmentComboBox.setValue(getEnvironment(tempProfile.getEnvironmentId()));
+			profileDnsNameField.setText(tempProfile.getProfileDnsName());
+			hostComboBox.setValue(getHost(tempProfile.getHostId()));
+			jiraComboBox.setValue(getJira(tempProfile.getJiraId()));
+			profileComponentField.setText(tempProfile.getProfileComponent());
+		}
+	}
+	
+	// --- Getters to retrieve content based on foreign key
+	
+	private Domain getDomain(int domainId) {
+		Domain domain = RestClient.findDomain(domainId);
+		return domain;
+	}
+
+	private Prefix getPrefix(int prefixId) {
+		Prefix prefix = RestClient.findPrefix(prefixId);
+		return prefix;
+	}
+
+	private Jbar getJbar(int jbarId) {
+		Jbar jbar = RestClient.findJbar(jbarId);
+		return jbar;
+	}	
+	
+	private Environment getEnvironment(int environmentId) {
+		Environment environment = RestClient.findEnvironment(environmentId);
+		return environment;
+	}
+	
+	private Host getHost(int hostId) {
+		Host host = RestClient.findHost(hostId);
+		return host;
+	}
+	
+	private Jira getJira(int jiraId) {
+		Jira jira = RestClient.findJira(jiraId);
+		return jira;
 	}
 	
 	
+	/**
+	 * User clicks on Next button.
+	 * Input check of comboBoxes and validation check of textFields.
+	 * If everything is ok, next page will be loaded and a temporary Profile created.
+	 */
     @FXML
     private void handleNext() {
     	
@@ -155,7 +164,7 @@ public class ProfileWizardControllerPage1 {
     	if (checkComboBoxSelection() == true) {
     		String headerText = "Mandatory information missing!";
     		String contentText = "Please check your Combo Box selections.\n"
-					   		   + "Nothing selected on one or more boxes.";    		
+					   		   + "Nothing selected on one or more Combo Boxes.";    		
     		ExceptionHandling.handleWarning(headerText, contentText);
     		
 		} else {
@@ -169,31 +178,13 @@ public class ProfileWizardControllerPage1 {
 		   	hostId = hostComboBox.getSelectionModel().getSelectedItem().getId();
 		   	jiraId = jiraComboBox.getSelectionModel().getSelectedItem().getId();
 		   	profileComponent = profileComponentField.getText();
-//		   	profileStatus = false;
 		
-		   	// validation check
+		   	// if validation check is ok, temporary profile will get created
 		   	if (ProfileFunctions.isProfileInputValid(profileDescription, profileDnsName, profileComponent)) {
-		   		
 		   		createTempProfile();
-		   	
-			   	// if ok, profile will be created
-//			   	if (RestClient.createProfile(
-//			   			environmentId, hostId, jbarId, jiraId, prefixId, domainId, profileDescription, profileDnsName, 
-//			   			profileComponent, jvmId, profileStatus, createdBy, rpmGenerationDate, packageSentDate, version) == false) {
-			   	
-//			   	nextClicked = true;
-//			   	nextButton.setDisable(isNextClicked());
-			   	
-			   	// refresh data table on profile overview
-//			   	ProfileOverviewController.loadProfileViewData();
-			
+
 			   	// load next page of wizard
 				ProfileWizardController.increasePageCounter();
-				ProfileWizardControllerPage2.setTempProfile(tempProfile);
-				
-//				setNewProfileID();
-
-//			   	};
 		   	}
 		};
     }
@@ -205,16 +196,6 @@ public class ProfileWizardControllerPage1 {
     }
 	
 
-	/**
-	 * Returns true if the user clicked save, false otherwise.
-	 * 
-	 * @return nextClicked
-	 */
-	private boolean isNextClicked() {
-		return nextClicked;
-    }
-	
-	
 	/**
 	 * Checks whether all comboBoxes have something selected.
 	 * 
@@ -239,22 +220,11 @@ public class ProfileWizardControllerPage1 {
 	}
 	
 
-	private void setNewProfileID() {
-		List<Profile> profileList = (List<Profile>) RestClient.findAllProfile(); 
-		int lastIndex = profileList.size() -1;
-		createdProfileId = profileList.get(lastIndex).getProfileId();
-	}
-	
-	
-	private int getNewProfileID() {
-		return createdProfileId;
-	}
-	
-	
 	/**
 	 * Creates a temporary Profile based on the user inputs.
 	 */
 	private void createTempProfile() {
+		
 		tempProfile.setDomainId(domainId);
 		tempProfile.setPrefixId(prefixId);
 		tempProfile.setJbarId(jbarId);
@@ -265,16 +235,8 @@ public class ProfileWizardControllerPage1 {
 		tempProfile.setJiraId(jiraId);
 		tempProfile.setProfileComponent(profileComponent);
 		tempProfile.setCreatedBy(createdBy);
+		
+		ProfileFunctions.setTempProfile(tempProfile);
 	}
-	
-	
-	/**
-	 * Provides the temporary Profile information.
-	 * 
-	 * @return tempProfile
-	 */
-	public static Profile getTempProfile() {
-		return tempProfile;
-	}
-	
+
 }

@@ -29,6 +29,11 @@
       </GridPane>
       <Text layoutX="100.0" layoutY="74.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Please choose a JVM Argument from the list, create a new one or continue." wrappingWidth="246.0" />
       <Label layoutX="100.0" layoutY="37.0" text="This is an optional information." />
-      <Button layoutX="241.0" layoutY="294.0" mnemonicParsing="false" onAction="#handleNext" text="Next" />
+      <HBox layoutX="171.0" layoutY="294.0" spacing="10.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="190.0" AnchorPane.rightAnchor="190.0">
+         <children>
+            <Button fx:id="backButton" layoutX="171.0" layoutY="294.0" mnemonicParsing="false" onAction="#handleBack" prefWidth="55.0" text="Back" />
+            <Button fx:id="nextButton" layoutX="241.0" layoutY="294.0" mnemonicParsing="false" onAction="#handleNext" prefWidth="55.0" text="Next" />
+         </children>
+      </HBox>
    </children>
 </AnchorPane>
