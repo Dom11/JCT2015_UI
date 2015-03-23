@@ -83,5 +83,6 @@
          </opaqueInsets>
       </Button>
       <Label fx:id="profileStatusLabel" layoutX="166.0" layoutY="360.0" text="Label" />
+      <ProgressIndicator fx:id="profileStatusProgress" layoutX="166.0" layoutY="347.0" prefHeight="44.0" prefWidth="53.0" />
    </children>
 </AnchorPane>

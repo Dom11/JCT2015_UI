@@ -12,17 +12,20 @@ import com.bluesky.jct.model.Environment;
 import com.bluesky.jct.rest.RestClient;
 
 
+/**
+ * This is the controller class for comboBox @category which contains all the methods
+ * needed to use and work with it from different classes.
+ * 
+ * @category Environment
+ * @author Dominik
+ */
 public class ComboBoxEnvironment {
 	
 	private static ObservableList<Environment> environmentData = FXCollections.observableArrayList();
 	
-	
-	public ComboBoxEnvironment() {
-	}
-	
 
 	/**
-	 * Loads the items from the DB via REST and fills them into an ObservableList.
+	 * Loads the items from the DB through a REST call and fills them into an ObservableList.
 	 */
 	public static void loadEnvironmentData() {
 		List<Environment> environments = RestClient.findAllEnvironment();
@@ -40,7 +43,7 @@ public class ComboBoxEnvironment {
 	
 	
 	/**
-	 * Returns the loaded data as an observable list.
+	 * Returns the loaded data as an ObservableList.
 	 * 
 	 * @return environmentData
 	 */
@@ -50,7 +53,7 @@ public class ComboBoxEnvironment {
 	
 	
 	/**
-	 * Initialization of ComboBox Environment
+	 * Initialization of the ComboBox
 	 */
 	public static void iniEnvironmentCombobox(ComboBox<Environment> environmentComboBox) {
 		// Define rendering of the list of values in ComboBox drop down.

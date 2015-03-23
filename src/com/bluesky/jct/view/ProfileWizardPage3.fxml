@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="360.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bluesky.jct.view.ProfileWizardControllerPage3">
+   <children>
+      <HBox fx:id="hbox" layoutX="147.0" layoutY="208.0" spacing="10.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="190.0" AnchorPane.rightAnchor="190.0">
+         <children>
+            <Button fx:id="backButton" layoutX="147.0" layoutY="208.0" mnemonicParsing="false" onAction="#handleBack" prefWidth="55.0" text="Back" />
+            <Button fx:id="nextButton" layoutX="211.0" layoutY="208.0" mnemonicParsing="false" onAction="#handleNext" prefWidth="55.0" text="Next" />
+         </children>
+      </HBox>
+      <Text layoutX="150.0" layoutY="108.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Click on the Next Button and an RPM package will be created with your Profile parameters." wrappingWidth="200.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="80.0" />
+      <ProgressBar fx:id="profileCreationProgress" layoutX="150.0" layoutY="154.0" prefWidth="200.0" AnchorPane.topAnchor="140.0" />
+   </children>
+</AnchorPane>

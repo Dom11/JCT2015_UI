@@ -23,27 +23,30 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 
+/**
+ * Login Dialog and Functions
+ * Redesign mix from http://code.makery.ch/blog/javafx-dialogs-official/
+ * and Book JavaFX 8: Introduction by Example 
+ * 
+ * @author Dominik Rey
+ */
 public class LoginDialog {
 	
 	private final static String PASSWORD = "1234";
 	private final static BooleanProperty GRANTED_ACCESS = new SimpleBooleanProperty(false);
-	private final static int MAX_ATTEMPTS = 3;
 	private final static IntegerProperty ATTEMPTS = new SimpleIntegerProperty(0);
+	private final static int MAX_ATTEMPTS = 3;
+	private final static String USER = System.getProperty("user.name");
+	private final static String ADMIN = "Administrator";
+	private static boolean disabled = true;
 
-	
-	public LoginDialog() {
-	}
-	
-	private static String getUserName() {
-		return System.getProperty("user.name");
-	}
-	
 
 	/**
 	 * Login Dialog
-	 * Source http://code.makery.ch/blog/javafx-dialogs-official/
+	 * Opens a dialog to select user type (Administrator or Regular)
+	 * and provides 3 attempts to enter the right password.
 	 * 
-	 * @author Marco Jakob, modified by Dominik Rey
+	 * @return GRANTED_ACCESS (boolean)
 	 */
 	public static boolean openLoginDialog() {
 
@@ -51,7 +54,7 @@ public class LoginDialog {
 		Dialog<String> dialog = new Dialog<>();
 		Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
 		dialog.setTitle("Login Dialog");
-		dialog.setHeaderText("Welcome " + getUserName() + "\nto JCT_2015 prototype");
+		dialog.setHeaderText("Welcome " + USER + "\nto JCT_2015 prototype");
 		stage.getIcons().add(new Image("file:resources/images/Secure_128.png"));
 		dialog.setGraphic(new ImageView("file:resources/images/JCT_2015_64.png"));
 
@@ -72,9 +75,11 @@ public class LoginDialog {
 		userOptionChoices.add(new String("Administrator"));
 		userOption.setItems(userOptionChoices);
 		userOption.setValue("Regular");
+		userOption.setMaxWidth(140);
 		
 		PasswordField password = new PasswordField();
 		password.setPromptText("Password");
+		password.setMaxWidth(140);
 		
 		Label info = new Label();
 		info.setText("incorrect");
@@ -91,7 +96,7 @@ public class LoginDialog {
 		
 		
 		// Request focus on the username field by default.
-		Platform.runLater(() -> password.requestFocus());	
+		Platform.runLater(() -> userOption.requestFocus());	
 		
 		
 		// Enable/Disable login button depending on whether a username was entered.
@@ -106,11 +111,22 @@ public class LoginDialog {
 			GRANTED_ACCESS.set(granted);
 		});
 		
+
+		// listener on combobox selection.
+		userOption.valueProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue.matches(ADMIN) == true) {
+				disabled = false;
+			} else {
+				disabled = true;
+			}
+			password.requestFocus();
+		});
+		
 		
 		// listener on number of attempts.
-		ATTEMPTS.addListener((obs, ov, nv) -> {
-			if (MAX_ATTEMPTS == nv.intValue()) {
-				// failed attemps
+		ATTEMPTS.addListener((observable, oldValue, newValue) -> {
+			if (MAX_ATTEMPTS == newValue.intValue()) {
+				// after 3 failed attemps
 				Platform.exit();
 			}
 		});
@@ -119,9 +135,7 @@ public class LoginDialog {
 		// Convert the result to a password when the login button is clicked.
 		dialog.setResultConverter(dialogButton -> {
 			if (dialogButton == loginButtonType) {
-				ATTEMPTS.set(ATTEMPTS.add(1).get());
-				System.out.println("Attempts: " + ATTEMPTS.get());
-				
+				ATTEMPTS.set(ATTEMPTS.add(1).get());				
 				return (password.getText());
 				}
 			return null;
@@ -130,9 +144,43 @@ public class LoginDialog {
 		
 		Optional<String> result = dialog.showAndWait();
 		
+		// checks the number of attempts in case password is incorrect
 		result.ifPresent(PasswordString -> {
-		    System.out.println(password.getText());
+			if (GRANTED_ACCESS.get() == false) {
+				int i = 1;
+				do {
+					info.setVisible(true);
+					loginButton.setDisable(false);
+					password.clear();
+					dialog.showAndWait();
+					i++;
+				} while (i < MAX_ATTEMPTS);
+				Platform.exit();
+			} else {
+			}
 		});
 		return GRANTED_ACCESS.get();
 	}
+	
+	
+	/**
+	 * Provides the System's user name.
+	 * 
+	 * @return USER
+	 */
+	public static String getUserName() {
+		return USER;
+	}
+	
+	
+	/**
+	 * This boolean value can be used in order to show/hide certain buttons or functions.
+	 * Administrator sees everything, Regular sees what has been defined.
+	 * 
+	 * @return disabled
+	 */
+	public static boolean getDisabledType() {
+		return disabled;
+	}
+	
 }

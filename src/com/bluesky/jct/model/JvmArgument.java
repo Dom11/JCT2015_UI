@@ -9,54 +9,54 @@ import javafx.beans.property.StringProperty;
 
 
 /**
- * Model class for Domain object
+ * Model class for JvmArgument object
  * 
  * @author Dominik
  */
-public class Domain implements Serializable {
+public class JvmArgument implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private IntegerProperty domainId = new SimpleIntegerProperty();
-	private StringProperty domainName = new SimpleStringProperty();
+	private IntegerProperty jvmId = new SimpleIntegerProperty();
+	private StringProperty jvmArgument = new SimpleStringProperty();
 
 	
 	/**
 	 * Constructor
 	 * 
-	 * @param domainId, domainName
+	 * @param jvmArgument
 	 */
-	public Domain(String domainName) {
+	public JvmArgument(String jvmArgument) {
 		super();
- 		this.domainId = new SimpleIntegerProperty();
-		this.domainName = new SimpleStringProperty(domainName);
+ 		this.jvmId = new SimpleIntegerProperty();
+		this.jvmArgument = new SimpleStringProperty(jvmArgument);
 	}
 	
 	
 	// --- Getter and Setter
 	
 	public int getId() {
-		return domainId.get();
+		return jvmId.get();
 	}
 	
 
 	public IntegerProperty idProperty() {
-		return domainId;
+		return jvmId;
 	}
 	
 	
 	public String getName() {
-		return domainName.get();
+		return jvmArgument.get();
 	}
 	
 	
-	public void setName(String domainName) {
-		this.domainName.set(domainName);
+	public void setName(String jvmArgument) {
+		this.jvmArgument.set(jvmArgument);
 	}
-	
 
+	
 	public StringProperty nameProperty() {
-		return domainName;
+		return jvmArgument;
 	}
-
+	
 }

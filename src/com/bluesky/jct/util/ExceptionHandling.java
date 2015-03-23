@@ -12,7 +12,13 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 
 
+/**
+ * This class holds methods to be called to inform the user in case of errors, warnings or providing information.
+ * 
+ * @author Dominik
+ */
 public class ExceptionHandling {
+
 	
 	/**
 	 * Shows an Error dialog box with the option to view the StackTrace.
@@ -74,4 +80,22 @@ public class ExceptionHandling {
 
 		alert.showAndWait();
 	}
+	
+	
+	/**
+	 * Shows an information dialog box.
+	 * 
+	 * @param headerText
+	 * @param contentText
+	 */
+	public static void handleInformation(String headerText, String contentText) {
+		
+      	Alert info = new Alert(AlertType.INFORMATION);
+       	info.setTitle("Information");
+       	info.setHeaderText(headerText);
+		info.setContentText(contentText);
+
+		info.showAndWait();		
+	}
+
 }

@@ -26,9 +26,7 @@ public class Filter {
 	private String filterAll = filterSearchField + filterDomainComboBox + filterEnvironmentComboBox + filterJbarComboBox;
 	
 	
-	public Filter() {
-	}
-	
+
 	
 	public SortedList<ProfileView> getFilteredList() {
 		

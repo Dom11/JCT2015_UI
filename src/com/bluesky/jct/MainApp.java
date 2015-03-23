@@ -21,19 +21,18 @@ import com.bluesky.jct.view.ProfileWizardController;
 import com.bluesky.jct.view.RootLayoutController;
 
 
+/**
+ * This is the main class of the whole prototype application.
+ * It holds the methods to open the according stages and scenes.
+ * 
+ * @author Dominik
+ * @version 31.03.2015
+ */
 public class MainApp extends Application {
 
 	private Stage primaryStage;
-	private Stage secondaryStage;
 	private BorderPane rootLayout;
-	private BorderPane wizardRootLayout;
-
-
-	/**
-	 * Constructor
-	 */
-	public MainApp() {
-	}
+	private BorderPane profileWizardRoot;
 	
 
 	public static void main(String[] args) {
@@ -42,20 +41,24 @@ public class MainApp extends Application {
 	
 
 	@Override
-	 public void start(Stage primaryStage) {
+	public void start(Stage primaryStage) {
 		
-		//TODO finalize Login Dialog with userList to distinguish between admin and regular user
-//		if(LoginDialog.openLoginDialog() == false) {
-//			System.exit(0);
-//		};
+		// opens the login
+		if(LoginDialog.openLoginDialog() == false) {
+			System.exit(0);
+		};
 
-
+		// after successful login, primary stage will be loaded
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("JCT 2015 (Prototype)");
 	    this.primaryStage.getIcons().add(new Image("file:resources/images/JCT_2015_64.png"));
-		
+
 		initRootLayout();
-//		checkConnectivity();
+		
+		// connectivity to REST API and DB will be checked
+		checkConnectivity();
+		
+		// data will be loaded and main screen opened
 		showProfileOverview();
 	}
 
@@ -99,8 +102,6 @@ public class MainApp extends Application {
 
 	/**
 	 * Shows the profile overview inside the root layout.
-	 * 
-	 * @return true/false
 	 */
 	private void showProfileOverview() {
 
@@ -162,86 +163,84 @@ public class MainApp extends Application {
 	}
 	
 
+	/**
+	 * This method starts the wizard to create a new profile. 
+	 */
 	public void showProfileWizard() {
 
 		try {
-			// Load root Layout from fxml file.
+			// Load root from wizard.
 			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(MainApp.class
-					.getResource("view/ProfileWizardRootLayout.fxml"));
-			wizardRootLayout = (BorderPane) loader.load();
-
+			loader.setLocation(MainApp.class.getResource("view/ProfileWizardRoot.fxml"));
+			profileWizardRoot = (BorderPane) loader.load();
+			
 			// Create the dialog Stage.
 			Stage dialogStage = new Stage();
-			dialogStage.setTitle("Wizard");
+			dialogStage.setTitle("New Profile Wizard");
 			dialogStage.initModality(Modality.WINDOW_MODAL);
 			dialogStage.initOwner(primaryStage);
-			Scene scene = new Scene(wizardRootLayout);
+			Scene scene = new Scene(profileWizardRoot);
 			dialogStage.setScene(scene);
 
 			// Give the controller access to the main app.
-			RootLayoutController controller = loader.getController();
-			controller.setMainApp(this);
-
-			secondaryStage.show();
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-
-	public boolean showProfileWizardNew() {
-
-		try {
-			// Load the fxml file and create a new stage for the pop-up dialog.
-			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(MainApp.class
-					.getResource("view/ProfileWizard.fxml"));
-			AnchorPane page = (AnchorPane) loader.load();
-
-			// Create the dialog Stage.
-			Stage dialogStage = new Stage();
-			dialogStage.setTitle("Wizard");
-			dialogStage.initModality(Modality.WINDOW_MODAL);
-			dialogStage.initOwner(primaryStage);
-			Scene scene = new Scene(page);
-			dialogStage.setScene(scene);
-
-			// Set the profile into the controller.
 			ProfileWizardController controller = loader.getController();
-//			controller.setDialogStage(dialogStage);
-
-			// Show the dialog and wait until the user closes it.
+			controller.setMainApp(this);
+			controller.setDialogStage(dialogStage);
+			
+			showProfileWizardPage(1);
 			dialogStage.showAndWait();
 
-			return controller.isExitClicked();
-
 		} catch (IOException e) {
 			e.printStackTrace();
-			return false;
 		}
 	}
 
 	
-	private String getUserName() {
-		return System.getProperty("user.name");
+	/**
+	 * loads the page (AnchorPane) in the new profile wizard according to the pageNumber. 
+	 * 
+	 * @param pageNumber
+	 */
+	public void showProfileWizardPage(int pageNumber) {
+
+		try {
+			// Load page from wizard.
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(MainApp.class.getResource("view/ProfileWizardPage" + pageNumber + ".fxml"));
+			AnchorPane profileWizardPage = (AnchorPane) loader.load();
+
+			// Set profile overview into the center of root layout.
+			profileWizardRoot.setCenter(profileWizardPage);		
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	
+	/**
+	 * Checks the connectivity of the REST API as well as the DB.
+	 * In case one of the connection attempts fails, an error message will provide further information. 
+	 */
 	public void checkConnectivity() {
+		
+		// TODO check method whether there is a better way to do than currently coded
 
-		if (RestClient.checkConnectionRestServer() == false) {
+		if (RestClient.checkConnectionRestServer() == true) {
 			
-			ExceptionHandling.handleError("Server Error",
-					"The Rest Service is currently not accessible!\nPlease contact the System Administrator.");
+			String headerText = "Server Error";
+			String contentText = "The Rest Service is currently not accessible!\n"
+					           + "Please contact the System Administrator.";
+			ExceptionHandling.handleError(headerText, contentText);
 			System.exit(0);
 
 		} else {
-			if (RestClient.checkConnectionDB() == false) {
-
-				ExceptionHandling.handleError("DB Server Error",
-						"The Database Server is currently not accessible!\nPlease contact the System Administrator.");
+			if (RestClient.checkConnectionDB() == true) {
+				
+				String headerText = "DB Server Error";
+				String contentText = "The Database Server is currently not accessible!\n"
+								   + "Please contact the System Administrator.";
+				ExceptionHandling.handleError(headerText, contentText);
 				System.exit(0);
 			};
 		}

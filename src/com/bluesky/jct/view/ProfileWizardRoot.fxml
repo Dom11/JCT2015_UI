@@ -8,11 +8,11 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bluesky.jct.view.ProfileWizardController">
    <top>
-      <AnchorPane prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <AnchorPane prefHeight="80.0" prefWidth="500.0" BorderPane.alignment="CENTER">
          <children>
-            <ProgressBar layoutX="89.0" layoutY="15.0" prefWidth="200.0" progress="0.1" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="25.0" />
+            <ProgressBar fx:id="progressBar" layoutX="89.0" layoutY="15.0" progress="0.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="25.0" />
             <HBox layoutX="15.0" layoutY="6.0" prefHeight="17.0" prefWidth="382.0" spacing="50.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="5.0">
                <children>
                   <Label layoutX="15.0" layoutY="6.0" text="create Profile" />

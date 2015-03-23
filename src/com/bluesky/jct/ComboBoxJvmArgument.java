@@ -8,7 +8,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
 import javafx.util.StringConverter;
 
-import com.bluesky.jct.model.Jira;
+import com.bluesky.jct.model.JvmArgument;
 import com.bluesky.jct.rest.RestClient;
 
 
@@ -16,24 +16,24 @@ import com.bluesky.jct.rest.RestClient;
  * This is the controller class for comboBox @category which contains all the methods
  * needed to use and work with it from different classes.
  * 
- * @category Environment
+ * @category JvmArgument
  * @author Dominik
  */
-public class ComboBoxJira {
+public class ComboBoxJvmArgument {
 	
-	private static ObservableList<Jira> jiraData = FXCollections.observableArrayList();
+	private static ObservableList<JvmArgument> jvmData = FXCollections.observableArrayList();
 	
 	
 	/**
 	 * Loads the items from the DB through a REST call and fills them into an ObservableList.
 	 */
-	public static void loadJiraData() {
-		List<Jira> jiras = RestClient.findAllJira();
-		jiraData.clear();
+	public static void loadJvmArgumentData() {
+		List<JvmArgument> jvms = RestClient.findAllJvmArgument();
+		jvmData.clear();
 		
 		try {
-			for (Jira jira : jiras) {
-				jiraData.add(jira);
+			for (JvmArgument jvm : jvms) {
+				jvmData.add(jvm);
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -45,22 +45,22 @@ public class ComboBoxJira {
 	/**
 	 * Returns the loaded data as an ObservableList.
 	 * 
-	 * @return jiraData
+	 * @return environmentData
 	 */
-	public static ObservableList<Jira> getJiraData() {
-		return jiraData;
+	public static ObservableList<JvmArgument> getJvmArgumentData() {
+		return jvmData;
 	}
 	
 	
 	/**
 	 * Initialization of the ComboBox
 	 */
-	public static void iniJiraCombobox(ComboBox<Jira> jiraComboBox) {
+	public static void iniJvmArgumentCombobox(ComboBox<JvmArgument> jvmArgumentComboBox) {
 		// Define rendering of the list of values in ComboBox drop down.
-		jiraComboBox.setCellFactory((comboBox) -> {
-			return new ListCell<Jira>() {
+		jvmArgumentComboBox.setCellFactory((comboBox) -> {
+			return new ListCell<JvmArgument>() {
 				@Override
-				protected void updateItem(Jira item, boolean empty) {
+				protected void updateItem(JvmArgument item, boolean empty) {
 					super.updateItem(item, empty);
 
 					if (item == null || empty) {
@@ -73,18 +73,18 @@ public class ComboBoxJira {
 		});
 		
 		// Define rendering of selected value shown in ComboBox.
-		jiraComboBox.setConverter(new StringConverter<Jira>() {
+		jvmArgumentComboBox.setConverter(new StringConverter<JvmArgument>() {
 			@Override
-			public String toString(Jira jira) {
-				if (jira == null) {
+			public String toString(JvmArgument jvmArgument) {
+				if (jvmArgument == null) {
 					return null;
 				} else {
-					return jira.getName();
+					return jvmArgument.getName();
 				}
 			}
 
 			@Override
-			public Jira fromString(String jiraString) {
+			public JvmArgument fromString(String jvmArgumentString) {
 				return null; // No conversion fromString needed.
 			}
 		});
