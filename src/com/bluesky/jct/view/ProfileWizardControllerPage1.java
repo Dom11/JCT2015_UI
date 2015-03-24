@@ -1,5 +1,7 @@
 package com.bluesky.jct.view;
 
+import java.util.ArrayList;
+
 import com.bluesky.jct.ComboBoxDomain;
 import com.bluesky.jct.ComboBoxEnvironment;
 import com.bluesky.jct.ComboBoxHost;
@@ -63,7 +65,7 @@ public class ProfileWizardControllerPage1 {
 	private String createdBy = LoginDialog.getUserName();
 
 	public boolean nextClicked;
-	
+	private boolean existing;
 		
 	/**
 	 * Constructor.
@@ -80,7 +82,7 @@ public class ProfileWizardControllerPage1 {
 	 */
 	@FXML
 	private void initialize() {
-	
+		
 		profileNameField.setDisable(true);	
 
 		Tooltip t = new Tooltip("max. 255 characters");
@@ -104,9 +106,11 @@ public class ProfileWizardControllerPage1 {
 		
 		// retrieve tempProfile
 		tempProfile = ProfileFunctions.getTempProfile();
+		System.out.println(tempProfile.getProfileDescription());
 		
 		// if tempProfile not null then fill fields with information
 		if (tempProfile.getProfileDescription() != null) {
+			profileNameField.setText(getProfileName(tempProfile.getProfileId()));
 			profileDescriptionField.setText(tempProfile.getProfileDescription());
 			domainComboBox.setValue(getDomain(tempProfile.getDomainId()));
 			prefixComboBox.setValue(getPrefix(tempProfile.getPrefixId()));
@@ -116,10 +120,15 @@ public class ProfileWizardControllerPage1 {
 			hostComboBox.setValue(getHost(tempProfile.getHostId()));
 			jiraComboBox.setValue(getJira(tempProfile.getJiraId()));
 			profileComponentField.setText(tempProfile.getProfileComponent());
-		}
+		}		
 	}
 	
 	// --- Getters to retrieve content based on foreign key
+	
+	private String getProfileName(int profileId) {
+		ProfileView profileView = RestClient.findProfileView(profileId);
+		return profileView.getProfileName();
+	}
 	
 	private Domain getDomain(int domainId) {
 		Domain domain = RestClient.findDomain(domainId);
@@ -166,9 +175,14 @@ public class ProfileWizardControllerPage1 {
     		String contentText = "Please check your Combo Box selections.\n"
 					   		   + "Nothing selected on one or more Combo Boxes.";    		
     		ExceptionHandling.handleWarning(headerText, contentText);
-    		
+    	}
+    	if (checkAvailability() == true) {
+	    	String headerText = "Profile already exists!";
+	    	String contentText = "A Profile with the same parameters already exists.\n"
+					   		   + "Please check your Prefix, JBar and Environment selections.";    		
+	    	ExceptionHandling.handleWarning(headerText, contentText);    		
+  		
 		} else {
-    	
 			profileDescription = profileDescriptionField.getText();
 		   	domainId = domainComboBox.getSelectionModel().getSelectedItem().getId();
 		   	prefixId = prefixComboBox.getSelectionModel().getSelectedItem().getId();
@@ -217,6 +231,34 @@ public class ProfileWizardControllerPage1 {
     		notNull = false;
     	}
     	return notNull;
+	}
+	
+	
+	/**
+	 * Checks whether a profile with the same parameters is already existing.
+	 * 
+	 * @return contains (true if existing, false otherwise)
+	 */
+	private boolean checkAvailability() {
+		
+		// build the profileName
+		String tempProfileName = prefixComboBox.getSelectionModel().getSelectedItem().getName() + "_" + 
+								 jbarComboBox.getSelectionModel().getSelectedItem().getName() + "_" + 
+								 environmentComboBox.getSelectionModel().getSelectedItem().getName();
+		
+		
+		
+		ArrayList<String>profileNames = new ArrayList<String>();
+		for (int i = 0; i < ProfileOverviewController.getProfileData().size(); i++) {
+			profileNames.add(ProfileOverviewController.getProfileData().get(i).getProfileName());
+			}
+		
+        if (profileNames.contains(tempProfileName) == true) {
+        	existing = true;
+        } else {
+        	existing = false;
+        	}
+        return existing;		
 	}
 	
 

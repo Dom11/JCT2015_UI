@@ -77,7 +77,8 @@ public class RootLayoutController {
     		String title = "Clone";
     		showInformationDialog(title);
     	} else {
-        	ProfileFunctions.cloneProfile(selectedProfile);
+        	ProfileFunctions.setTempProfile(selectedProfile);
+    		mainApp.showProfileWizard();
     	}
     }
     
