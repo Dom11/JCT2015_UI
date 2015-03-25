@@ -44,9 +44,9 @@ public class MainApp extends Application {
 	public void start(Stage primaryStage) {
 		
 		// opens the login
-//		if(LoginDialog.openLoginDialog() == false) {
-//			System.exit(0);
-//		};
+		if(LoginDialog.openLoginDialog() == false) {
+			System.exit(0);
+		};
 
 		// after successful login, primary stage will be loaded
 		this.primaryStage = primaryStage;
@@ -56,7 +56,7 @@ public class MainApp extends Application {
 		initRootLayout();
 		
 		// connectivity to REST API and DB will be checked
-//		checkConnectivity();
+		checkConnectivity();
 		
 		// data will be loaded and main screen opened
 		showProfileOverview();

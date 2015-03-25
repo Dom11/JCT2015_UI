@@ -29,8 +29,12 @@ public class Filter {
 	private int i = 1;
 	
 	
-
-	
+	/**
+	 * Wraps the observableList into a filtered list and applies all the filters selected.
+	 * At the end, the filtered list will be wrapped into a sortedList and returned.
+	 * 
+	 * @return sortedData
+	 */
 	public SortedList<ProfileView> getFilteredList() {
 		
 		profileData = ProfileOverviewController.getProfileData();
@@ -130,10 +134,33 @@ public class Filter {
 	}
 	
 	
+	/**
+	 * Sets the individual values of the bookmark.
+	 * 
+	 * @param myBookmark
+	 */
+	public void setFilterBookmark(MyBookmark myBookmark) {
+		if(myBookmark == null) {
+			this.filterSearchField = null;
+			this.filterDomainComboBox = null;
+			this.filterEnvironmentComboBox = null;
+			this.filterJbarComboBox = null;	
+		} else {
+			this.filterSearchField = myBookmark.getSearchText();
+			this.filterDomainComboBox = myBookmark.getDomainName();
+			this.filterEnvironmentComboBox = myBookmark.getEnvironmentName();
+			this.filterJbarComboBox = myBookmark.getJbarName();
+		}
+	}	
+	
+	
+	/**
+	 * Saves the bookmark as an object into a list.
+	 */
 	public void saveMyBookmark() {
 		MyBookmark myBookmark = new MyBookmark();
 
-		myBookmark.setName("test" + i);
+		myBookmark.setName("My Bookmark #" + i);
 		myBookmark.setSearchText(filterSearchField);
 		myBookmark.setDomainName(filterDomainComboBox);
 		myBookmark.setEnvironmentName(filterEnvironmentComboBox);

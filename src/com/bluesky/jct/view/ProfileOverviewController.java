@@ -48,6 +48,12 @@ public class ProfileOverviewController extends Filter {
 	@FXML
 	private TextField searchField;
 	@FXML
+	private TextField domainFilterCriteria;
+	@FXML
+	private TextField environmentFilterCriteria;
+	@FXML
+	private TextField jbarFilterCriteria;
+	@FXML
 	private TableView<ProfileView> profileTable;
 	@FXML
 	private TableColumn<ProfileView, String> profileNameColumn;
@@ -114,12 +120,180 @@ public class ProfileOverviewController extends Filter {
 	 */
 	@FXML
 	private void initialize() {
+		
 		// Initialize the profileTable with the three columns.
 		profileNameColumn.setCellValueFactory(cellData -> cellData.getValue().profileNameProperty());
 		profileDescriptionColumn.setCellValueFactory(cellData -> cellData.getValue().profileDescriptionProperty());
 		profileHosteNameColumn.setCellValueFactory(cellData -> cellData.getValue().hostNameProperty());
 		profileStatusColumn.setCellValueFactory(cellData -> cellData.getValue().profileStatusProperty());
+		
+		// hide filter textFields
+		setTextFieldVisibility(false);
+		
+		// set admin functions based on userType
+		deleteProfile.setDisable(LoginDialog.getDisabledType());
+		
+		// set comboBox items
+		domainComboBox.setItems(domainData);
+		environmentComboBox.setItems(environmentData);
+		jbarComboBox.setItems(jbarData);
+		bookmarkComboBox.setItems(getMyBookmarkData());
+		
+		// fill comboBox with information 
+		ComboBoxDomain.iniDomainCombobox(domainComboBox);
+		ComboBoxEnvironment.iniEnvironmentCombobox(environmentComboBox);
+		ComboBoxJbar.iniJbarCombobox(jbarComboBox);
+		
+		// Define rendering of the list of values in ComboBox drop down.
+		bookmarkComboBox.setCellFactory((comboBox) -> {
+			return new ListCell<MyBookmark>() {
+				@Override
+				protected void updateItem(MyBookmark item, boolean empty) {
+					super.updateItem(item, empty);
+
+					if (item == null || empty) {
+						setText(null);
+					} else {
+						setText(item.getName());
+					}
+				}
+			};
+		});
+
+		// provide toolTip for tableView
+		Tooltip t = new Tooltip("double click for more details");
+		Tooltip.install(profileTable, t);
+
+		// provide the filterd informtion to tableView
+		showFilterdList();
+		
+		// filters based on selected Bookmark.
+		bookmarkComboBox.setOnAction((event) -> {
+			setFilterBookmark(bookmarkComboBox.getSelectionModel().getSelectedItem());
+			searchField.setText(bookmarkComboBox.getSelectionModel().getSelectedItem().getSearchText());
+			
+			domainFilterCriteria.setText(bookmarkComboBox.getSelectionModel().getSelectedItem().getDomainName());
+			environmentFilterCriteria.setText(bookmarkComboBox.getSelectionModel().getSelectedItem().getEnvironmentName());
+			jbarFilterCriteria.setText(bookmarkComboBox.getSelectionModel().getSelectedItem().getJbarName());
+			setTextFieldVisibility(true);
+
+			showFilterdList();
+		});		
+		
+		// Apply filter based on searchField.
+		searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+			setFilterSearchText(newValue);
+			showFilterdList();
+		});	
+		
+		// Apply filter based on Domain comboBox selection.
+		domainComboBox.setOnAction((event) -> {
+			setFilterDomainName(domainComboBox.getSelectionModel().getSelectedItem().getName());
+			showFilterdList();
+		});
+		
+		// Apply filter based on Environment comboBox selection.
+		environmentComboBox.setOnAction((event) -> {
+			setFilterEnvironmentName(environmentComboBox.getSelectionModel().getSelectedItem().getName());
+			showFilterdList();
+		});
+		
+		// Apply filter based on Jbar comboBox selection.	
+		jbarComboBox.setOnAction((event) -> {
+			setFilterJbarName(jbarComboBox.getSelectionModel().getSelectedItem().getName());
+			showFilterdList();
+		});
+		
+		// reset of searchField filter to null on ESC.
+		searchField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent event) {
+				if (event.getCode() == KeyCode.ESCAPE) {
+					searchField.setText(null);
+					setFilterSearchText(null);
+					showFilterdList();
+				}
+			}
+		});
+		
+		// reset of Domain filter.
+		domainComboBox.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				if (event.getClickCount() == 2) {
+					domainComboBox.setValue(null);			
+					setFilterDomainName(null);
+					showFilterdList();
+				}
+			}
+		});
+		
+		// reset of Environment filter.
+		environmentComboBox.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				if (event.getClickCount() == 2) {
+					environmentComboBox.setValue(null);
+					setFilterEnvironmentName(null);
+					showFilterdList();
+				}
+			}
+		});
+		
+		// reset of Jbar filter.
+		jbarComboBox.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				if (event.getClickCount() == 2) {
+					jbarComboBox.setValue(null);
+					setFilterJbarName(null);
+					showFilterdList();
+				}
+			}
+		});
+		
+		// reset of Jbar filter.
+		bookmarkComboBox.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				if (event.getClickCount() == 2) {
+					bookmarkComboBox.setValue(null);
+					searchField.setText(null);
+					domainComboBox.setValue(null);
+					environmentComboBox.setValue(null);
+					jbarComboBox.setValue(null);
+					setFilterBookmark(null);
+					setTextFieldVisibility(false);
+					showFilterdList();
+				}
+			}
+		});		
+
+		// opens the Edit dialog on double click or shows a contextMenu on right click
+		profileTable.addEventHandler(MouseEvent.ANY, (MouseEvent event) -> {
+			if (event.getClickCount() == 1) {
+				setSelectedProfile();				
+			} else if (event.getClickCount() >1) {
+				handleViewProfile();
+			} else if (event.getButton() == MouseButton.SECONDARY || event.isControlDown()) {
+				contextMenu.show(profileTable, event.getScreenX(), event.getScreenY());
+			} else {
+				contextMenu.hide();
+			}
+		});
+	}
 	
+
+	/**
+	 * Replaces the current tableView with the filtered list.
+	 */
+	private void showFilterdList() {
+		// 4. Bind the SortedList comparator to the TableView comparator. Otherwise, sorting the TableView would have no effect.
+		getFilteredList().comparatorProperty().bind(profileTable.comparatorProperty());
+		
+		// 5. Add sorted (and filtered) data to the table.
+		profileTable.setItems(getFilteredList());
+		
 		// Custom rendering of the table cell.
 		profileStatusColumn.setCellFactory(column -> {
 			return new TableCell<ProfileView, Boolean>() {
@@ -152,157 +326,18 @@ public class ProfileOverviewController extends Filter {
 				}
 			};
 		});
-		
-		deleteProfile.setDisable(LoginDialog.getDisabledType());
-		
-		domainComboBox.setItems(domainData);
-		environmentComboBox.setItems(environmentData);
-		jbarComboBox.setItems(jbarData);
-		bookmarkComboBox.setItems(getMyBookmarkData());
-		
-		ComboBoxDomain.iniDomainCombobox(domainComboBox);
-		ComboBoxEnvironment.iniEnvironmentCombobox(environmentComboBox);
-		ComboBoxJbar.iniJbarCombobox(jbarComboBox);
-		
-		
-		// Define rendering of the list of values in ComboBox drop down.
-		bookmarkComboBox.setCellFactory((comboBox) -> {
-			return new ListCell<MyBookmark>() {
-				@Override
-				protected void updateItem(MyBookmark item, boolean empty) {
-					super.updateItem(item, empty);
-
-					if (item == null || empty) {
-						setText(null);
-					} else {
-						setText(item.getName());
-					}
-				}
-			};
-		});
-
-		
-		Tooltip t = new Tooltip("double click for more details");
-		Tooltip.install(profileTable, t);
-
-		
-		showFilterdList();
-		// 2.1.1 Set the filter Predicate whenever the Search Field changes.
-		searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-			setFilterSearchText(newValue);
-			showFilterdList();
-		});		
-		// apply filter on Domain comboBox selection.
-		domainComboBox.setOnAction((event) -> {
-			setFilterDomainName(domainComboBox.getSelectionModel().getSelectedItem().getName());
-			showFilterdList();
-		});
-		// apply filter on Environment comboBox selection.
-		environmentComboBox.setOnAction((event) -> {
-			setFilterEnvironmentName(environmentComboBox.getSelectionModel().getSelectedItem().getName());
-			showFilterdList();
-		});
-		// apply filter on Jbar comboBox selection.	
-		jbarComboBox.setOnAction((event) -> {
-			setFilterJbarName(jbarComboBox.getSelectionModel().getSelectedItem().getName());
-			showFilterdList();
-		});
-		
-		// reset of searchField filter to null on ESC.
-		searchField.setOnKeyPressed(new EventHandler<KeyEvent>() {
-			@Override
-			public void handle(KeyEvent event) {
-				if (event.getCode() == KeyCode.ESCAPE) {
-					searchField.setText(null);
-					setFilterDomainName(null);
-					showFilterdList();
-				}
-			}
-		});
-		// reset of Domain filter.
-		domainComboBox.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				if (event.getClickCount() == 2) {
-					domainComboBox.setValue(null);			
-					setFilterDomainName(null);
-					showFilterdList();
-				}
-			}
-		});
-		// reset of Environment filter.
-		environmentComboBox.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				if (event.getClickCount() == 2) {
-					environmentComboBox.setValue(null);
-					setFilterEnvironmentName(null);
-					showFilterdList();
-				}
-			}
-		});
-		// reset of Jbar filter.
-		jbarComboBox.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				if (event.getClickCount() == 2) {
-					jbarComboBox.setValue(null);
-					setFilterJbarName(null);
-					showFilterdList();
-				}
-			}
-		});
-		
-		
-/**		
-		
-		
-		
-
-			
-		// 2.1.2 Set the filter Predicate to null on ESC.
-		searchField.setOnKeyPressed(new EventHandler<KeyEvent>() {
-			@Override
-			public void handle(KeyEvent event) {
-				if (event.getCode() == KeyCode.ESCAPE) {
-					searchField.setText(null);
-					filteredData.setPredicate(profileView -> {
-							return true;
-					});
-				}
-			}
-		});
-		
-
-		
-		
-*/
-		
-		
-		// opens the Edit dialog on double click or shows a contextMenu on right click
-		profileTable.addEventHandler(MouseEvent.ANY, (MouseEvent event) -> {
-			if (event.getClickCount() == 1) {
-				setSelectedProfile();				
-			} else if (event.getClickCount() >1) {
-				handleViewProfile();
-			} else if (event.getButton() == MouseButton.SECONDARY || event.isControlDown()) {
-				contextMenu.show(profileTable, event.getScreenX(), event.getScreenY());
-			} else {
-				contextMenu.hide();
-			}
-		});
 	}
 	
 	
 	/**
-	 * Replaces the current tableView with the filtered list.
+	 * Shows or hides the textFields with the values from the Bookmarks.
+	 * 
+	 * @param visibilityTextField
 	 */
-	private void showFilterdList() {
-		// 4. Bind the SortedList comparator to the TableView comparator. Otherwise, sorting the TableView would have no effect.
-		getFilteredList().comparatorProperty().bind(profileTable.comparatorProperty());
-		
-		// 5. Add sorted (and filtered) data to the table.
-		profileTable.setItems(getFilteredList());
+	private void setTextFieldVisibility(boolean visibilityTextField) {
+		domainFilterCriteria.setVisible(visibilityTextField);
+		environmentFilterCriteria.setVisible(visibilityTextField);
+		jbarFilterCriteria.setVisible(visibilityTextField);
 	}
 	
 	
@@ -326,7 +361,7 @@ public class ProfileOverviewController extends Filter {
 	
 	
 	@FXML
-	public void saveBookmark() {
+	public void handleSaveBookmark() {
 		saveMyBookmark();		
 	}
 	
