@@ -60,7 +60,9 @@
             <items>
                   <MenuItem mnemonicParsing="false" onAction="#handleEditProfile" text="Edit" />
               <MenuItem mnemonicParsing="false" onAction="#handleClone" text="Clone" />
-                  <MenuItem mnemonicParsing="false" onAction="#handleDelete" text="Delete" />
+                  <MenuItem fx:id="generateRPM" mnemonicParsing="false" onAction="#handleGenerateRPM" text="Generate RPM" />
+                  <MenuItem fx:id="sendPackage" mnemonicParsing="false" onAction="#handleSendPackage" text="Send Package" />
+                  <MenuItem fx:id="deleteProfile" mnemonicParsing="false" onAction="#handleDelete" text="Delete" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Reports">

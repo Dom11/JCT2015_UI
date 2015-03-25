@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 
+import com.bluesky.jct.model.MyBookmark;
 import com.bluesky.jct.model.ProfileView;
 import com.bluesky.jct.view.ProfileOverviewController;
 
@@ -18,68 +19,165 @@ import com.bluesky.jct.view.ProfileOverviewController;
 public class Filter {
 	
 	private ObservableList<ProfileView> profileData = FXCollections.observableArrayList();
+	private ObservableList<MyBookmark> bookmarkData = FXCollections.observableArrayList();
 	
-	private String filterSearchField;
-	private String filterDomainComboBox;
-	private String filterEnvironmentComboBox;
-	private String filterJbarComboBox;
-	private String filterAll = filterSearchField + filterDomainComboBox + filterEnvironmentComboBox + filterJbarComboBox;
-	
-	
+	private String filterSearchField = null;
+	private String filterDomainComboBox = null;
+	private String filterEnvironmentComboBox = null;
+	private String filterJbarComboBox = null;
 
+	private int i = 1;
 	
+	
+	/**
+	 * Wraps the observableList into a filtered list and applies all the filters selected.
+	 * At the end, the filtered list will be wrapped into a sortedList and returned.
+	 * 
+	 * @return sortedData
+	 */
 	public SortedList<ProfileView> getFilteredList() {
 		
 		profileData = ProfileOverviewController.getProfileData();
 		
 		// 1. Wrap the ObservableList in a FilteredList (initially display all data).
 		FilteredList<ProfileView> filteredData = new FilteredList<>(profileData, p -> true);
+
 		
-		//TODO
-		// 2. Set the filter Predicate.
+		// apply searchField filter
 		filteredData.setPredicate(profileView -> {
 			// If filter text is empty, display all profiles.
-			if (filterAll == null || 
-					filterSearchField.isEmpty() || 
-					filterDomainComboBox.isEmpty() || 
-					filterEnvironmentComboBox.isEmpty() || 
-					filterJbarComboBox.isEmpty()) {
+			if (filterSearchField == null || filterSearchField.isEmpty()) {
 				return true;
 			}
-			
-            // Compare Domain, Environment and Jbar of every profile
-			// with filterSearchField, filterDomainComboBox, filterEnvironmentComboBox and filterJbarComboBox
-			if (profileView.getDomainName().toLowerCase().indexOf(filterSearchField.toLowerCase()) != -1 ||
-					profileView.getEnvironmentName().toLowerCase().indexOf(filterSearchField.toLowerCase()) != -1 ||
-					profileView.getJbarName().toLowerCase().indexOf(filterSearchField.toLowerCase()) != -1 ||
-					profileView.getDomainName().toLowerCase().indexOf(filterDomainComboBox.toLowerCase()) != -1 ||
-            		profileView.getEnvironmentName().toLowerCase().indexOf(filterEnvironmentComboBox.toLowerCase()) != -1 ||
-            		profileView.getJbarName().toLowerCase().indexOf(filterJbarComboBox.toLowerCase()) != -1) {
-                return true; // Filter matches Domain and/or Environment and/or Jbar.
-            }
-            return false; // Does not match.
-        });
+			// Compare ProfileName, Description and HostName of every profile with filter text.
+			String lowerCaseFilter = filterSearchField.toLowerCase();
+			if (profileView.getProfileName().toLowerCase().indexOf(lowerCaseFilter) != -1) {
+				return true; // Filter matches profileName
+			} else if (profileView.getProfileDescription().toLowerCase().indexOf(lowerCaseFilter) != -1) {
+				return true; // Filter matches profileDescription.					
+			} else if (profileView.getHostName().toLowerCase().indexOf(lowerCaseFilter) != -1) {
+				return true; // Filter matches hostName.
+			}
+			return false; // Does not match.
+		});
+		FilteredList<ProfileView> filteredData1 = new FilteredList<>(filteredData, p -> true);
+
+		
+		// apply Domain Filter
+		filteredData1.setPredicate(profileView -> {
+			// If filter text is empty, display all profiles.
+			if (filterDomainComboBox == null || filterDomainComboBox.isEmpty())	{
+				return true;
+			}
+			// Compare Environment of every profile with filter text.
+			if (profileView.getDomainName().toLowerCase().indexOf(filterDomainComboBox.toLowerCase()) != -1) {
+				return true; // Filter matches profileEnvironment
+			}
+			return false; // Does not match.
+		});
+		FilteredList<ProfileView> filteredData2 = new FilteredList<>(filteredData1, p -> true);
+
+		
+		// apply Environment Filter
+		filteredData2.setPredicate(profileView -> {
+			// If filter text is empty, display all profiles.
+			if (filterEnvironmentComboBox == null || filterEnvironmentComboBox.isEmpty()) {
+				return true;
+			}
+			// Compare Environment of every profile with filter text.
+			if (profileView.getEnvironmentName().toLowerCase().indexOf(filterEnvironmentComboBox.toLowerCase()) != -1) {
+				return true; // Filter matches profileEnvironment
+			}
+			return false; // Does not match.
+		});
+		FilteredList<ProfileView> filteredData3 = new FilteredList<>(filteredData2, p -> true);
+		
+		
+		// apply Jbar Filter
+		filteredData3.setPredicate(profileView -> {
+			// If filter text is empty, display all profiles.
+			if (filterJbarComboBox == null || filterJbarComboBox.isEmpty()) {
+				return true;
+			}
+			// Compare Environment of every profile with filter text.
+			if (profileView.getJbarName().toLowerCase().indexOf(filterJbarComboBox.toLowerCase()) != -1) {
+				return true; // Filter matches profileEnvironment
+			}
+			return false; // Does not match.
+		});
+		FilteredList<ProfileView> filteredData4 = new FilteredList<>(filteredData3, p -> true);
+		
 		
 		// 3. Wrap the FilteredList in a SortedList. 
-		SortedList<ProfileView> sortedData = new SortedList<>(filteredData);
+		SortedList<ProfileView> sortedData = new SortedList<>(filteredData4);
 		
 		return sortedData;
 	}
 	
 	
-	public void setFilterSearchField(String filterSearchField) {
-		this.filterSearchField = filterSearchField;
+	// --- Setters for Filter Strings
+	
+	public void setFilterSearchText(String searchText) {
+		this.filterSearchField = searchText;
 	}
 	
-	public void setFilterDomainComboBox(String filterDomainComboBox) {
-		this.filterDomainComboBox = filterDomainComboBox;
+	public void setFilterDomainName(String domainName) {
+		this.filterDomainComboBox = domainName;
 	}
 	
-	public void setFilterEnvironmentComboBox(String filterEnvironmentComboBox) {
-		this.filterEnvironmentComboBox = filterEnvironmentComboBox;
+	public void setFilterEnvironmentName(String EnvironmentName) {
+		this.filterEnvironmentComboBox = EnvironmentName;
 	}
 	
-	public void setFilterJbarComboBox(String filterJbarComboBox) {
-		this.filterJbarComboBox = filterJbarComboBox;
+	public void setFilterJbarName(String JbarName) {
+		this.filterJbarComboBox = JbarName;
 	}
+	
+	
+	/**
+	 * Sets the individual values of the bookmark.
+	 * 
+	 * @param myBookmark
+	 */
+	public void setFilterBookmark(MyBookmark myBookmark) {
+		if(myBookmark == null) {
+			this.filterSearchField = null;
+			this.filterDomainComboBox = null;
+			this.filterEnvironmentComboBox = null;
+			this.filterJbarComboBox = null;	
+		} else {
+			this.filterSearchField = myBookmark.getSearchText();
+			this.filterDomainComboBox = myBookmark.getDomainName();
+			this.filterEnvironmentComboBox = myBookmark.getEnvironmentName();
+			this.filterJbarComboBox = myBookmark.getJbarName();
+		}
+	}	
+	
+	
+	/**
+	 * Saves the bookmark as an object into a list.
+	 */
+	public void saveMyBookmark() {
+		MyBookmark myBookmark = new MyBookmark();
+
+		myBookmark.setName("My Bookmark #" + i);
+		myBookmark.setSearchText(filterSearchField);
+		myBookmark.setDomainName(filterDomainComboBox);
+		myBookmark.setEnvironmentName(filterEnvironmentComboBox);
+		myBookmark.setJbarName(filterJbarComboBox);
+		
+		i++;		
+		bookmarkData.add(myBookmark);
+	}
+	
+	
+	/**
+	 * Returns the bookmarkData as an ObservableList.
+	 * 
+	 * @return bookmarkData
+	 */
+	public ObservableList<MyBookmark> getMyBookmarkData() {
+		return bookmarkData;
+	}
+	
 }

@@ -19,7 +19,7 @@ import com.bluesky.jct.view.ProfileOverviewController;
  */
 public class ProfileFunctions {
 	
-	private final static Profile TEMP_PROFILE = new Profile();
+	private static Profile tempProfile = new Profile();
 	
 	
 	/**
@@ -28,7 +28,7 @@ public class ProfileFunctions {
 	 * @return tempProfile
 	 */
 	public static Profile getTempProfile() {
-		return TEMP_PROFILE;
+		return tempProfile;
 	}
 	
 	
@@ -38,7 +38,7 @@ public class ProfileFunctions {
 	 * @param profile
 	 */
 	public static void setTempProfile(Profile profile) {
-		profile = TEMP_PROFILE;
+		tempProfile = profile;
 	}
 	
 	

@@ -45,7 +45,7 @@ public class ProfileWizardControllerPage2 {
 	 */
 	public ProfileWizardControllerPage2() {
 		super();
-		tempProfile = ProfileFunctions.getTempProfile();
+		
 		ComboBoxJvmArgument.loadJvmArgumentData();
 		jvmData = ComboBoxJvmArgument.getJvmArgumentData();
 	}
@@ -57,9 +57,16 @@ public class ProfileWizardControllerPage2 {
 	 */
 	@FXML
 	private void initialize() {
+		tempProfile = ProfileFunctions.getTempProfile();
 		jvmArgumentComboBox.setItems(jvmData);
 		ComboBoxJvmArgument.iniJvmArgumentCombobox(jvmArgumentComboBox);
-		jvmArgumentComboBox.setValue(jvmData.get(index));
+		jvmArgumentComboBox.setValue(getJvmId(tempProfile.getJvmId()));
+	}
+	
+	
+	private JvmArgument getJvmId(int jvmId) {
+		JvmArgument jvmArgument = RestClient.findJvmArgument(jvmId);
+		return jvmArgument;
 	}
 
 	

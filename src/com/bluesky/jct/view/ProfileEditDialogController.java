@@ -6,6 +6,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
@@ -36,6 +37,12 @@ import com.bluesky.jct.util.ExceptionHandling;
  * @author Dominik
  */
 public class ProfileEditDialogController {
+	@FXML
+	private MenuItem generateRPM;
+	@FXML
+	private MenuItem sendPackage;
+	@FXML
+	private MenuItem deleteProfile;
 	@FXML
 	private TextField profileNameField;
 	@FXML
@@ -78,8 +85,6 @@ public class ProfileEditDialogController {
 	@FXML
 	private HBox hbox;
 
-	private Profile profile;
-	private int currentProfileId;
 	private Stage dialogStage;
 	private boolean saveClicked = false;
 	private boolean currentProfileStatus = false;
@@ -88,6 +93,24 @@ public class ProfileEditDialogController {
 	private String profileStatusText = "";
 	private String profileStatusTextColor = "";	
 	
+	private Profile profile;
+	private int currentProfileId;
+   	private int environmentId;
+   	private int hostId;
+   	private int jbarId;   	
+   	private int jiraId;
+	private int prefixId;   	
+	private int domainId;
+	private String profileDescription;
+   	private String profileDnsName;
+   	private String profileComponent;
+	private int jvmId;
+	private boolean profileStatus;
+	private String createdBy;
+	private Date rpmGenerationDate;
+	private Date packageSentDate;
+	private int version;
+
 	
 	/**
 	 * Initializes the controller class.
@@ -101,6 +124,11 @@ public class ProfileEditDialogController {
 		profileStatusButton.setVisible(true);
 		// hides the progressIndicator
 		profileStatusProgress.setVisible(false);
+		
+		// set admin functions based on userType
+		generateRPM.setDisable(LoginDialog.getDisabledType());
+		sendPackage.setDisable(LoginDialog.getDisabledType());
+		deleteProfile.setDisable(LoginDialog.getDisabledType());
 		
 		// provides a toolTip for the textFields
 		Tooltip t = new Tooltip("max. 255 characters");
@@ -150,9 +178,24 @@ public class ProfileEditDialogController {
 	 * 
 	 * @param profile
 	 */
-	public void setProfile(Profile profile) {
-		this.profile = profile;
+	public void setProfile(Profile selectedProfile) {
+		this.profile = selectedProfile;
 		currentProfileId = profile.getProfileId();
+	   	environmentId = profile.getEnvironmentId();
+	   	hostId = profile.getHostId();
+	   	jbarId = profile.getJbarId();   	
+	   	jiraId = profile.getJiraId();
+		prefixId = profile.getPrefixId();   	
+		domainId = profile.getDomainId();
+		profileDescription = profile.getProfileDescription();
+	   	profileDnsName = profile.getProfileDnsName();
+	   	profileComponent = profile.getProfileComponent();
+		jvmId = profile.getJvmId();
+		profileStatus = profile.getProfileStatus();
+		createdBy = profile.getCreatedBy();
+		rpmGenerationDate = profile.getRpmGenerationDate();
+		packageSentDate = profile.getPackageSentDate();
+		version = profile.getVersion();		
 		
 		// Shows all the profile information
 		profileNameField.setText(getProfileName(profile.getProfileId()));
@@ -276,26 +319,26 @@ public class ProfileEditDialogController {
 	 */
 	private void saveInformation() {
 		
-    	int profileId = profile.getProfileId();
-    	int environmentId = environmentComboBox.getSelectionModel().getSelectedItem().getId();
-    	int hostId = hostComboBox.getSelectionModel().getSelectedItem().getId();
-    	int jbarId = jbarComboBox.getSelectionModel().getSelectedItem().getId();
-    	int jiraId = jiraComboBox.getSelectionModel().getSelectedItem().getId();
-    	int prefixId = prefixComboBox.getSelectionModel().getSelectedItem().getId();
-    	int domainId = domainComboBox.getSelectionModel().getSelectedItem().getId();
-    	String profileDescription = profileDescriptionField.getText();
-    	String profileDnsName = profileDnsField.getText();
-    	String profileComponent = profileComponentField.getText();
-    	int jvmId = 0;
-    	boolean profileStatus = currentProfileStatus;
-    	String createdBy = LoginDialog.getUserName();
-    	Date rpmGenerationDate = null;
-    	Date packageSentDate = null;
-    	Integer version = profile.getVersion();
+		currentProfileId = profile.getProfileId();
+    	environmentId = environmentComboBox.getSelectionModel().getSelectedItem().getId();
+    	hostId = hostComboBox.getSelectionModel().getSelectedItem().getId();
+    	jbarId = jbarComboBox.getSelectionModel().getSelectedItem().getId();
+    	jiraId = jiraComboBox.getSelectionModel().getSelectedItem().getId();
+    	prefixId = prefixComboBox.getSelectionModel().getSelectedItem().getId();
+    	domainId = domainComboBox.getSelectionModel().getSelectedItem().getId();
+    	profileDescription = profileDescriptionField.getText();
+    	profileDnsName = profileDnsField.getText();
+    	profileComponent = profileComponentField.getText();
+    	jvmId = profile.getJvmId();
+    	profileStatus = currentProfileStatus;
+    	createdBy = profile.getCreatedBy();
+    	rpmGenerationDate = profile.getRpmGenerationDate();
+    	packageSentDate = profile.getPackageSentDate();
+    	version = profile.getVersion();
     	
     	if (ProfileFunctions.isProfileInputValid(profileDescription, profileDnsName, profileComponent)) {
         	
-        	RestClient.editProfile(profileId, environmentId, hostId, jbarId, jiraId, prefixId, domainId, profileDescription, 
+        	RestClient.editProfile(currentProfileId, environmentId, hostId, jbarId, jiraId, prefixId, domainId, profileDescription, 
         			profileDnsName, profileComponent, jvmId, profileStatus, createdBy, rpmGenerationDate, packageSentDate, version);
         	
         	ProfileOverviewController.loadProfileViewData();
@@ -338,9 +381,45 @@ public class ProfileEditDialogController {
     }
     
     
+    @FXML
+    private void handleGenerateRPM() {
+
+    	Date date = new Date();
+    	rpmGenerationDate = date;
+    	
+    	RestClient.editProfile(currentProfileId, environmentId, hostId, jbarId, jiraId, prefixId, domainId, profileDescription, 
+    			profileDnsName, profileComponent, jvmId, profileStatus, createdBy, rpmGenerationDate, packageSentDate, version);
+    	
+    	ProfileOverviewController.loadProfileViewData();
+		setProfile(RestClient.findProfile(currentProfileId));
+    	
+		String headerText = "RPM";
+		String contentText = "Package has been successfully generated.";
+		ExceptionHandling.handleInformation(headerText, contentText);		
+    }
+    
+    
+    @FXML
+    private void handleSendPackage() {
+    	Date date = new Date();
+    	packageSentDate = date;
+
+    	RestClient.editProfile(currentProfileId, environmentId, hostId, jbarId, jiraId, prefixId, domainId, profileDescription, 
+    			profileDnsName, profileComponent, jvmId, profileStatus, createdBy, rpmGenerationDate, packageSentDate, version);
+    	
+    	ProfileOverviewController.loadProfileViewData();
+		setProfile(RestClient.findProfile(currentProfileId));
+		
+		String headerText = "RPM";
+		String contentText = "Package has been successfully generated.";
+		ExceptionHandling.handleInformation(headerText, contentText);		
+    }
+    
+    
 	@FXML
 	private void handleDelete() {
 		ProfileFunctions.deleteProfile(profile);
+		dialogStage.close();
 	}
     
     

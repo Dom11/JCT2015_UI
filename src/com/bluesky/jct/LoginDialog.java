@@ -82,15 +82,18 @@ public class LoginDialog {
 		password.setMaxWidth(140);
 		
 		Label info = new Label();
-		info.setText("incorrect");
+		info.setText("incorrect!");
 		info.setStyle("-fx-text-fill: #f70c0c");
 		info.setVisible(false);
+		Label info2 = new Label();
+		info2.setVisible(false);		
 		
 		grid.add(new Label("User:"), 0, 0);
 		grid.add(userOption, 1, 0);		
 		grid.add(new Label("Password:"), 0, 1);
 		grid.add(password, 1, 1);
 		grid.add(info, 2, 1);
+		grid.add(info2, 1, 2);
 		
 		dialog.getDialogPane().setContent(grid);
 		
@@ -125,7 +128,7 @@ public class LoginDialog {
 		
 		// listener on number of attempts.
 		ATTEMPTS.addListener((observable, oldValue, newValue) -> {
-			if (MAX_ATTEMPTS == newValue.intValue()) {
+			if (MAX_ATTEMPTS == newValue.intValue() || GRANTED_ACCESS.get() == false) {
 				// after 3 failed attemps
 				Platform.exit();
 			}
@@ -150,16 +153,22 @@ public class LoginDialog {
 				int i = 1;
 				do {
 					info.setVisible(true);
+					info2.setText(getAttempts());
+					info2.setVisible(true);
 					loginButton.setDisable(false);
 					password.clear();
 					dialog.showAndWait();
 					i++;
 				} while (i < MAX_ATTEMPTS);
 				Platform.exit();
-			} else {
-			}
+			} 
 		});
 		return GRANTED_ACCESS.get();
+	}
+	
+	
+	public static String getAttempts() {
+		return "Attempt " + ATTEMPTS.get() + " of " + MAX_ATTEMPTS;
 	}
 	
 	
