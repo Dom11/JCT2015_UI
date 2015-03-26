@@ -65,13 +65,12 @@ public class ProfileFunctions extends MainApp {
 	}
 	
 	
-	
 	// TODO replace content of this method once ready
 	public static void cloneProfile(Profile selectedProfile) {
 
 		String headerText = "Clone Profile";
-		String contentText = "Work in progress...\n"
-				  		   + "This functions is not yet available.";
+		String contentText = "This function is currently only through\n"
+				  		   + "the main menu possible.";
 		ExceptionHandling.handleInformation(headerText, contentText);	
 	}
 	
@@ -80,8 +79,8 @@ public class ProfileFunctions extends MainApp {
 	public static void showLogFile(Profile selectedProfile) {
 
 		String headerText = "Log File";
-		String contentText = "Work in progress...\n"
-				  		   + "This functions is not yet available.";
+		String contentText = "See example of a potential Log File\n"
+				  		   + "in the Appendix.";
 		ExceptionHandling.handleInformation(headerText, contentText);	
 	}
 	

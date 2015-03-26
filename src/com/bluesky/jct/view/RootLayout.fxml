@@ -12,6 +12,7 @@
           <Menu mnemonicParsing="false" text="Menu">
             <items>
                   <MenuItem mnemonicParsing="false" onAction="#handleSelfService" text="Self-Service Portal" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleProfileStatistics" text="Statistics" />
               <MenuItem mnemonicParsing="false" onAction="#handleExit" text="Exit" />
             </items>
           </Menu>

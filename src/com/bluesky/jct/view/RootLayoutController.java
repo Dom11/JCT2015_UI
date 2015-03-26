@@ -48,6 +48,12 @@ public class RootLayoutController {
 	
 	
 	@FXML
+	private void handleProfileStatistics() {
+		mainApp.showProfileStatistics();
+	}
+	
+	
+	@FXML
 	private void handleView() {
 		
     	Profile selectedProfile = ProfileOverviewController.getSelectedProfile(); 

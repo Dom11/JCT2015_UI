@@ -7,7 +7,6 @@ import org.reactfx.util.FxTimer;
 
 import com.bluesky.jct.ProfileFunctions;
 import com.bluesky.jct.model.Profile;
-import com.bluesky.jct.rest.RestClient;
 import com.bluesky.jct.util.ExceptionHandling;
 
 import javafx.collections.FXCollections;
