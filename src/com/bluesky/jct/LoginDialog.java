@@ -128,7 +128,7 @@ public class LoginDialog {
 		
 		// listener on number of attempts.
 		ATTEMPTS.addListener((observable, oldValue, newValue) -> {
-			if (MAX_ATTEMPTS == newValue.intValue() || GRANTED_ACCESS.get() == false) {
+			if (GRANTED_ACCESS.get() == false || MAX_ATTEMPTS == newValue.intValue()) {				
 				// after 3 failed attemps
 				Platform.exit();
 			}
@@ -148,7 +148,7 @@ public class LoginDialog {
 		Optional<String> result = dialog.showAndWait();
 		
 		// checks the number of attempts in case password is incorrect
-		result.ifPresent(PasswordString -> {
+		result.ifPresent(PasswordString -> {			
 			if (GRANTED_ACCESS.get() == false) {
 				int i = 1;
 				do {

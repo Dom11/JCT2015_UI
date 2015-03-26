@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="360.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bluesky.jct.view.SelfServiceControllerPage4">
+   <children>
+      <HBox layoutX="146.0" layoutY="205.0" spacing="10.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="190.0" AnchorPane.rightAnchor="190.0">
+         <children>
+            <Button fx:id="backButton" layoutX="146.0" layoutY="205.0" mnemonicParsing="false" onAction="#handleBack" prefWidth="55.0" text="Back" />
+            <Button fx:id="saveButton" layoutX="198.0" layoutY="205.0" mnemonicParsing="false" onAction="#handleSave" prefWidth="55.0" text="Save" />
+         </children>
+      </HBox>
+      <Text layoutX="150.0" layoutY="94.0" strokeType="OUTSIDE" strokeWidth="0.0" text="By clicking on the Save button, the packages will be generated, sent to the Satellite Server and the Profiles installed" wrappingWidth="200.0" AnchorPane.topAnchor="80.0" />
+      <ProgressBar fx:id="profileCreationProgress" layoutX="150.0" layoutY="171.0" prefWidth="200.0" AnchorPane.topAnchor="171.0" />
+   </children>
+</AnchorPane>

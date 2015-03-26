@@ -89,6 +89,6 @@
         </items>
       </SplitPane>
       <TextField fx:id="searchField" layoutX="14.0" layoutY="26.0" prefHeight="25.0" prefWidth="260.0" promptText="search" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="25.0" />
-      <Button layoutX="574.0" layoutY="26.0" mnemonicParsing="false" text="Self-Service Portal" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="25.0" />
+      <Button fx:id="selfServicePortal" layoutX="574.0" layoutY="26.0" mnemonicParsing="false" onAction="#handleSelfServicePortal" text="Self-Service Portal" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="25.0" />
    </children>
 </AnchorPane>

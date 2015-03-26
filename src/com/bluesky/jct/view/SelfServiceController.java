@@ -12,11 +12,11 @@ import javafx.stage.Stage;
 
 
 /**
- * This is the root controller for the Profile creation Wizard.
+ * This is the root controller for the SelfService Portal.
  * 
  * @author Dominik
  */
-public class ProfileWizardController {
+public class SelfServiceController {
 	
 	@FXML
 	private ProgressBar progressBar;
@@ -27,12 +27,12 @@ public class ProfileWizardController {
 	private static IntegerProperty progressValue = new SimpleIntegerProperty(15);
 	
 
-	/**
-	 * Constructor
-	 */
-	public ProfileWizardController() {
-		super();
-	}
+    /**
+     * Constructor
+     */
+    public SelfServiceController() {
+    	super();
+    }
 	
 	
 	/**
@@ -42,8 +42,8 @@ public class ProfileWizardController {
 	@FXML
 	private void initialize() {
 		
-		progressBar.setProgress(getProgressValue());
-		
+    	progressBar.setProgress(getProgressValue());
+
 		progressValue.addListener((observable, oldValue, newValue) -> {
 			if (newValue.intValue() != oldValue.intValue()) {
 				progressBar.setProgress(getProgressValue());
@@ -59,7 +59,7 @@ public class ProfileWizardController {
 	public static void increasePageCounter() {
 		pageCounter.set(pageCounter.add(1).get());
 		progressValue.set(progressValue.add(25).get());
-		mainApp.showProfileWizardPage(getPageCounter());
+		mainApp.showSelfServicePortaldPage(getPageCounter());
 	}
 	
 	
@@ -70,7 +70,7 @@ public class ProfileWizardController {
 	public static void decreasePageCounter() {
 		pageCounter.set(pageCounter.add(-1).get());
 		progressValue.set(progressValue.add(-25).get());
-		mainApp.showProfileWizardPage(getPageCounter());
+		mainApp.showSelfServicePortaldPage(getPageCounter());
 	}
 	
 	
@@ -109,7 +109,7 @@ public class ProfileWizardController {
      * Closes the wizard window.
      */
     public static void closeWizard() {
-       	Profile profile = new Profile();
+    	Profile profile = new Profile();
     	ProfileFunctions.setTempProfile(profile);
     	dialogStage.close();
     }
@@ -121,7 +121,7 @@ public class ProfileWizardController {
 	 * @param mainApp
 	 */
 	public void setMainApp(MainApp mainApp) {
-		ProfileWizardController.mainApp = mainApp;
+		SelfServiceController.mainApp = mainApp;
 	}
 	
 	
@@ -131,7 +131,7 @@ public class ProfileWizardController {
      * @param dialogStage
      */
     public void setDialogStage(Stage dialogStage) {
-        ProfileWizardController.dialogStage = dialogStage;
+        SelfServiceController.dialogStage = dialogStage;
     }
     
 }
