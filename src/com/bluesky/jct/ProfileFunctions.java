@@ -2,6 +2,8 @@ package com.bluesky.jct;
 
 import java.util.Optional;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Alert.AlertType;
@@ -17,9 +19,10 @@ import com.bluesky.jct.view.ProfileOverviewController;
  * 
  * @author Dominik
  */
-public class ProfileFunctions {
+public class ProfileFunctions extends MainApp {
 	
 	private static Profile tempProfile = new Profile();
+	private static ObservableList<Profile> profileData = FXCollections.observableArrayList();
 	
 	
 	/**
@@ -40,6 +43,27 @@ public class ProfileFunctions {
 	public static void setTempProfile(Profile profile) {
 		tempProfile = profile;
 	}
+	
+	
+	/**
+	 * Provides the temporary Profiles in an observableList.
+	 * 
+	 * @return profileData
+	 */
+	public static ObservableList<Profile> getTempProfiles() {
+		return profileData;
+	}
+	
+	
+	/**
+	 * Sets the temporary Profiles into an observableList.
+	 * 
+	 * @param profiles (ObservableList<Profile>)
+	 */
+	public static void setTempProfiles(ObservableList<Profile> profiles) {
+		profileData = profiles;
+	}
+	
 	
 	
 	// TODO replace content of this method once ready

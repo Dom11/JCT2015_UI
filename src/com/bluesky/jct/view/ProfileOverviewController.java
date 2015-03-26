@@ -7,6 +7,7 @@ import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.ListCell;
@@ -79,6 +80,8 @@ public class ProfileOverviewController extends Filter {
 	private MenuItem cloneProfile;	
 	@FXML
 	private MenuItem deleteProfile;
+	@FXML
+	private Button selfServicePortal;
 
 	private static ObservableList<ProfileView> profileData = FXCollections.observableArrayList();
 	private ObservableList<Domain> domainData = FXCollections.observableArrayList();
@@ -363,6 +366,12 @@ public class ProfileOverviewController extends Filter {
 	@FXML
 	public void handleSaveBookmark() {
 		saveMyBookmark();		
+	}
+	
+	
+	@FXML
+	public void handleSelfServicePortal() {
+		mainApp.showSelfServicePortal();
 	}
 	
 	

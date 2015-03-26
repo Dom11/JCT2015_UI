@@ -19,6 +19,7 @@ import com.bluesky.jct.view.ProfileEditDialogController;
 import com.bluesky.jct.view.ProfileOverviewController;
 import com.bluesky.jct.view.ProfileWizardController;
 import com.bluesky.jct.view.RootLayoutController;
+import com.bluesky.jct.view.SelfServiceController;
 
 
 /**
@@ -33,6 +34,7 @@ public class MainApp extends Application {
 	private Stage primaryStage;
 	private BorderPane rootLayout;
 	private BorderPane profileWizardRoot;
+	private BorderPane selfServiceRoot;
 	
 
 	public static void main(String[] args) {
@@ -44,9 +46,9 @@ public class MainApp extends Application {
 	public void start(Stage primaryStage) {
 		
 		// opens the login
-		if(LoginDialog.openLoginDialog() == false) {
-			System.exit(0);
-		};
+//		if(LoginDialog.openLoginDialog() == false) {
+//			System.exit(0);
+//		};
 
 		// after successful login, primary stage will be loaded
 		this.primaryStage = primaryStage;
@@ -211,6 +213,61 @@ public class MainApp extends Application {
 
 			// Set profile overview into the center of root layout.
 			profileWizardRoot.setCenter(profileWizardPage);		
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	/**
+	 * This method starts the wizard to create a new profile. 
+	 */
+	public void showSelfServicePortal() {
+
+		try {
+			// Load root from wizard.
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(MainApp.class.getResource("view/SelfServiceRoot.fxml"));
+			selfServiceRoot = (BorderPane) loader.load();
+			
+			// Create the dialog Stage.
+			Stage dialogStage = new Stage();
+			dialogStage.setTitle("Self-Service Portal");
+			dialogStage.initModality(Modality.WINDOW_MODAL);
+			dialogStage.initOwner(primaryStage);
+			Scene scene = new Scene(selfServiceRoot);
+			dialogStage.setScene(scene);
+
+			// Give the controller access to the main app.
+			SelfServiceController controller = loader.getController();
+			controller.setMainApp(this);
+			controller.setDialogStage(dialogStage);
+			
+			showSelfServicePortaldPage(1);
+			dialogStage.showAndWait();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	/**
+	 * loads the page (AnchorPane) in the selfService portal to the pageNumber. 
+	 * 
+	 * @param pageNumber
+	 */
+	public void showSelfServicePortaldPage(int pageNumber) {
+
+		try {
+			// Load page from wizard.
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(MainApp.class.getResource("view/SelfServicePage" + pageNumber + ".fxml"));
+			AnchorPane selfServicePage = (AnchorPane) loader.load();
+
+			// Set profile overview into the center of root layout.
+			selfServiceRoot.setCenter(selfServicePage);		
 
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -43,8 +43,7 @@ public class RootLayoutController {
 	
 	@FXML
 	private void handleSelfService() {
-		// TODO
-		System.out.println("Self-Service Portal");
+		mainApp.showSelfServicePortal();
 	}
 	
 	
@@ -70,7 +69,7 @@ public class RootLayoutController {
 	
     @FXML
     private void handleClone() {
-  	
+ 	
     	Profile selectedProfile = ProfileOverviewController.getSelectedProfile(); 
     	
     	if (selectedProfile == null) {
