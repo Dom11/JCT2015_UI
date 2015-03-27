@@ -20,6 +20,7 @@ import com.bluesky.jct.view.ProfileOverviewController;
 import com.bluesky.jct.view.ProfileWizardController;
 import com.bluesky.jct.view.RootLayoutController;
 import com.bluesky.jct.view.SelfServiceController;
+import com.bluesky.jct.view.StatisticsController;
 
 
 /**
@@ -46,9 +47,9 @@ public class MainApp extends Application {
 	public void start(Stage primaryStage) {
 		
 		// opens the login
-//		if(LoginDialog.openLoginDialog() == false) {
-//			System.exit(0);
-//		};
+		if(LoginDialog.openLoginDialog() == false) {
+			System.exit(0);
+		};
 
 		// after successful login, primary stage will be loaded
 		this.primaryStage = primaryStage;
@@ -150,6 +151,7 @@ public class MainApp extends Application {
 
 			// Set the profile into the controller.
 			ProfileEditDialogController controller = loader.getController();
+			controller.setMainApp(this);
 			controller.setDialogStage(dialogStage);
 			controller.setProfile(profile);
 
@@ -301,6 +303,34 @@ public class MainApp extends Application {
 				System.exit(0);
 			};
 		}
+	}
+	
+	
+	/**
+	 * Opens a dialog to show profile statistics.
+	 */
+	public void showProfileStatistics() {
+	    try {
+	        // Load the fxml file and create a new stage for the popup.
+	        FXMLLoader loader = new FXMLLoader();
+	        loader.setLocation(MainApp.class.getResource("view/ProfileStatistics.fxml"));
+	        AnchorPane page = (AnchorPane) loader.load();
+	        Stage dialogStage = new Stage();
+	        dialogStage.setTitle("Profile Statistics");
+	        dialogStage.initModality(Modality.WINDOW_MODAL);
+	        dialogStage.initOwner(primaryStage);
+	        Scene scene = new Scene(page);
+	        dialogStage.setScene(scene);
+
+	        // Set the persons into the controller.
+	        StatisticsController controller = loader.getController();
+	        controller.setProfileData(ProfileOverviewController.getProfileData());
+
+	        dialogStage.show();
+
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
 	}
 
 }

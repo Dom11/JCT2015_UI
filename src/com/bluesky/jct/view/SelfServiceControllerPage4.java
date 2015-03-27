@@ -1,14 +1,15 @@
 package com.bluesky.jct.view;
 
+import java.text.DecimalFormat;
 import java.time.Duration;
 import java.util.Date;
 
 import org.reactfx.util.FxTimer;
 
+import com.bluesky.jct.ComboBoxHost;
 import com.bluesky.jct.ProfileFunctions;
 import com.bluesky.jct.model.Profile;
 import com.bluesky.jct.rest.RestClient;
-import com.bluesky.jct.util.ExceptionHandling;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -66,20 +67,21 @@ public class SelfServiceControllerPage4 {
 		profileCreationProgress.setVisible(true);
     	
 		Date date = new Date();
- 	
-        for(int index = 0; index < profileData.size(); index++) {
+		int newHostId = createNewHost();
+		 	
+        for (int index = 0; index < profileData.size(); index++) {
         	profileData.get(index).setRpmGenerationDate(date);
         	profileData.get(index).setPackageSentDate(date);
         	profileData.get(index).setProfileStatus(true);
         	
-        	profileData.get(index).setProfileDnsName("Test");
-        	profileData.get(index).setHostId(3);
+        	profileData.get(index).setProfileDnsName("Test DNS Name");
+        	profileData.get(index).setHostId(newHostId);
         	profileData.get(index).setDomainId(1);
         }
     	
 		FxTimer.runLater(Duration.ofSeconds(3), () -> {
 			
-	        for(int index = 0; index < profileData.size(); index++) {
+	        for (int index = 0; index < profileData.size(); index++) {
 	        	
 	        	int environmentId = profileData.get(index).getEnvironmentId();
 	        	int hostId = profileData.get(index).getHostId();
@@ -96,27 +98,41 @@ public class SelfServiceControllerPage4 {
 	        	Date rpmGenerationDate = profileData.get(index).getRpmGenerationDate();
 	        	Date packageSentDate = profileData.get(index).getPackageSentDate();
 	        	Integer version = profileData.get(index).getVersion();
-	        	
-	        	System.out.println(environmentId + ", " + hostId + ", " + jbarId + ", " + jiraId + ", " + prefixId + ", " + domainId + ", " + profileDescription 
-	        			+ ", " + profileDnsName + ", " + profileComponent+ ", " + jvmId+ ", " + profileStatus+ ", " + createdBy+ ", " + rpmGenerationDate
-	        			+ ", " + packageSentDate+ ", " + version);
-	        	
-//	        	RestClient.createProfile(
-//			   			environmentId, hostId, jbarId, jiraId, prefixId, domainId, profileDescription, profileDnsName, 
-//			   			profileComponent, jvmId, profileStatus, createdBy, rpmGenerationDate, packageSentDate, version);
+
+	        	if (RestClient.createProfile(
+			   			environmentId, hostId, jbarId, jiraId, prefixId, domainId, profileDescription, profileDnsName, 
+			   			profileComponent, jvmId, profileStatus, createdBy, rpmGenerationDate, packageSentDate, version) == false) {
+	        		
+	        	   	// refresh data table on profile overview
+	        	   	ProfileOverviewController.loadProfileViewData();
+	        	   	
+	        		SelfServiceController.closeWizard();    	
+	        	} else {
+	        		SelfServiceController.decreasePageCounter();
+	        	};
 	        }
-    	
-	
-    	   	// refresh data table on profile overview
-    	   	ProfileOverviewController.loadProfileViewData();
-    		
-    		String headerText = "Package";
-    		String contentText = "Package has been sent to Satellite and received.\n"
-    						   + "Your profile is now ready for use.";
-    		ExceptionHandling.handleInformation(headerText, contentText);
-    		
-    		SelfServiceController.closeWizard();    		
 		});
+    }
+    
+    
+    /**
+     * Creates a new Host where the Profiles will be running.
+     * 
+     * @return newHostId
+     */
+    private int createNewHost() {
+    	
+    	int numberOfHosts = ComboBoxHost.getHostData().size();
+    	DecimalFormat myFormatter = new DecimalFormat("00000");
+    	String output = myFormatter.format(numberOfHosts);
+    	
+    	String hostName = "srp" + output + "lx";
+		RestClient.createHost(hostName);
+		
+		ComboBoxHost.loadHostData();
+		int newHostId = ComboBoxHost.getHostData().get(numberOfHosts).getId();
+		
+		return newHostId;
     }
     
     

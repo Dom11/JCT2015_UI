@@ -90,6 +90,7 @@ public class ProfileWizardController {
 	 * @return pageCounter
 	 */
 	public static void resetPageCounter() {
+		progressValue.setValue(15);
 		pageCounter.setValue(1);
 	}
 	

@@ -11,7 +11,7 @@
    <children>
       <SplitPane dividerPositions="0.2521489971346705" layoutX="128.0" layoutY="72.0" prefHeight="428.0" prefWidth="700.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="72.0">
         <items>
-          <AnchorPane maxWidth="180.0" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="180.0">
+          <AnchorPane maxWidth="180.0" minHeight="0.0" minWidth="180.0" prefHeight="160.0" prefWidth="180.0">
                <children>
                   <GridPane layoutX="-21.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0">
                     <columnConstraints>
@@ -35,29 +35,29 @@
                               <Insets top="15.0" />
                            </GridPane.margin>
                         </Text>
-                        <ComboBox fx:id="bookmarkComboBox" prefWidth="150.0" promptText="please select" GridPane.rowIndex="1" />
+                        <ComboBox fx:id="bookmarkComboBox" minWidth="150.0" prefWidth="150.0" promptText="please select" GridPane.rowIndex="1" />
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Environment" GridPane.rowIndex="2">
                            <GridPane.margin>
                               <Insets top="15.0" />
                            </GridPane.margin>
                         </Text>
-                        <ComboBox fx:id="environmentComboBox" prefWidth="150.0" promptText="please select" GridPane.rowIndex="3" />
+                        <ComboBox fx:id="environmentComboBox" minWidth="150.0" prefWidth="150.0" promptText="please select" GridPane.rowIndex="3" />
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Domain" GridPane.rowIndex="4">
                            <GridPane.margin>
                               <Insets top="15.0" />
                            </GridPane.margin>
                         </Text>
-                        <ComboBox fx:id="domainComboBox" prefWidth="150.0" promptText="please select" GridPane.rowIndex="5" />
-                        <ComboBox fx:id="jbarComboBox" prefWidth="150.0" promptText="please select" GridPane.rowIndex="7" />
+                        <ComboBox fx:id="domainComboBox" minWidth="150.0" prefWidth="150.0" promptText="please select" GridPane.rowIndex="5" />
+                        <ComboBox fx:id="jbarComboBox" minWidth="150.0" prefWidth="150.0" promptText="please select" GridPane.rowIndex="7" />
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="JBar Name" GridPane.rowIndex="6">
                            <GridPane.margin>
                               <Insets top="15.0" />
                            </GridPane.margin>
                         </Text>
                         <Button mnemonicParsing="false" onAction="#handleSaveBookmark" text="Set Bookmark" GridPane.rowIndex="9" />
-                        <TextField fx:id="environmentFilterCriteria" editable="false" maxWidth="150.0" prefHeight="25.0" GridPane.rowIndex="3" />
-                        <TextField fx:id="domainFilterCriteria" editable="false" maxWidth="150.0" GridPane.rowIndex="5" />
-                        <TextField fx:id="jbarFilterCriteria" editable="false" maxWidth="150.0" GridPane.rowIndex="7" />
+                        <TextField fx:id="environmentFilterCriteria" editable="false" maxWidth="150.0" minWidth="150.0" prefHeight="25.0" prefWidth="150.0" GridPane.rowIndex="3" />
+                        <TextField fx:id="domainFilterCriteria" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" GridPane.rowIndex="5" />
+                        <TextField fx:id="jbarFilterCriteria" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" GridPane.rowIndex="7" />
                      </children>
                   </GridPane>
                </children>

@@ -59,7 +59,9 @@ public class SelfServiceControllerPage3 {
 	@FXML
 	private void initialize() {
 		nextButton.isFocused();
-		
+
+		// TODO currently the table contains Profile data (foreign id's). To make it more user-friendly, create a separate
+		// view Class that contains more context information and pull this into the tableView.
 		profileTable.setItems(profileData);	
 	
 		// Initialize the profileTable with the three columns.
@@ -68,14 +70,6 @@ public class SelfServiceControllerPage3 {
 		prefixIdColumn.setCellValueFactory(cellData -> cellData.getValue().prefixIdProperty().asObject());
 		jbarIdColumn.setCellValueFactory(cellData -> cellData.getValue().jbarIdProperty().asObject());
 		environmentIdColumn.setCellValueFactory(cellData -> cellData.getValue().environmentIdProperty().asObject());
-		
-        for(int i = 0; i < profileData.size(); i++) {
-            System.out.println(profileData.get(i).getEnvironmentId());
-        }
-        
-
-		
-		
 	}
 	
     

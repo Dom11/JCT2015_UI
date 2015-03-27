@@ -26,9 +26,9 @@ public class Host implements Serializable {
 	 * 
 	 * @param jbarId, jbarName
 	 */
-	public Host(int hostId, String hostName) {
+	public Host(String hostName) {
 		super();
-		this.hostId = new SimpleIntegerProperty(hostId);
+		this.hostId = new SimpleIntegerProperty();
 		this.hostName = new SimpleStringProperty(hostName);
 	}
 	

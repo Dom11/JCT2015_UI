@@ -34,18 +34,18 @@
             <Label text="Environment" GridPane.rowIndex="5" />
             <Label text="DNS Name" GridPane.rowIndex="6" />
             <Label text="Host" GridPane.rowIndex="7" />
-            <TextField fx:id="profileNameField" GridPane.columnIndex="1" />
-            <TextField fx:id="profileDescriptionField" promptText="mandatory" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <TextField fx:id="profileDnsField" promptText="mandatory" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <TextField fx:id="profileNameField" maxWidth="175.0" minWidth="175.0" prefWidth="175.0" GridPane.columnIndex="1" />
+            <TextField fx:id="profileDescriptionField" maxWidth="175.0" minWidth="175.0" prefWidth="175.0" promptText="mandatory" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="profileDnsField" maxWidth="175.0" minWidth="175.0" prefWidth="175.0" promptText="mandatory" GridPane.columnIndex="1" GridPane.rowIndex="6" />
             <Label text="Jira Project Key" GridPane.rowIndex="8" />
             <Label text="Component" GridPane.rowIndex="9" />
-            <TextField fx:id="profileComponentField" promptText="optional" GridPane.columnIndex="1" GridPane.rowIndex="9" />
-            <ComboBox fx:id="domainComboBox" prefHeight="25.0" prefWidth="199.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <ComboBox fx:id="jbarComboBox" prefHeight="25.0" prefWidth="182.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-            <ComboBox fx:id="environmentComboBox" prefHeight="25.0" prefWidth="187.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-            <ComboBox fx:id="hostComboBox" prefHeight="25.0" prefWidth="191.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-            <ComboBox fx:id="jiraComboBox" prefHeight="25.0" prefWidth="212.0" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-            <ComboBox fx:id="prefixComboBox" prefHeight="25.0" prefWidth="191.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <TextField fx:id="profileComponentField" maxWidth="175.0" minWidth="175.0" prefWidth="175.0" promptText="optional" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+            <ComboBox fx:id="domainComboBox" maxWidth="175.0" minWidth="175.0" prefHeight="25.0" prefWidth="175.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <ComboBox fx:id="jbarComboBox" maxWidth="175.0" minWidth="175.0" prefHeight="25.0" prefWidth="175.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <ComboBox fx:id="environmentComboBox" maxWidth="175.0" minWidth="175.0" prefHeight="25.0" prefWidth="175.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <ComboBox fx:id="hostComboBox" maxWidth="175.0" minWidth="175.0" prefHeight="25.0" prefWidth="175.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+            <ComboBox fx:id="jiraComboBox" maxWidth="175.0" minWidth="175.0" prefHeight="25.0" prefWidth="175.0" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+            <ComboBox fx:id="prefixComboBox" maxWidth="175.0" minWidth="175.0" prefHeight="25.0" prefWidth="175.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
          </children>
       </GridPane>
       <HBox fx:id="hbox" layoutX="17.0" layoutY="336.0" spacing="5.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">

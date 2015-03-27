@@ -291,6 +291,9 @@ public class ProfileOverviewController extends Filter {
 	 * Replaces the current tableView with the filtered list.
 	 */
 	private void showFilterdList() {
+		
+		selectedProfile = null;
+		
 		// 4. Bind the SortedList comparator to the TableView comparator. Otherwise, sorting the TableView would have no effect.
 		getFilteredList().comparatorProperty().bind(profileTable.comparatorProperty());
 		
@@ -409,8 +412,9 @@ public class ProfileOverviewController extends Filter {
 	 * The Profile will be written to static variable selectedProfile.
 	 */
 	private void setSelectedProfile() {
-		selectedIndex = profileTable.getSelectionModel().getSelectedItem().getProfileId();
-		selectedProfile = RestClient.findProfile(selectedIndex);
+
+			selectedIndex = profileTable.getSelectionModel().getSelectedItem().getProfileId();
+			selectedProfile = RestClient.findProfile(selectedIndex);			
 	}
 	
 	

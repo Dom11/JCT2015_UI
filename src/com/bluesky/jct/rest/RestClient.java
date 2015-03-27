@@ -573,6 +573,33 @@ public class RestClient {
 	
 	
 	/**
+	 * Creates a new Host
+	 * 
+	 * @param jvmArgumentText
+	 * @return successfulTransaction (false if ok, true otherwise)
+	 */
+	public static boolean createHost(String hostName) {
+		
+		Host host = new Host(hostName);
+		Response response = client.target(REST_SERVICE_URL).path("/host").request().post(Entity.json(host));
+		
+		if (response.getStatus() == Status.INTERNAL_SERVER_ERROR.getStatusCode()) {
+			
+			String headerText = "Create Host";
+			String contentText = "The host could not be created!\n"
+					           + "Please check whether a host with the same parameters already exists.";
+			ExceptionHandling.handleError(headerText, contentText);
+			successfulTransaction = true;
+		} else {
+			successfulTransaction = false;
+		}
+		// response must either be read or ignored (closed)
+		response.close();
+		return successfulTransaction;
+	}
+	
+	
+	/**
 	 * Provides all details of a single Jira
 	 * 
 	 * @param jiraId

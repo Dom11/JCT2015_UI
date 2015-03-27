@@ -4,19 +4,15 @@ import java.util.Optional;
 
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -24,21 +20,17 @@ import javafx.stage.Stage;
 
 
 /**
- * Login Dialog and Functions
- * Redesign mix from http://code.makery.ch/blog/javafx-dialogs-official/
- * and Book JavaFX 8: Introduction by Example 
+ * Login Dialog to set the user type to Admin or Regular
  * 
  * @author Dominik Rey
  */
 public class LoginDialog {
 	
-	private final static String PASSWORD = "1234";
 	private final static BooleanProperty GRANTED_ACCESS = new SimpleBooleanProperty(false);
-	private final static IntegerProperty ATTEMPTS = new SimpleIntegerProperty(0);
-	private final static int MAX_ATTEMPTS = 3;
 	private final static String USER = System.getProperty("user.name");
 	private final static String ADMIN = "Administrator";
 	private static boolean disabled = true;
+	private static String buttonText = "";
 
 
 	/**
@@ -77,23 +69,8 @@ public class LoginDialog {
 		userOption.setValue("Regular");
 		userOption.setMaxWidth(140);
 		
-		PasswordField password = new PasswordField();
-		password.setPromptText("Password");
-		password.setMaxWidth(140);
-		
-		Label info = new Label();
-		info.setText("incorrect!");
-		info.setStyle("-fx-text-fill: #f70c0c");
-		info.setVisible(false);
-		Label info2 = new Label();
-		info2.setVisible(false);		
-		
-		grid.add(new Label("User:"), 0, 0);
-		grid.add(userOption, 1, 0);		
-		grid.add(new Label("Password:"), 0, 1);
-		grid.add(password, 1, 1);
-		grid.add(info, 2, 1);
-		grid.add(info2, 1, 2);
+		grid.add(new Label("User Type:"), 0, 1);
+		grid.add(userOption, 1, 1);		
 		
 		dialog.getDialogPane().setContent(grid);
 		
@@ -102,19 +79,6 @@ public class LoginDialog {
 		Platform.runLater(() -> userOption.requestFocus());	
 		
 		
-		// Enable/Disable login button depending on whether a username was entered.
-		Node loginButton = dialog.getDialogPane().lookupButton(loginButtonType);
-		loginButton.setDisable(true);
-		
-
-		// listener when the user types into the password field.
-		password.textProperty().addListener((observable, oldValue, newValue) -> {
-			loginButton.setDisable(newValue.trim().isEmpty());
-			boolean granted = password.getText().equals(PASSWORD);
-			GRANTED_ACCESS.set(granted);
-		});
-		
-
 		// listener on combobox selection.
 		userOption.valueProperty().addListener((observable, oldValue, newValue) -> {
 			if (newValue.matches(ADMIN) == true) {
@@ -122,53 +86,31 @@ public class LoginDialog {
 			} else {
 				disabled = true;
 			}
-			password.requestFocus();
 		});
 		
 		
-		// listener on number of attempts.
-		ATTEMPTS.addListener((observable, oldValue, newValue) -> {
-			if (GRANTED_ACCESS.get() == false || MAX_ATTEMPTS == newValue.intValue()) {				
-				// after 3 failed attemps
-				Platform.exit();
-			}
-		});
-		
-
 		// Convert the result to a password when the login button is clicked.
 		dialog.setResultConverter(dialogButton -> {
 			if (dialogButton == loginButtonType) {
-				ATTEMPTS.set(ATTEMPTS.add(1).get());				
-				return (password.getText());
+				buttonText = "ok";
+				return buttonText;
 				}
-			return null;
+			buttonText = "cancel";
+			return buttonText;
 		});
 		
 		
 		Optional<String> result = dialog.showAndWait();
 		
 		// checks the number of attempts in case password is incorrect
-		result.ifPresent(PasswordString -> {			
-			if (GRANTED_ACCESS.get() == false) {
-				int i = 1;
-				do {
-					info.setVisible(true);
-					info2.setText(getAttempts());
-					info2.setVisible(true);
-					loginButton.setDisable(false);
-					password.clear();
-					dialog.showAndWait();
-					i++;
-				} while (i < MAX_ATTEMPTS);
+		result.ifPresent(buttonText -> {			
+			if (buttonText == "ok") {
+				GRANTED_ACCESS.set(true);
+			} else {
 				Platform.exit();
-			} 
+			}
 		});
 		return GRANTED_ACCESS.get();
-	}
-	
-	
-	public static String getAttempts() {
-		return "Attempt " + ATTEMPTS.get() + " of " + MAX_ATTEMPTS;
 	}
 	
 	

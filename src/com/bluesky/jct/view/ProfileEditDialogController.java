@@ -25,6 +25,7 @@ import com.bluesky.jct.ComboBoxJbar;
 import com.bluesky.jct.ComboBoxJira;
 import com.bluesky.jct.ComboBoxPrefix;
 import com.bluesky.jct.LoginDialog;
+import com.bluesky.jct.MainApp;
 import com.bluesky.jct.ProfileFunctions;
 import com.bluesky.jct.model.*;
 import com.bluesky.jct.rest.RestClient;
@@ -85,6 +86,7 @@ public class ProfileEditDialogController {
 	@FXML
 	private HBox hbox;
 
+	private MainApp mainApp;
 	private Stage dialogStage;
 	private boolean saveClicked = false;
 	private boolean currentProfileStatus = false;
@@ -377,7 +379,8 @@ public class ProfileEditDialogController {
     
     @FXML
     private void handleClone() {
-		ProfileFunctions.cloneProfile(profile);
+    	ProfileFunctions.setTempProfile(profile);
+		mainApp.showProfileWizard();
     }
     
     
@@ -484,5 +487,15 @@ public class ProfileEditDialogController {
 	public boolean isSaveClicked() {
 		return saveClicked;
 	}
+
 	
+	/**
+	 * Is called by the main application to give a reference back to itself.
+	 * 
+	 * @param mainApp
+	 */
+	public void setMainApp(MainApp mainApp) {
+		this.mainApp = mainApp;
+	}
+
 }

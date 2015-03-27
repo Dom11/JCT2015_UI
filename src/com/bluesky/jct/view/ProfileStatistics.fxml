@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.chart.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="400.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bluesky.jct.view.StatisticsController">
+   <children>
+      <SplitPane dividerPositions="0.5" layoutX="150.0" layoutY="35.0" prefHeight="400.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <items>
+            <PieChart fx:id="pieChart" legendVisible="false" maxWidth="300.0" minWidth="300.0" prefHeight="154.0" prefWidth="300.0" title="Profiles created by" />
+            <BarChart fx:id="barChart" legendVisible="false" maxWidth="500.0" minWidth="500.0" prefHeight="197.0" prefWidth="500.0" title="Profiles created per Month">
+              <xAxis>
+                <CategoryAxis side="BOTTOM" fx:id="xAxis" />
+              </xAxis>
+              <yAxis>
+                <NumberAxis side="LEFT" />
+              </yAxis>
+            </BarChart>
+         </items>
+      </SplitPane>
+   </children>
+</AnchorPane>

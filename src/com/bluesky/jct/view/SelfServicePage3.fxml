@@ -20,11 +20,11 @@
       <Text layoutX="37.0" layoutY="38.0" strokeType="OUTSIDE" strokeWidth="0.0" text="The following Profiles will be created..." wrappingWidth="400.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="25.0" />
       <TableView fx:id="profileTable" layoutX="60.0" layoutY="58.0" prefHeight="237.0" prefWidth="440.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0">
         <columns>
-            <TableColumn fx:id="jiraIdColumn" prefWidth="70.0" text="JIRA Key" />
-            <TableColumn fx:id="descriptionColumn" prefWidth="130.0" text="Description" />
+            <TableColumn fx:id="jiraIdColumn" prefWidth="50.0" text="JIRA Key" />
+            <TableColumn fx:id="descriptionColumn" prefWidth="150.0" text="Description" />
           <TableColumn fx:id="prefixIdColumn" prefWidth="70.0" text="Prefix" />
           <TableColumn fx:id="jbarIdColumn" prefWidth="70.0" text="JBar" />
-            <TableColumn fx:id="environmentIdColumn" prefWidth="100.0" text="Environment" />
+            <TableColumn fx:id="environmentIdColumn" prefWidth="90.0" text="Environment" />
         </columns>
       </TableView>
    </children>
