@@ -1,5 +1,7 @@
 package com.bluesky.jct.view;
 
+import java.util.Date;
+
 import com.bluesky.jct.ProfileFunctions;
 import com.bluesky.jct.model.Profile;
 import com.bluesky.jct.util.ExceptionHandling;
@@ -9,7 +11,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.TextField;
+import javafx.scene.control.Label;
 
 
 /**
@@ -30,36 +32,56 @@ public class SelfServiceControllerPage2 {
 	@FXML
 	private CheckBox prdCheckBox;
 	@FXML
-	private TextField labQuantityField;
+	private Label labQuantityLabel;
 	@FXML
-	private TextField devQuantityField;
+	private Label devQuantityLabel;
 	@FXML
-	private TextField sitQuantityField;
+	private Label sitQuantityLabel;
 	@FXML
-	private TextField uatQuantityField;
+	private Label uatQuantityLabel;
 	@FXML
-	private TextField prdQuantityField;
-
+	private Label prdQuantityLabel;
+	@FXML
+	private Button labPlus;
+	@FXML
+	private Button devPlus;
+	@FXML
+	private Button sitPlus;
+	@FXML
+	private Button uatPlus;
+	@FXML
+	private Button prdPlus;
+	
 	@FXML
 	private Button nextButton;
 	@FXML
 	private Button backButton;
 	
 	private ObservableList<Profile> profileData = FXCollections.observableArrayList();
+
 	private Profile tempProfile;
-	
+  	private int environmentId;
+   	private int hostId;	
+   	private int jbarId;   	
+   	private int jiraId;   	
+	private int prefixId;   	
+	private int domainId;   	
+	private String profileDescription;
+   	private String profileDnsName;
+   	private String profileComponent;
+	private int jvmId;   
+	private boolean profileStatus;
+   	private String createdBy;
+   	private Date rpmGenerationDate;
+   	private Date packageSentDate;
+   	private int version;
+
 	private int labQuantity = 0;
 	private int devQuantity = 0;
 	private int sitQuantity = 0;
 	private int uatQuantity = 0;
 	private int prdQuantity = 0;
-	
-	private String labQuantityText = "";
-	private String devQuantityText = "";
-	private String sitQuantityText = "";
-	private String uatQuantityText = "";
-	private String prdQuantityText = "";
-	
+
 			
 	/**
 	 * Constructor
@@ -76,31 +98,100 @@ public class SelfServiceControllerPage2 {
 	 */
 	@FXML
 	private void initialize() {
+		
+		// hide plus buttons
+		labPlus.setVisible(false);
+		devPlus.setVisible(false);
+		sitPlus.setVisible(false);
+		uatPlus.setVisible(false);
+		prdPlus.setVisible(false);
+		
+		// set tempProfile information and load parameters
 		tempProfile = ProfileFunctions.getTempProfile();
+		environmentId = tempProfile.getEnvironmentId();
+		hostId = tempProfile.getHostId();
+		jbarId = tempProfile.getJbarId();
+	   	jiraId = tempProfile.getJiraId();
+		prefixId = tempProfile.getPrefixId();
+		domainId = tempProfile.getDomainId();
+		profileDescription = tempProfile.getProfileDescription();
+	   	profileDnsName = tempProfile.getProfileDnsName();
+		profileComponent = tempProfile.getProfileComponent();
+		jvmId = tempProfile.getJvmId();
+		profileStatus = tempProfile.getProfileStatus();
+		createdBy = tempProfile.getCreatedBy();	
+		rpmGenerationDate = tempProfile.getRpmGenerationDate();
+		packageSentDate = tempProfile.getPackageSentDate();
+		version = tempProfile.getVersion();
 		
-		// setting initial quality inputs
-		labQuantityField.setText(getLabQuantity());
-		devQuantityField.setText(getDevQuantity());
-		sitQuantityField.setText(getSitQuantity());
-		uatQuantityField.setText(getUatQuantity());
-		prdQuantityField.setText(getPrdQuantity());
+		// handle checkBox events.
+		labCheckBox.setOnAction((event) -> {
+			final String newText = labCheckBox.isSelected() ? "1":"0";
+			labQuantity =  labCheckBox.isSelected() ? 1:0;
+			labQuantityLabel.setText(newText);
+			labPlus.setVisible(labCheckBox.isSelected());
+			
+		});
+		devCheckBox.setOnAction((event) -> {
+			final String newText = devCheckBox.isSelected() ? "1":"0";
+			devQuantity =  devCheckBox.isSelected() ? 1:0;
+			devQuantityLabel.setText(newText);
+			devPlus.setVisible(devCheckBox.isSelected());
+			
+		});
+		sitCheckBox.setOnAction((event) -> {
+			final String newText = sitCheckBox.isSelected() ? "1":"0";
+			sitQuantity =  sitCheckBox.isSelected() ? 1:0;
+			sitQuantityLabel.setText(newText);
+			sitPlus.setVisible(sitCheckBox.isSelected());
+			
+		});
+		uatCheckBox.setOnAction((event) -> {
+			final String newText = uatCheckBox.isSelected() ? "1":"0";
+			uatQuantity =  uatCheckBox.isSelected() ? 1:0;
+			uatQuantityLabel.setText(newText);
+			uatPlus.setVisible(uatCheckBox.isSelected());
+			
+		});
+		prdCheckBox.setOnAction((event) -> {
+			final String newText = prdCheckBox.isSelected() ? "1":"0";
+			prdQuantity =  prdCheckBox.isSelected() ? 1:0;
+			prdQuantityLabel.setText(newText);
+			prdPlus.setVisible(prdCheckBox.isSelected());
+			
+		});
 		
-		// listener for quality inputs
-		labQuantityField.textProperty().addListener((observable, oldValue, newValue) -> {
-			setLabQuantity(newValue);
-		});
-		devQuantityField.textProperty().addListener((observable, oldValue, newValue) -> {
-			setDevQuantity(newValue);
-		});
-		sitQuantityField.textProperty().addListener((observable, oldValue, newValue) -> {
-			setSitQuantity(newValue);
-		});
-		uatQuantityField.textProperty().addListener((observable, oldValue, newValue) -> {
-			setUatQuantity(newValue);
-		});
-		prdQuantityField.textProperty().addListener((observable, oldValue, newValue) -> {
-			setPrdQuantity(newValue);
-		});
+		// handle plus button events.
+		labPlus.setOnAction((event) -> {
+			if (labQuantity < 5) {
+				labQuantity++;
+				labQuantityLabel.setText(Integer.toString(labQuantity));
+			} 
+		}); 
+		devPlus.setOnAction((event) -> {
+			if (devQuantity < 5) {
+				devQuantity++;
+				devQuantityLabel.setText(Integer.toString(devQuantity));
+			} 
+		}); 
+		sitPlus.setOnAction((event) -> {
+			if (sitQuantity < 5) {
+				sitQuantity++;
+				sitQuantityLabel.setText(Integer.toString(sitQuantity));
+			} 
+		}); 
+		uatPlus.setOnAction((event) -> {
+			if (uatQuantity < 5) {
+				uatQuantity++;
+				uatQuantityLabel.setText(Integer.toString(uatQuantity));
+			} 
+		}); 
+		prdPlus.setOnAction((event) -> {
+			if (prdQuantity < 5) {
+				prdQuantity++;
+				prdQuantityLabel.setText(Integer.toString(prdQuantity));
+			} 
+		}); 
 	}
 	
 	
@@ -111,40 +202,17 @@ public class SelfServiceControllerPage2 {
     @FXML
     private void handleNext() {
     	
-    	int totalQuantity = labQuantity + devQuantity + sitQuantity + uatQuantity + prdQuantity;
-    	
-    	if (totalQuantity == 0) {
-        	String headerText = "Quantity Input";
-        	String contentText = "No quantities have been entered!";
-        	ExceptionHandling.handleWarning(headerText, contentText);
-    	}
-    	
-    	if (checkIsQuantityEntered() == false) {
-        	String headerText = "Quantity / CheckBox Input";
-        	String contentText = "Either a quantity on a checked environment is missing\n"
-        					   + "or a checkBox is unchecked that shows a quantity!";
-        	ExceptionHandling.handleWarning(headerText, contentText);
-    	} else {
-    		createProfiles();
-    	}
+		createProfiles();
     	ProfileFunctions.setTempProfiles(profileData);
       	
 	   	// load next page of wizard
    		SelfServiceController.increasePageCounter();
-    	
-		
-        for(int i = 0; i < profileData.size(); i++) {
-            System.out.println(profileData.get(i).getProfileDescription()
-            		+ ", " + profileData.get(i).getPrefixId()
-            		+ ", " + profileData.get(i).getJbarId()
-            		+ ", " + profileData.get(i).getEnvironmentId());
-        }
 		
 		String headerText = "Order Progress";
 		String contentText = "Profiles have been temporarily created";
 		ExceptionHandling.handleInformation(headerText, contentText);
     }
-    
+    	
     
     @FXML
     private void handleBack() {
@@ -156,223 +224,41 @@ public class SelfServiceControllerPage2 {
     	
     	profileData.clear();
     	
-    	if (labQuantity > 0) {
-        	int labIndex = 1;    		
-    		do {
-    			tempProfile.setEnvironmentId(5);
-    			tempProfile.setPrefixId(labIndex);
-    			profileData.add(tempProfile);
-    			labIndex++;
-	    	} while (labIndex <= labQuantity);
+   		for (int labIndex = 1; labIndex <= labQuantity; labIndex++) {
+   			Profile tempProfileNew = new Profile(environmentId, hostId, jbarId, jiraId, prefixId, domainId, profileDescription, 
+           			profileDnsName, profileComponent, jvmId, profileStatus, createdBy, rpmGenerationDate, packageSentDate, version);
+   			tempProfileNew.setEnvironmentId(5);
+   			tempProfileNew.setPrefixId(labIndex);
+   			profileData.add(tempProfileNew);
+   		}
+   		for (int devIndex = 1; devIndex <= devQuantity; devIndex++) {
+   			Profile tempProfileNew = new Profile(environmentId, hostId, jbarId, jiraId, prefixId, domainId, profileDescription, 
+           			profileDnsName, profileComponent, jvmId, profileStatus, createdBy, rpmGenerationDate, packageSentDate, version);
+   			tempProfileNew.setEnvironmentId(1);
+   			tempProfileNew.setPrefixId(devIndex);
+   			profileData.add(tempProfileNew);
+   		}
+   		for (int sitIndex = 1; sitIndex <= sitQuantity; sitIndex++) {
+   			Profile tempProfileNew = new Profile(environmentId, hostId, jbarId, jiraId, prefixId, domainId, profileDescription, 
+           			profileDnsName, profileComponent, jvmId, profileStatus, createdBy, rpmGenerationDate, packageSentDate, version);
+   			tempProfileNew.setEnvironmentId(3);
+   			tempProfileNew.setPrefixId(sitIndex);
+   			profileData.add(tempProfileNew);
+   		}
+   		for (int uatIndex = 1; uatIndex <= uatQuantity; uatIndex++) {
+    		Profile tempProfileNew = new Profile(environmentId, hostId, jbarId, jiraId, prefixId, domainId, profileDescription, 
+           			profileDnsName, profileComponent, jvmId, profileStatus, createdBy, rpmGenerationDate, packageSentDate, version);
+    		tempProfileNew.setEnvironmentId(2);
+    		tempProfileNew.setPrefixId(uatIndex);
+    		profileData.add(tempProfileNew);
     	}
-    	if (devQuantity > 0) {
-        	int devIndex = 1;    		
-    		do {
-    			tempProfile.setEnvironmentId(1);
-    			tempProfile.setPrefixId(devIndex);
-    			profileData.add(tempProfile);
-    			devIndex++;
-	    	} while (devIndex <= devQuantity);
+    	for (int prdIndex = 1; prdIndex <= prdQuantity; prdIndex++) {
+    		Profile tempProfileNew = new Profile(environmentId, hostId, jbarId, jiraId, prefixId, domainId, profileDescription, 
+           			profileDnsName, profileComponent, jvmId, profileStatus, createdBy, rpmGenerationDate, packageSentDate, version);    			
+    		tempProfileNew.setEnvironmentId(4);
+    		tempProfileNew.setPrefixId(prdIndex);
+    		profileData.add(tempProfileNew);
     	}
-    	if (sitQuantity > 0) {
-        	int sitIndex = 1;    		
-    		do {
-    			tempProfile.setEnvironmentId(3);
-    			tempProfile.setPrefixId(sitIndex);
-    			profileData.add(tempProfile);
-    			sitIndex++;
-	    	} while (sitIndex <= sitQuantity);
-    	}
-    	if (uatQuantity > 0) {
-        	int uatIndex = 1;    		
-    		do {
-    			tempProfile.setEnvironmentId(2);
-    			tempProfile.setPrefixId(uatIndex);
-    			profileData.add(tempProfile);
-    			uatIndex++;
-	    	} while (uatIndex <= uatQuantity);
-    	}
-       	if (prdQuantity > 0) {
-        	int prdIndex = 1;    		
-    		do {
-    			tempProfile.setEnvironmentId(4);
-    			tempProfile.setPrefixId(prdIndex);
-    			profileData.add(tempProfile);
-    			prdIndex++;
-	    	} while (prdIndex <= prdQuantity);
-    	}
-    }
-    
-
-    /**
-     * Checks whether both quantity and checkBox are set or not.
-     * In case only one input is available it returns false.
-     * 
-     * @return quantitiesAvailable
-     */
-    private boolean checkIsQuantityEntered() {   	
-    	boolean quantitiesAvailable;
-    	if (((labCheckBox.isSelected() == true) && (labQuantity != 0) == true) ||
-    			((devCheckBox.isSelected() == true) && (devQuantity != 0) == true) ||
-    			((sitCheckBox.isSelected() == true) && (sitQuantity != 0) == true) ||
-    			((uatCheckBox.isSelected() == true) && (uatQuantity != 0) == true) ||
-    			((prdCheckBox.isSelected() == true) && (prdQuantity != 0) == true) ) {
-//TODO remove those two lines if everything works. This is the working x-check in two steps.   			
-// (devbCheckBox.isSelected() == false) && (devQuantity != 0) == false ||
-// (devbCheckBox.isSelected() == true) && (devQuantity > 0) == true 
-    		quantitiesAvailable = true;
-    	} else {
-    		quantitiesAvailable = false;
-    	}
-    	return quantitiesAvailable;
-    }
-    
-    
-    // --- Getter and Setter for the quantities
-    
-    private String getLabQuantity() {
-    	if (labQuantity == 0) {
-    		labQuantityText = "";
-    	}
-    	labQuantityText = Integer.toString(labQuantity);
-    	return labQuantityText; 
-    }
-    
-    private int setLabQuantity(String labQuantityInput) {
-    	
-    	String headerText = "Quantity Input";
-    	String contentText = "Quantity must be an integer between 0 and 5!";
-    	
-     	if (labQuantityField.getText() == null || labQuantityField.getText().length() == 0) {
-    		labQuantity = 0; 
-        } else {
-            // try to parse the quantity into an int.
-            try {
-            	labQuantity = Integer.parseInt(labQuantityField.getText());
-            } catch (NumberFormatException e) {
-            	ExceptionHandling.handleWarning(headerText, contentText);
-            }
-            if(labQuantity > 5) {
-            	ExceptionHandling.handleWarning(headerText, contentText);
-            }
-        }
-    	return labQuantity; 
-    }
-    
-    private String getDevQuantity() {
-    	if (devQuantity == 0) {
-    		devQuantityText = "";
-    	}
-    	devQuantityText = Integer.toString(devQuantity);
-    	return devQuantityText; 
-    }
-    
-    private int setDevQuantity(String devQuantityInput) {
-    	
-    	String headerText = "Quantity Input";
-    	String contentText = "Quantity must be an integer between 0 and 5!";
-    	
-     	if (devQuantityField.getText() == null || devQuantityField.getText().length() == 0) {
-    		devQuantity = 0; 
-        } else {
-            // try to parse the quantity into an int.
-            try {
-            	devQuantity = Integer.parseInt(devQuantityField.getText());
-            } catch (NumberFormatException e) {
-            	ExceptionHandling.handleWarning(headerText, contentText);
-            }
-            if(devQuantity > 5) {
-            	ExceptionHandling.handleWarning(headerText, contentText);
-            }
-        }
-    	return devQuantity; 
-    }
-    
-    private String getSitQuantity() {
-    	if (sitQuantity == 0) {
-    		sitQuantityText = "";
-    	}
-    	sitQuantityText = Integer.toString(sitQuantity);
-    	return sitQuantityText; 
-    }
-    
-    private int setSitQuantity(String sitQuantityInput) {
-    	
-    	String headerText = "Quantity Input";
-    	String contentText = "Quantity must be an integer between 0 and 5!";
-    	
-     	if (sitQuantityField.getText() == null || sitQuantityField.getText().length() == 0) {
-    		sitQuantity = 0; 
-        } else {
-            // try to parse the quantity into an int.
-            try {
-            	sitQuantity = Integer.parseInt(sitQuantityField.getText());
-            } catch (NumberFormatException e) {
-            	ExceptionHandling.handleWarning(headerText, contentText);
-            }
-            if(sitQuantity > 5) {
-            	ExceptionHandling.handleWarning(headerText, contentText);
-            }
-        }
-    	return sitQuantity; 
-    }
-    
-    private String getUatQuantity() {
-    	if (uatQuantity == 0) {
-    		uatQuantityText = "";
-    	}
-    	uatQuantityText = Integer.toString(uatQuantity);
-    	return uatQuantityText; 
-    }
-    
-    private int setUatQuantity(String uatQuantityInput) {
-    	
-    	String headerText = "Quantity Input";
-    	String contentText = "Quantity must be an integer between 0 and 5!";
-    	
-     	if (uatQuantityField.getText() == null || uatQuantityField.getText().length() == 0) {
-    		uatQuantity = 0; 
-        } else {
-            // try to parse the quantity into an int.
-            try {
-            	uatQuantity = Integer.parseInt(uatQuantityField.getText());
-            } catch (NumberFormatException e) {
-            	ExceptionHandling.handleWarning(headerText, contentText);
-            }
-            if(uatQuantity > 5) {
-            	ExceptionHandling.handleWarning(headerText, contentText);
-            }
-        }
-    	return uatQuantity; 
-    }
-    
-    private String getPrdQuantity() {
-    	if (prdQuantity == 0) {
-    		prdQuantityText = "";
-    	}
-    	prdQuantityText = Integer.toString(prdQuantity);
-    	return prdQuantityText; 
-    }
-    
-    private int setPrdQuantity(String prdQuantityInput) {
-    	
-    	String headerText = "Quantity Input";
-    	String contentText = "Quantity must be an integer between 0 and 5!";
-    	
-     	if (prdQuantityField.getText() == null || prdQuantityField.getText().length() == 0) {
-    		prdQuantity = 0; 
-        } else {
-            // try to parse the quantity into an int.
-            try {
-            	prdQuantity = Integer.parseInt(prdQuantityField.getText());
-            } catch (NumberFormatException e) {
-            	ExceptionHandling.handleWarning(headerText, contentText);
-            }
-            if(prdQuantity > 5) {
-            	ExceptionHandling.handleWarning(headerText, contentText);
-            }
-        }
-    	return prdQuantity; 
     }
 
 }

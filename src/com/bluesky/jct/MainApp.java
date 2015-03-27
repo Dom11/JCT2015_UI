@@ -151,6 +151,7 @@ public class MainApp extends Application {
 
 			// Set the profile into the controller.
 			ProfileEditDialogController controller = loader.getController();
+			controller.setMainApp(this);
 			controller.setDialogStage(dialogStage);
 			controller.setProfile(profile);
 

@@ -36,15 +36,15 @@ public class SelfServiceControllerPage1 {
 
 
 	private Profile tempProfile;
-	private String profileDescription = null;
+	private String profileDescription = "";
 	private int domainId = 0;
 	private int prefixId = 0;
    	private int jbarId = 0;
    	private int environmentId = 0;
-   	private String profileDnsName = null;
+   	private String profileDnsName = "";
    	private int hostId = 0;
    	private int jiraId = 0;
-   	private String profileComponent = null;
+   	private String profileComponent = "";
 	private String createdBy = LoginDialog.getUserName();
 
 	public boolean nextClicked;

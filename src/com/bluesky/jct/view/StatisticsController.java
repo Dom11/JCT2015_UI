@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import com.bluesky.jct.model.ProfileView;
 
@@ -29,6 +30,8 @@ public class StatisticsController {
     private PieChart pieChart;
     
     private ObservableList<String> monthNames = FXCollections.observableArrayList();
+	private ObservableList<ProfileView> profileData = FXCollections.observableArrayList();
+	private ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
     
     
     /**
@@ -36,6 +39,7 @@ public class StatisticsController {
      */
     public StatisticsController() {
     	super();
+    	profileData = ProfileOverviewController.getProfileData();
     }
     
     
@@ -78,12 +82,18 @@ public class StatisticsController {
         barChart.getData().add(series);
         
         
+        // preparation of pieChart data
+        String[] array;
+        int size = profileData.size();
+        array = new String[size];
+        for (int i = 0; i < size; i++) {
+        	array[i] = profileData.get(i).getCreatedBy();
+        	}
         
-        ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(
-                new PieChart.Data("Dominik", 5),
-                new PieChart.Data("Hans", 1),
-                new PieChart.Data("Peter", 3));
-        pieChart.getData().addAll(pieChartData);
-    }
-  	
+        
+        Arrays.stream(array).collect(Collectors.groupingBy(s -> s)).forEach((k, v) ->
+        	pieChartData.add(new PieChart.Data(k, v.size())));
+        pieChart.setData(pieChartData);
+  	}
+  	        
 }
