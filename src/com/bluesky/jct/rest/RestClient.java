@@ -14,6 +14,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import com.bluesky.jct.LoginDialog;
 import com.bluesky.jct.model.*;
 import com.bluesky.jct.util.ExceptionHandling;
 import com.bluesky.jct.util.GsonMessageBodyHandler;
@@ -27,7 +28,8 @@ import com.bluesky.jct.util.GsonMessageBodyHandler;
  */
 public class RestClient {
 	
-	private static final String REST_SERVICE_URL = "http://localhost:8080/RestService/rest";
+	private static final String REST_SERVICE_URL = LoginDialog.getConnection();
+	private static final String TEST_REST_SERVICE_URL = LoginDialog.getTestConnection();
 	private static Client client;
 	private static boolean successfulTransaction = false;
 	private static String httpStatusCode;
@@ -45,7 +47,7 @@ public class RestClient {
 	public static boolean checkConnectionRestServer() {
 		
 		try {
-			URL url = new URL("http://localhost:8080");
+			URL url = new URL(TEST_REST_SERVICE_URL);
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			
 			if(con.getResponseCode() == 200) {
@@ -69,7 +71,7 @@ public class RestClient {
 	public static boolean checkConnectionDB() {
 		
 		try {
-			URL url = new URL("http://localhost:8080/RestService/rest/domain/list");
+			URL url = new URL(REST_SERVICE_URL + "/domain/list");
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			
 			if(con.getResponseCode() == 200) {

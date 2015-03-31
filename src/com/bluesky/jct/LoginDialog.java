@@ -29,6 +29,12 @@ public class LoginDialog {
 	private final static BooleanProperty GRANTED_ACCESS = new SimpleBooleanProperty(false);
 	private final static String USER = System.getProperty("user.name");
 	private final static String ADMIN = "Administrator";
+	private static String REST_SERVICE_URL = "";
+	private static final String REST_SERVICE_URL_LOCAL = "http://localhost:8080/RestService/rest";
+	private static final String REST_SERVICE_URL_OPENSHIFT = "http://jct2015openshift-designby3.rhcloud.com/RestService/rest";
+	private static String TEST_REST_SERVICE_URL = "";
+	private static final String TEST_REST_SERVICE_URL_LOCAL = "http://localhost:8080";
+	private static final String TEST_REST_SERVICE_URL_OPENSHIFT = "http://jct2015openshift-designby3.rhcloud.com";
 	private static boolean disabled = true;
 	private static String buttonText = "";
 
@@ -69,8 +75,18 @@ public class LoginDialog {
 		userOption.setValue("Regular");
 		userOption.setMaxWidth(140);
 		
+		ComboBox<String> connectionOption = new ComboBox<String>();
+		ObservableList<String> connectionOptionChoices = FXCollections.observableArrayList();
+		connectionOptionChoices.add(new String("OpenShift"));
+		connectionOptionChoices.add(new String("Local"));
+		connectionOption.setItems(connectionOptionChoices);
+		connectionOption.setValue("OpenShift");
+		connectionOption.setMaxWidth(140);		
+		
 		grid.add(new Label("User Type:"), 0, 1);
-		grid.add(userOption, 1, 1);		
+		grid.add(userOption, 1, 1);
+		grid.add(new Label("Connection to:"), 0, 2);
+		grid.add(connectionOption, 1, 2);	
 		
 		dialog.getDialogPane().setContent(grid);
 		
@@ -79,7 +95,7 @@ public class LoginDialog {
 		Platform.runLater(() -> userOption.requestFocus());	
 		
 		
-		// listener on combobox selection.
+		// listener on user combobox selection.
 		userOption.valueProperty().addListener((observable, oldValue, newValue) -> {
 			if (newValue.matches(ADMIN) == true) {
 				disabled = false;
@@ -87,6 +103,18 @@ public class LoginDialog {
 				disabled = true;
 			}
 		});
+				
+		
+		// listener on connection combobox selection.
+		connectionOption.valueProperty().addListener((observable, oldValue, newValue) -> {
+					if (newValue.matches("OpenShift") == true) {
+						REST_SERVICE_URL = REST_SERVICE_URL_OPENSHIFT;
+						TEST_REST_SERVICE_URL = TEST_REST_SERVICE_URL_OPENSHIFT;
+					} else {
+						REST_SERVICE_URL = REST_SERVICE_URL_LOCAL;
+						TEST_REST_SERVICE_URL = TEST_REST_SERVICE_URL_LOCAL;
+					}
+				});
 		
 		
 		// Convert the result to a password when the login button is clicked.
@@ -132,6 +160,26 @@ public class LoginDialog {
 	 */
 	public static boolean getDisabledType() {
 		return disabled;
+	}
+	
+	
+	/**
+	 * Provides the URL for the REST API depending on the selection during Log-in.
+	 * 
+	 * @return REST_SERVICE_URL
+	 */
+	public static String getConnection() {
+		return REST_SERVICE_URL;
+	}
+	
+	
+	/**
+	 * Provides the URL to test the connection to the Application Server where the REST API is located.
+	 * 
+	 * @return REST_SERVICE_URL
+	 */
+	public static String getTestConnection() {
+		return TEST_REST_SERVICE_URL;
 	}
 	
 }
