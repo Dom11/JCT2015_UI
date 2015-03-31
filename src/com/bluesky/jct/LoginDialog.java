@@ -29,10 +29,10 @@ public class LoginDialog {
 	private final static BooleanProperty GRANTED_ACCESS = new SimpleBooleanProperty(false);
 	private final static String USER = System.getProperty("user.name");
 	private final static String ADMIN = "Administrator";
-	private static String REST_SERVICE_URL = "";
+	private static String REST_SERVICE_URL = "http://jct2015openshift-designby3.rhcloud.com/RestService/rest";
 	private static final String REST_SERVICE_URL_LOCAL = "http://localhost:8080/RestService/rest";
 	private static final String REST_SERVICE_URL_OPENSHIFT = "http://jct2015openshift-designby3.rhcloud.com/RestService/rest";
-	private static String TEST_REST_SERVICE_URL = "";
+	private static String TEST_REST_SERVICE_URL = "http://jct2015openshift-designby3.rhcloud.com";
 	private static final String TEST_REST_SERVICE_URL_LOCAL = "http://localhost:8080";
 	private static final String TEST_REST_SERVICE_URL_OPENSHIFT = "http://jct2015openshift-designby3.rhcloud.com";
 	private static boolean disabled = true;
@@ -78,7 +78,7 @@ public class LoginDialog {
 		ComboBox<String> connectionOption = new ComboBox<String>();
 		ObservableList<String> connectionOptionChoices = FXCollections.observableArrayList();
 		connectionOptionChoices.add(new String("OpenShift"));
-		connectionOptionChoices.add(new String("Local"));
+		connectionOptionChoices.add(new String("Localhost"));
 		connectionOption.setItems(connectionOptionChoices);
 		connectionOption.setValue("OpenShift");
 		connectionOption.setMaxWidth(140);		
