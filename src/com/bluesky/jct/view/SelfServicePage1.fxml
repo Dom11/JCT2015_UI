@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="400.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bluesky.jct.view.SelfServiceControllerPage1">
+   <children>
+      <GridPane layoutX="52.0" layoutY="163.0" prefHeight="120.0" prefWidth="400.0" AnchorPane.bottomAnchor="120.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="120.0">
+         <children>
+            <Label text="General Profile Description" GridPane.rowIndex="3" />
+            <Label text="Your Domain" GridPane.rowIndex="2" />
+            <Label text="Please select the JBar ID" GridPane.rowIndex="1" />
+            <TextField fx:id="profileDescriptionField" prefWidth="200.0" promptText="mandatory" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Label text="Related JIRA Project Key" />
+            <ComboBox fx:id="domainComboBox" prefHeight="25.0" prefWidth="200.0" promptText="please select" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <ComboBox fx:id="jbarComboBox" prefHeight="25.0" prefWidth="200.0" promptText="please select" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <ComboBox fx:id="jiraComboBox" prefHeight="25.0" prefWidth="200.0" promptText="please select" GridPane.columnIndex="1" />
+         </children>
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="250.0" minWidth="10.0" prefWidth="200.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="10.0" prefWidth="177.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+      </GridPane>
+      <HBox layoutX="223.0" layoutY="354.0" spacing="10.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="190.0" AnchorPane.rightAnchor="190.0">
+         <children>
+            <Button layoutX="223.0" layoutY="354.0" mnemonicParsing="false" onAction="#handleCancel" prefWidth="55.0" text="Cancel" />
+            <Button fx:id="nextButton" layoutX="292.0" layoutY="354.0" mnemonicParsing="false" onAction="#handleNext" prefWidth="55.0" text="Next" />
+         </children>
+      </HBox>
+      <Text layoutX="48.0" layoutY="83.0" strokeType="OUTSIDE" strokeWidth="0.0" text="This Self-Service Portal allows to order multiple Profiles in one go. Please fill out first some overall Project Information which will be copied to all the Profiles of that order." wrappingWidth="400.0" AnchorPane.topAnchor="30.0" />
+   </children>
+</AnchorPane>

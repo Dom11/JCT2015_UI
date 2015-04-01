@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="400.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bluesky.jct.view.ProfileEditDialogController">
+<AnchorPane prefHeight="454.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bluesky.jct.view.ProfileEditDialogController">
    <children>
       <GridPane layoutX="50.0" layoutY="85.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="40.0">
         <columnConstraints>
@@ -22,32 +22,30 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label text="ID" />
-            <Label text="JBar Name" GridPane.rowIndex="1" />
-            <Label text="Description" GridPane.rowIndex="2" />
-            <Label text="Environment" GridPane.rowIndex="3" />
-            <Label text="Build" GridPane.rowIndex="4" />
-            <Label text="Domain" GridPane.rowIndex="5" />
-            <Label text="Instance" GridPane.rowIndex="6" />
-            <Label text="Server" GridPane.rowIndex="7" />
-            <TextField fx:id="profileIdField" GridPane.columnIndex="1" />
-            <TextField fx:id="profileJBarNameField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <TextField fx:id="profileDescriptionField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <TextField fx:id="profileEnvironmentField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <TextField fx:id="profileBuildField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-            <TextField fx:id="profileDomainField" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-            <TextField fx:id="profileInstanceField" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-            <TextField fx:id="profileServerField" maxWidth="90.0" prefHeight="25.0" prefWidth="80.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-            <Button fx:id="startServer" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefWidth="60.0" text="Start/Stop" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="7">
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-               <GridPane.margin>
-                  <Insets />
-               </GridPane.margin>
-            </Button>
+            <Label text="Profile Name" />
+            <Label text="Description" GridPane.rowIndex="1" />
+            <Label text="Domain" GridPane.rowIndex="2" />
+            <Label text="Prefix" GridPane.rowIndex="3" />
+            <Label text="JBar" GridPane.rowIndex="4" />
+            <Label text="Environment" GridPane.rowIndex="5" />
+            <Label text="DNS Name" GridPane.rowIndex="6" />
+            <Label text="Host" GridPane.rowIndex="7" />
+            <TextField fx:id="profileNameField" maxWidth="175.0" minWidth="175.0" prefWidth="175.0" GridPane.columnIndex="1" />
+            <TextField fx:id="profileDescriptionField" maxWidth="175.0" minWidth="175.0" prefWidth="175.0" promptText="mandatory" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="profileDnsField" maxWidth="175.0" minWidth="175.0" prefWidth="175.0" promptText="mandatory" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <Label text="Jira Project Key" GridPane.rowIndex="8" />
+            <Label text="Component" GridPane.rowIndex="9" />
+            <TextField fx:id="profileComponentField" maxWidth="175.0" minWidth="175.0" prefWidth="175.0" promptText="optional" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+            <ComboBox fx:id="domainComboBox" maxWidth="175.0" minWidth="175.0" prefHeight="25.0" prefWidth="175.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <ComboBox fx:id="jbarComboBox" maxWidth="175.0" minWidth="175.0" prefHeight="25.0" prefWidth="175.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <ComboBox fx:id="environmentComboBox" maxWidth="175.0" minWidth="175.0" prefHeight="25.0" prefWidth="175.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <ComboBox fx:id="hostComboBox" maxWidth="175.0" minWidth="175.0" prefHeight="25.0" prefWidth="175.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+            <ComboBox fx:id="jiraComboBox" maxWidth="175.0" minWidth="175.0" prefHeight="25.0" prefWidth="175.0" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+            <ComboBox fx:id="prefixComboBox" maxWidth="175.0" minWidth="175.0" prefHeight="25.0" prefWidth="175.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
          </children>
       </GridPane>
       <HBox fx:id="hbox" layoutX="17.0" layoutY="336.0" spacing="5.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
@@ -62,7 +60,9 @@
             <items>
                   <MenuItem mnemonicParsing="false" onAction="#handleEditProfile" text="Edit" />
               <MenuItem mnemonicParsing="false" onAction="#handleClone" text="Clone" />
-                  <MenuItem mnemonicParsing="false" onAction="#handleDelete" text="Delete" />
+                  <MenuItem fx:id="generateRPM" mnemonicParsing="false" onAction="#handleGenerateRPM" text="Generate RPM" />
+                  <MenuItem fx:id="sendPackage" mnemonicParsing="false" onAction="#handleSendPackage" text="Send Package" />
+                  <MenuItem fx:id="deleteProfile" mnemonicParsing="false" onAction="#handleDelete" text="Delete" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Reports">
@@ -78,5 +78,13 @@
           </Menu>
         </menus>
       </MenuBar>
+      <Label layoutX="10.0" layoutY="360.0" text="JBoss Profile Process Status" />
+      <Button fx:id="profileStatusButton" alignment="CENTER" contentDisplay="CENTER" layoutX="230.0" layoutY="356.0" mnemonicParsing="false" prefWidth="60.0" text="Start">
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+      </Button>
+      <Label fx:id="profileStatusLabel" layoutX="166.0" layoutY="360.0" text="Label" />
+      <ProgressIndicator fx:id="profileStatusProgress" layoutX="166.0" layoutY="347.0" prefHeight="44.0" prefWidth="53.0" />
    </children>
 </AnchorPane>

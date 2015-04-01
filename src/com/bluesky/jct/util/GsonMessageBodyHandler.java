@@ -7,6 +7,14 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Date;
+
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
@@ -19,7 +27,21 @@ import javax.ws.rs.ext.Provider;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 
+
+/**
+ * Gson Message Body Handler.
+ * Contains serializer and deserialzer methods for data types integer, string and date.
+ * 
+ * @author Dominik
+ */
 @Provider
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -32,25 +54,33 @@ public final class GsonMessageBodyHandler implements MessageBodyWriter<Object>,
 
 	private Gson getGson() {
 		if (gson == null) {
-			final GsonBuilder gsonBuilder = new GsonBuilder();
+			GsonBuilder gsonBuilder = new GsonBuilder()
+			                .registerTypeAdapter(IntegerProperty.class, integerSerializer)
+			                .registerTypeAdapter(IntegerProperty.class, integerDeserializer)
+							.registerTypeAdapter(StringProperty.class, stringSerializer)
+							.registerTypeAdapter(StringProperty.class, stringDeserializer)
+							.registerTypeAdapter(BooleanProperty.class, booleanSerializer)
+							.registerTypeAdapter(BooleanProperty.class, booleanDeserializer)
+							.registerTypeAdapter(Date.class, dateSerializer)
+							.registerTypeAdapter(Date.class, dateDeserializer);			
 			gson = gsonBuilder.create();
 		}
 		return gson;
 	}
-
+	
+	
 	@Override
-	public boolean isReadable(Class<?> arg0, Type arg1, Annotation[] arg2,
-			MediaType arg3) {
+	public boolean isReadable(Class<?> arg0, Type arg1, Annotation[] arg2, MediaType arg3) {
 		return true;
 	}
+	
 
 	@Override
-	public Object readFrom(Class<Object> type, Type genericType,
-			Annotation[] annotations, MediaType mediaType,
-			MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
-			throws IOException, WebApplicationException {
-		InputStreamReader streamReader = new InputStreamReader(entityStream,
-				UTF_8);
+	public Object readFrom(Class<Object> type, Type genericType, Annotation[] annotations, MediaType mediaType,
+			MultivaluedMap<String, String> httpHeaders, InputStream entityStream) 
+					throws IOException, WebApplicationException {
+		InputStreamReader streamReader = new InputStreamReader(entityStream, UTF_8);
+		
 		try {
 			Type jsonType;
 			if (type.equals(genericType)) {
@@ -65,29 +95,27 @@ public final class GsonMessageBodyHandler implements MessageBodyWriter<Object>,
 		} finally {
 			streamReader.close();
 		}
-
 	}
 
+	
 	@Override
-	public long getSize(Object arg0, Class<?> arg1, Type arg2,
-			Annotation[] arg3, MediaType arg4) {
+	public long getSize(Object arg0, Class<?> arg1, Type arg2, Annotation[] arg3, MediaType arg4) {
 		return -1;
-
 	}
 
+	
 	@Override
-	public boolean isWriteable(Class<?> arg0, Type arg1, Annotation[] arg2,
-			MediaType arg3) {
+	public boolean isWriteable(Class<?> arg0, Type arg1, Annotation[] arg2,	MediaType arg3) {
 		return true;
 	}
 
+	
 	@Override
-	public void writeTo(Object object, Class<?> type, Type genericType,
-			Annotation[] annotations, MediaType mediaType,
-			MultivaluedMap<String, Object> httpHeaders,
-			OutputStream entityStream) throws IOException,
-			WebApplicationException {
+	public void writeTo(Object object, Class<?> type, Type genericType,	Annotation[] annotations, MediaType mediaType,
+			MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) 
+					throws IOException,	WebApplicationException {
 		OutputStreamWriter writer = new OutputStreamWriter(entityStream, UTF_8);
+		
 		try {
 			Type jsonType;
 			if (type.equals(genericType)) {
@@ -100,5 +128,112 @@ public final class GsonMessageBodyHandler implements MessageBodyWriter<Object>,
 			writer.close();
 		}
 	}
+	
+	
+	JsonSerializer<IntegerProperty> integerSerializer = new JsonSerializer<IntegerProperty>() {
+		@Override
+		public JsonElement serialize(IntegerProperty src, Type typeOfSrc, JsonSerializationContext context) {
+			return src == null ? null : new JsonPrimitive(src.intValue());
+		}
+	};
 
+	
+	JsonDeserializer<IntegerProperty> integerDeserializer = new JsonDeserializer<IntegerProperty>() {
+		@Override
+		public IntegerProperty deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+
+			if (json == null) {
+				return null;
+			} else {
+
+				try {
+					String intString = json.getAsString();
+					
+					return new SimpleIntegerProperty(new Integer(intString).intValue());
+
+				} catch (Exception e) {
+					return new SimpleIntegerProperty(0);
+				}
+			}
+		}
+	};
+
+	
+	JsonSerializer<StringProperty> stringSerializer = new JsonSerializer<StringProperty>() {
+		@Override
+		public JsonElement serialize(StringProperty src, Type typeOfSrc, JsonSerializationContext context) {
+			return src == null ? null : new JsonPrimitive(src.get());
+		}
+	};
+	
+	
+	JsonDeserializer<StringProperty> stringDeserializer = new JsonDeserializer<StringProperty>() {
+		@Override
+		public StringProperty deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+	
+			if (json == null) {
+				return null;
+			} else {
+	
+				try {
+					return new SimpleStringProperty(json.getAsString());
+				} catch (Exception e) {
+					return new SimpleStringProperty();
+				}
+			}
+		}
+	};
+	
+	
+	JsonSerializer<BooleanProperty> booleanSerializer = new JsonSerializer<BooleanProperty>() {
+		@Override
+		public JsonElement serialize(BooleanProperty src, Type typeOfSrc, JsonSerializationContext context) {
+			return src == null ? null : new JsonPrimitive(src.get());
+		}
+	};
+	
+	
+	JsonDeserializer<BooleanProperty> booleanDeserializer = new JsonDeserializer<BooleanProperty>() {
+		@Override
+		public BooleanProperty deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+	
+			if (json == null) {
+				return null;
+			} else {
+	
+				try {
+					return new SimpleBooleanProperty(json.getAsBoolean());
+				} catch (Exception e) {
+					return new SimpleBooleanProperty();
+				}
+			}
+		}
+	};
+	
+	
+	JsonSerializer<Date> dateSerializer = new JsonSerializer<Date>() {
+		@Override
+		public JsonElement serialize(Date src, Type typeOfSrc, JsonSerializationContext context) {
+			return src == null ? null : new JsonPrimitive(src.getTime());
+		}
+	};
+	
+	
+	JsonDeserializer<Date> dateDeserializer = new JsonDeserializer<Date>() {
+		@Override
+		public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+	
+			if (json == null) {
+				return null;
+			} else {
+	
+				try {
+					return new Date (json.getAsLong());
+				} catch (Exception e) {
+					return new Date();
+				}
+			}
+		}
+	};
+	
 }
