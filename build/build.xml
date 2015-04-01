@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<project name="Client" default="do-deploy" basedir="."  xmlns:fx="javafx:com.sun.javafx.tools.ant">
+	<target name="init-fx-tasks">
+		<path id="fxant">
+			<filelist>
+				<file name="${java.home}\..\lib\ant-javafx.jar"/>
+				<file name="${java.home}\lib\jfxrt.jar"/>
+			</filelist>
+		</path>
+	
+		<taskdef resource="com/sun/javafx/tools/ant/antlib.xml"
+			uri="javafx:com.sun.javafx.tools.ant"
+			classpathref="fxant"/>
+	</target>
+	<target name="setup-staging-area">
+		<delete dir="externalLibs" />
+		<delete dir="project" />
+		<delete dir="projectRefs" />
+	
+		<mkdir dir="externalLibs" />
+	
+		<copy todir="externalLibs">
+			<fileset dir="Y:\dev\repository\m2\com\google\code\gson\gson\2.2.4">
+				<filename name="gson-2.2.4.jar"/>
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="Y:\dev\repository\m2\org\jboss\resteasy\resteasy-client\3.0.10.Final">
+				<filename name="resteasy-client-3.0.10.Final.jar"/>
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="Y:\dev\repository\m2\org\apache\httpcomponents\httpclient\4.2.6">
+				<filename name="httpclient-4.2.6.jar"/>
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="Y:\dev\repository\m2\org\controlsfx\openjfx-dialogs\1.0.2">
+				<filename name="openjfx-dialogs-1.0.2.jar"/>
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="Y:\dev\repository\m2\org\jboss\resteasy\jaxrs-api\3.0.10.Final">
+				<filename name="jaxrs-api-3.0.10.Final.jar"/>
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="Y:\dev\repository\m2\commons-codec\commons-codec\1.6">
+				<filename name="commons-codec-1.6.jar"/>
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="Y:\dev\repository\m2\org\apache\httpcomponents\httpcore\4.2.5">
+				<filename name="httpcore-4.2.5.jar"/>
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="Y:\dev\repository\m2\org\jboss\spec\javax\annotation\jboss-annotations-api_1.1_spec\1.0.1.Final">
+				<filename name="jboss-annotations-api_1.1_spec-1.0.1.Final.jar"/>
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="Y:\dev\repository\m2\org\reactfx\reactfx\2.0-M4">
+				<filename name="reactfx-2.0-M4.jar"/>
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="Y:\dev\repository\m2\com\sun\mail\javax.mail\1.5.0">
+				<filename name="javax.mail-1.5.0.jar"/>
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="Y:\dev\repository\m2\commons-io\commons-io\2.1">
+				<filename name="commons-io-2.1.jar"/>
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="Y:\dev\repository\m2\net\jcip\jcip-annotations\1.0">
+				<filename name="jcip-annotations-1.0.jar"/>
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="Y:\dev\repository\m2\org\jboss\resteasy\resteasy-jaxrs\3.0.10.Final">
+				<filename name="resteasy-jaxrs-3.0.10.Final.jar"/>
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="Y:\dev\repository\m2\commons-logging\commons-logging\1.1.1">
+				<filename name="commons-logging-1.1.1.jar"/>
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="Y:\dev\repository\m2\javax\activation\activation\1.1">
+				<filename name="activation-1.1.jar"/>
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="Y:\dev\repository\m2\javax\javaee-api\7.0">
+				<filename name="javaee-api-7.0.jar"/>
+			</fileset>
+		</copy>
+	
+		<mkdir dir="project" />
+		<copy todir="project">
+			<fileset dir="Y:\dev\workspaces\Luna\JCT2015_UI\jct2015_ui">
+				<include name="src/**" />
+			</fileset>
+		</copy>
+	
+		<mkdir dir="projectRefs" />
+	</target>
+	<target name='do-compile'>
+		<delete dir="build" />
+		<mkdir dir="build/src" />
+		<mkdir dir="build/libs" />
+		<mkdir dir="build/classes" />
+	
+		<!-- Copy project-libs references -->
+		<copy todir="build/libs">
+			<fileset dir="externalLibs">
+				<include name="commons-codec-1.6.jar"/>
+				<include name="activation-1.1.jar"/>
+				<include name="resteasy-client-3.0.10.Final.jar"/>
+				<include name="jcip-annotations-1.0.jar"/>
+				<include name="javax.mail-1.5.0.jar"/>
+				<include name="gson-2.2.4.jar"/>
+				<include name="httpclient-4.2.6.jar"/>
+				<include name="commons-io-2.1.jar"/>
+				<include name="jaxrs-api-3.0.10.Final.jar"/>
+				<include name="javaee-api-7.0.jar"/>
+				<include name="commons-logging-1.1.1.jar"/>
+				<include name="openjfx-dialogs-1.0.2.jar"/>
+				<include name="resteasy-jaxrs-3.0.10.Final.jar"/>
+				<include name="reactfx-2.0-M4.jar"/>
+				<include name="httpcore-4.2.5.jar"/>
+				<include name="jboss-annotations-api_1.1_spec-1.0.1.Final.jar"/>
+			</fileset>
+		</copy>
+	
+		<!-- Copy project references -->
+	
+		<!-- Copy project sources itself -->
+		<copy todir="build/src">
+			<fileset dir="project/src">
+				<include name="**/*"/>
+			</fileset>
+		</copy>
+	
+		<javac includeantruntime="false" source="1.8" target="1.8" srcdir="build/src" destdir="build/classes" encoding="Cp1252">
+			<classpath>
+				<fileset dir="build/libs">
+					<include name="*"/>
+				</fileset>
+			</classpath>
+		</javac>
+	
+		<!-- Copy over none Java-Files -->
+		<copy todir="build/classes">
+		<fileset dir="project/src">
+			<exclude name="**/*.java"/>
+		</fileset>
+		</copy>
+	
+	
+	</target>
+	<target name="do-deploy" depends="setup-staging-area, do-compile, init-fx-tasks">
+		<delete file="dist"/>
+		<delete file="deploy" />
+	
+		<mkdir dir="dist" />
+		<mkdir dir="dist/libs" />
+	
+		<copy todir="dist/libs">
+			<fileset dir="externalLibs">
+				<include name="*" />
+			</fileset>
+		</copy>
+	
+	
+		<fx:resources id="appRes">
+			<fx:fileset dir="dist" includes="Client.jar"/>
+			<fx:fileset dir="dist" includes="libs/*"/>
+		</fx:resources>
+	
+		<fx:application id="fxApplication"
+			name="JCT_2015"
+			mainClass="com.bluesky.jct.MainApp"
+		/>
+	
+		<mkdir dir="build/classes/META-INF" />
+	
+	
+	
+		<fx:jar destfile="dist/Client.jar">
+			<fx:application refid="fxApplication"/>
+			<fileset dir="build/classes">
+			</fileset>
+			<fx:resources refid="appRes"/>
+	
+			<manifest>
+				<attribute name="Implementation-Vendor" value="BlueSky"/>
+				<attribute name="Implementation-Title" value="JCT_2015"/>
+				<attribute name="Implementation-Version" value="1.0"/>
+				<attribute name="JavaFX-Feature-Proxy" value="None"/>
+			</manifest>
+		</fx:jar>
+	
+	
+		<mkdir dir="deploy" />
+		<!-- Need to use ${basedir} because somehow the ant task is calculating the directory differently -->
+		<fx:deploy
+			embedJNLP="false"
+			extension="false"
+			includeDT="false"
+			offlineAllowed="true"
+			outdir="${basedir}/deploy"
+			outfile="Client" nativeBundles="exe"
+			updatemode="background" >
+	
+			<fx:platform basedir="${java.home}"/>
+			<fx:info title="Client" vendor="BlueSky"/>
+	
+			<fx:application refId="fxApplication"/>
+			<fx:resources refid="appRes"/>
+		</fx:deploy>
+	
+	
+	</target>
+</project>
